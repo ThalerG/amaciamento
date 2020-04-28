@@ -4,7 +4,7 @@ clear; close all; clc;
 addpath('C:\Users\G. Thaler\Documents\Projeto Amaciamento\Ferramentas');
 
 fpr = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Dados Processados\';
-fsave = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Ferramentas\analiseParametros2\';
+fsave = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Ferramentas\analiseParametros\';
 
 fsm{1} = {'Amostra 1\N_2019-07-01\'};
 
@@ -95,7 +95,7 @@ for k1 = 1:length(path)
                             'w2 :' num2str(w2) '/' num2str(length(W2)) newline ...
                             's :' num2str(s) '/' num2str(length(S))]; display(prog); % Mostra o processo
 
-                    dataF = derMedDupla(cRMS.data(cRMS.t>0),W1(w1),W2(w2));
+                    dataF = doubleAvgDerivative(cRMS.data(cRMS.t>0),W1(w1),W2(w2));
 
                     flag = 0;
                     for f = 1:length(F)
@@ -153,8 +153,6 @@ for k1 = 1:length(dif)
         soma = soma+abs(dif{k1}{k2});
     end
 end
-
-save([fsave,'soma.mat'],'soma','tEst','-v7.3');
 
 [minval, minidx] = min(abs(soma(:)));
 [m, n, o, p, q] = ind2sub( size(soma), minidx);

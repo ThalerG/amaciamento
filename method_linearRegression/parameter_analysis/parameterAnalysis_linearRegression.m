@@ -8,8 +8,7 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 % Create new folder for generated figures
 c = clock;
 fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
-mkdir(fsave);
-
+mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
 % tEst: Manually inputed estimated run-in time
@@ -73,13 +72,13 @@ for k1 = 1:length(fsm)
 end
 
 
-%% Processamento das amostras
+%% Sample processing
 
 totalIt = 0; % Number of iterations
 for k1 = 1:length(path)
     totalIt = totalIt+length(path{k1});
 end
-totalIt = totalIt*length(W)*length(S);
+totalIt = totalIt*length(W);
 
 it = 0;
 
@@ -88,17 +87,18 @@ for k1 = 1:length(path) % For every sample
         load(path{k1}{k2}); % Loads the RMS current data
         count = zeros(length(cRMS.data(cRMS.t>0)),1); % Counts the number of samples where the null hypothesis is valid
         time = cRMS.t(cRMS.t>0);
+        
         for w = 1:length(W) % For every window
             dataF = lrPValue(cRMS.data(cRMS.t>0),W(w)); % P-values per instant
+            it=it+1;
+            prog = ['Progresso:' num2str(100*it/totalIt),'%' newline...
+                    'Amostra:' num2str(k1) '/' num2str(length(path)) newline...
+                    'Ensaio:' num2str(k2) '/' num2str(length(path{k1})) newline...
+                    'w :' num2str(w) '/' num2str(length(W))]; display(prog); % Displays the current progress
             
             flag = 0;
+            
             for s = 1:length(S) % For every significance level
-                it=it+1;
-                prog = ['Progresso:' num2str(100*it/totalIt),'%' newline...
-                        'Amostra:' num2str(k1) '/' num2str(length(path)) newline...
-                        'Ensaio:' num2str(k2) '/' num2str(length(path{k1})) newline...
-                        'w :' num2str(w) '/' num2str(length(W)) newline...
-                        's :' num2str(s) '/' num2str(length(S))]; display(prog); % Displays the current progress
                     
                 for f = 1:length(F)
                     for n = 2:length(dataF) % Counts the number of samples where the null hypothesis (H0: slope = 0) can be accepted 
@@ -148,22 +148,22 @@ clear tAmac
 
 save([fsave,'dif.mat'],'dif','tEst','-v7.3');
 
-%% Sum of differences
+%% Cost function (quadratic error)
 
-soma = zeros(length(W),length(R),length(S),length(F));
+J = zeros(length(W),length(R),length(S),length(F));
 
 for k1 = 1:length(dif)
     for k2 = 1:length(dif{k1})
-        soma = soma+abs(dif{k1}{k2});
+        J = J+dif{k1}{k2}.^2;
     end
 end
 
-save([fsave,'soma.mat'],'soma','tEst','-v7.3');
+save([fsave,'J.mat'],'J','tEst','-v7.3');
 
-[minval, minidx] = min(abs(soma(:)));
-[m, n, o, p] = ind2sub( size(soma), minidx);
+[minval, minidx] = min(abs(J(:)));
+[m, n, o, p] = ind2sub( size(J), minidx);
 wmin = W(m)
 rmin = R(n)
 smin = S(o)
 fmin = F(p)
-soma(m,n,o,p)
+J(m,n,o,p)

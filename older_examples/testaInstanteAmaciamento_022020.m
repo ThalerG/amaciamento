@@ -42,7 +42,7 @@ for k = 1:length(loadPath)
     subplot(length(loadPath),1,k);
     dataF = cRMS.data(cRMS.t>0); t = cRMS.t(cRMS.t>0);
     [n,ta] = runin_detect_singleavg(dataF,t,w,r,s,f);
-    dataF = derMed(cRMS.data(cRMS.t>0),w);
+    dataF = singleAvgDerivative(cRMS.data(cRMS.t>0),w);
     hold on; plot(t(t>0), dataF);
     yl = ylim();
     tend = min(cRMS.t(end),tend); 

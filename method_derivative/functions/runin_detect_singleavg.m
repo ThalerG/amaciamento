@@ -1,27 +1,29 @@
 function [n,ta] = runin_detect_singleavg(x,t,w,r,s,f)
-%  detectaAmac utiliza o método da derivada das médias para detectar o 
-% instante de amaciamento.
-%   
-%   [n,ta] = detectaAmac(x,t,r,w,s) busca, dentro das derivadas médias do 
-%   vetor x com janela w, o primeiro conjunto de r pontos consecutivos (com
-%   tolerancia de f pontos) dentro da faixa limite de variação s. A saída
-%   n é o número da primeira amostra considerada amaciada, e ta é o
-%   instante de amaciamento, na mesma unidade de tempo do vetor t 
-%   fornecido, que deve corresponder ao instante de cada amostra x.
+%  runin_detect_singleavg indicates the STT using a derivative test
 %
-%   São recomendados valores:
-%       w = 35 
-%       r = 30
-%       s = 6e-4
-%       f = 0
+%   [n,ta] = runin_detect_singleavg(x,t,w,r,s,f): Estimates the steady
+%   state transition (STT) by executing a difference test over the x data
+%   filtered with a w window length. The STT is assumed when the
+%   difference is smaller than s for at least r samples, with tolerance of
+%   f samples with different result. The t input is the time vector 
+%   corresponding to the data vector x.
 %
-%   See also derMed
+%   The outputs n and ta are, respectively, the index and instant
+%   of the detected STT.
+%
+%   Recommended values for run-in detection:
+%       w = ? 
+%       r = ?
+%       s = ?
+%       f = ?
+%
+%   See also singleAvgDerivative
 
 L = length(t);
 
-der = derMed(x(t>0),w);
+der = singleAvgDerivative(x(t>0),w); % Difference between filtered values
 t = t(t>0);
-L = L-length(t); % Número de elementos descartados 
+L = L-length(t); % Number of samples before the starting time t=0
 
 count = 0;
 flag = 0;
@@ -38,14 +40,14 @@ for k = 1:length(der)
         end
     end
     
-    if count>=r
+    if count>=r % Algorithm stops when steady state is detected
         n = k+L;
         ta = t(k);
         return
     end
 end
 
-if count<r
+if count<r  % No steady state detected
     n = NaN;
     ta = NaN;
 end

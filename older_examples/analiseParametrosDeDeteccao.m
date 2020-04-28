@@ -48,7 +48,7 @@ for k = 1:length(loadPath)
     count{k} = zeros(length(w),length(s),length(cRMS.data(cRMS.t>0)));
     for b = 1:length(w)
         for c = 1:length(s)
-            dataF = derMed(cRMS.data(cRMS.t>0),w(b));
+            dataF = singleAvgDerivative(cRMS.data(cRMS.t>0),w(b));
             
             % Faz a contagem de acordo com os parametros
             
@@ -116,7 +116,7 @@ for k = 1:length(loadPath)
     count{k} = zeros(length(w),length(s),length(cRMS.data(cRMS.t>0)));
     for b = 1:length(w)
         for c = 1:length(s)
-            dataF = derMed(cRMS.data(cRMS.t>0),w(b));
+            dataF = singleAvgDerivative(cRMS.data(cRMS.t>0),w(b));
             
             % Faz a contagem de acordo com os parametros
             
@@ -184,7 +184,7 @@ for k = 1:length(loadPath)
     count{k} = zeros(length(w),length(s),length(cRMS.data(cRMS.t>0)));
     for b = 1:length(w)
         for c = 1:length(s)
-            dataF = derMed(cRMS.data(cRMS.t>0),w(b));
+            dataF = singleAvgDerivative(cRMS.data(cRMS.t>0),w(b));
             
             % Faz a contagem de acordo com os parametros
             
