@@ -1,15 +1,22 @@
 %% Graficos apresentação
-%clear;
 
 clear; close all; clc;
 
-fpr = 'D:\Documentos\Amaciamento\Dados Processados\';
-%fsave = 'D:\Documentos\Amaciamento\Apresentações\abr-2020\v2';
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentation for data format)
 
-w1 = 25;
-w2 = 5;
-r = 39;
-s = 8e-4;
+% Create new folder for generated figures
+c = clock;
+fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_graphTest_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
+mkdir(fsave); clear rt c;
+
+% fsm: Test data folder 
+% tEst: Manually inputed estimated run-in time
+
+w1 = 30;
+w2 = 1;
+r = 32;
+s = 7e-4;
 f = 0;
 
 amStart = 1;

@@ -7,7 +7,7 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 
 % Create new folder for generated figures
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\doubleAvg_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
+fsave = [rt 'Ferramentas\Arquivos Gerados\doubleAvg_parameters_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
