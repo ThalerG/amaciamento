@@ -74,7 +74,7 @@ facuZ = strcat(facuFolder,facuZ); facuO = strcat(facuFolder,facuO); facuF = strc
 facuinfoZ = strcat(facuFolder,facuinfoZ); facuinfoO = strcat(facuFolder,facuinfoO); facuinfoF = strcat(facuFolder,facuinfoF);
 facuRMS = strcat(facuFolder,facuRMS);
 
-data = importaDados(strcat(fpathSource,fGeral),'\t');
+data = importTestData(strcat(fpathSource,fGeral),'\t');
 
 t = data(:,1);
 comp = data(:,12);

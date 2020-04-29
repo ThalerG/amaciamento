@@ -7,9 +7,9 @@ clear; close all; clc;
 
 % Parâmetros
 
-cSpKurload = 1;
-vSpKurload = 1;
-aSpKurload = 1;
+cChirpload = 1;
+vChirpload = 1;
+aChirpload = 0;
 
 fpathFinal = '\Amostra 5\N_2020-01-22';
 
@@ -36,6 +36,12 @@ Tc = 60; % Tempo entre medições da corrente
 Tv = 60; % Tempo entre medições da vibração
 Ta = 600; % Tempo entre medições de emissões acústicas
 
+FsC = 25.6e+3;
+FsV = 25.6e+3;
+FsA = 300e+3;
+
+m = 100;
+
 % Colunas da Medição Geral
 
 colTempo = 1; colTSuc = 2; colTComp = 3; colTInt = 4; colTDes = 5; 
@@ -55,7 +61,7 @@ fvT = strcat(fvFolder,fvT);
 faFolder = strcat(fpathSource,faFolder);
 faT = strcat(faFolder,faT);
 
-data = importaDados(strcat(fpathSource,fGeral));
+data = importTestData(strcat(fpathSource,fGeral));
 
 t = data(:,colTempo)/3600; tSuc = data(:,colTSuc); tComp = data(:,colTComp);
 tInt = data(:,colTInt); tAmb = data(:,colTDes); pSuc = data(:,colPSuc); 
@@ -72,15 +78,18 @@ clear k;
 %% -------------------------------------------------------------------------
 %                         Carrega Tempo Corrente
 
-if cSpKurload
-
+if cChirpload
+    f1 = 50; f2 = 70;
     mf = dir(fcT); % Carrega todos os nomes de arquivos
     Files = sort(string({mf.name}'));
     clear mf;
                 
     teC = (((1:length(Files))-1)*Tc-t0)/3600;
     
-    corSpKur = zeros(801,length(Files));
+    w = exp(-1j*2*pi*(f2-f1)/(m*FsC));
+    a = exp(1j*2*pi*f1/FsC);
+        
+    corChirp = zeros(m,length(Files));
     
     for k = 1:length(Files)
         disp(strcat('Progresso: ',num2str(k*100/length(Files)),'%'))
@@ -89,46 +98,56 @@ if cSpKurload
 
         data = importdata(filename);
         
-        [corSpKur(:,k),fKurC] = pkurtosis(data,25.6e3);
+        corChirp(:,k) = czt(data,m,w,a);
+        
     end
 
+    
+    fn = (0:m-1)'/m;
+    fChirpC = (f2-f1)*fn + f1;
+    
     clear data;
 
 end
+figure;
 
-vZoomFigZ = surf(teC,fKurC,corSpKur);
-ylim([fKurC(1) fKurC(end)]);
+vZoomFigZ = surf(teC,fChirpC,abs(corChirp));
+ylim([fChirpC(1) fChirpC(end)]);
 xlim([0 teC(end)]);
 c = colorbar;
 c.Label.String = 'Amplitude [dB]';
 set(vZoomFigZ,'edgecolor','none')
 xlabel('Tempo [h]');
 ylabel('Frequência [Hz]');
-title('Curtose Espectral da Corrente');
+title('Chirp-Z da Corrente');
 view(2);
 colormap jet
 
-cSpKur.t = teC;
-cSpKur.f = fKurC;
-cSpKur.data = corSpKur;
+cChirp.t = teC;
+cChirp.f = fChirpC;
+cChirp.data = corChirp;
 
-save(strcat(fpathVar,'\corrente_SpCur.mat'),'cSpKur');
+save(strcat(fpathVar,'\corrente_SpCur.mat'),'cChirp');
 savefig(strcat(fpathFig,'\corrente_SpCur.fig'));
 
 %% -------------------------------------------------------------------------
 %                         Carrega Tempo Vibracao
 
-if vSpKurload
+if vChirpload
+    f1 = 50; f2 = 70;
     mf = dir(fvT); % Carrega todos os nomes de arquivos
     Files = sort(string({mf.name}'));
     clear mf;
                 
     tV = (((1:length(Files))-1)*Tv-t0)/3600;
     
-    vibSpKurInf = zeros(801,length(Files));
-    vibSpKurSup = zeros(801,length(Files));
-    vibSpKurBan = zeros(801,length(Files));
-    
+    vibChirpInf = zeros(m,length(Files));
+    vibChirpSup = zeros(m,length(Files));
+    vibChirpBan = zeros(m,length(Files));
+
+    w = exp(-1j*2*pi*(f2-f1)/(m*FsV));
+    a = exp(1j*2*pi*f1/FsV);
+        
     for k = 1:length(Files)
         disp(strcat('Progresso: ',num2str(k*100/length(Files)),'%'))
 
@@ -136,83 +155,99 @@ if vSpKurload
 
         data = importdata(filename);
        
-        [vibSpKurInf(:,k),fKurV] = pkurtosis(data(:,1),25.6e3);
-        [vibSpKurSup(:,k),fKurV] = pkurtosis(data(:,2),25.6e3);
-        [vibSpKurBan(:,k),fKurV] = pkurtosis(data(:,3),25.6e3);
+        vibChirpInf(:,k) = czt(data(:,1),m,w,a);
+        vibChirpSup(:,k) = czt(data(:,2),m,w,a);
+        vibChirpBan(:,k) = czt(data(:,3),m,w,a);
+        
     end
 
+    fn = (0:m-1)'/m;
+    fChirpV = (f2-f1)*fn + f1;
+    
     clear data;
 end
 
-vZoomFigZ = surf(tV,fKurV,vibSpKurInf);
-ylim([fKurV(1) fKurV(end)]);
+figure;
+
+vZoomFigZ = surf(tV,fChirpV,abs(vibChirpInf));
+ylim([fChirpV(1) fChirpV(end)]);
 xlim([0 tV(end)]);
 c = colorbar;
 c.Label.String = 'Amplitude [dB]';
 set(vZoomFigZ,'edgecolor','none')
 xlabel('Tempo [h]');
 ylabel('Frequência [Hz]');
-title('Curtose Espectral da Vibração na Calota Inferior');
+title('Chirp-Z da Vibração na Calota Inferior');
 view(2);
 colormap jet
 
-vSpKurInf.t = tV;
-vSpKurInf.f = fKurV;
-vSpKurInf.data = vibSpKurInf;
+vChirpInf.t = tV;
+vChirpInf.f = fChirpV;
+vChirpInf.data = vibChirpInf;
 
-save(strcat(fpathVar,'\vibracao_Inf_SpCur.mat'),'vSpKurInf');
+save(strcat(fpathVar,'\vibracao_Inf_SpCur.mat'),'vChirpInf');
 savefig(strcat(fpathFig,'\vibracao_Inf_SpCur.fig'));
 
-vZoomFigZ = surf(tV,fKurV,vibSpKurSup);
-ylim([fKurV(1) fKurV(end)]);
+
+figure;
+
+vZoomFigZ = surf(tV,fChirpV,abs(vibChirpSup));
+ylim([fChirpV(1) fChirpV(end)]);
 xlim([0 tV(end)]);
 c = colorbar;
 c.Label.String = 'Amplitude [dB]';
 set(vZoomFigZ,'edgecolor','none')
 xlabel('Tempo [h]');
 ylabel('Frequência [Hz]');
-title('Curtose Espectral da Vibração na Calota Superior');
+title('Chirp-Z da Vibração na Calota Superior');
 view(2);
 colormap jet
 
-vSpKurSup.t = tV;
-vSpKurSup.f = fKurV;
-vSpKurSup.data = vibSpKurSup;
+vChirpSup.t = tV;
+vChirpSup.f = fChirpV;
+vChirpSup.data = vibChirpSup;
 
-save(strcat(fpathVar,'\vibracao_Sup_SpCur.mat'),'vSpKurSup');
+save(strcat(fpathVar,'\vibracao_Sup_SpCur.mat'),'vChirpSup');
 savefig(strcat(fpathFig,'\vibracao_Sup_SpCur.fig'));
 
-vZoomFigZ = surf(tV,fKurV,vibSpKurBan);
-ylim([fKurV(1) fKurV(end)]);
+
+figure;
+
+vZoomFigZ = surf(tV,fChirpV,abs(vibChirpBan));
+ylim([fChirpV(1) fChirpV(end)]);
 xlim([0 tV(end)]);
 c = colorbar;
 c.Label.String = 'Amplitude [dB]';
 set(vZoomFigZ,'edgecolor','none')
 xlabel('Tempo [h]');
 ylabel('Frequência [Hz]');
-title('Curtose Espectral da Vibração na Bancada');
+title('Chirp-Z da Vibração na Bancada');
 view(2);
 colormap jet
 
-vSpKurBan.t = tV;
-vSpKurBan.f = fKurV;
-vSpKurBan.data = vibSpKurBan;
+vChirpBan.t = tV;
+vChirpBan.f = fChirpV;
+vChirpBan.data = vibChirpBan;
 
-save(strcat(fpathVar,'\vibracao_Ban_SpCur.mat'),'vSpKurBan');
+save(strcat(fpathVar,'\vibracao_Ban_SpCur.mat'),'vChirpBan');
 savefig(strcat(fpathFig,'\vibracao_Ban_SpCur.fig'));
 
 
 %% -------------------------------------------------------------------
 %                         Carrega Tempo Emissões Acusticas
 
-if aSpKurload
+if aChirpload
+    f1 = 1000; f2 = 1020;
     mf = dir(faT); % Carrega todos os nomes de arquivos
     Files = sort(string({mf.name}'));
     clear mf;
                 
     teA = (((1:length(Files))-1)*Ta-t0)/3600;
     
-    acuSpKur = zeros(801,length(Files));
+    acuChirp = zeros(m,length(Files));
+
+    w = exp(-1j*2*pi*(f2-f1)/(m*FsA));
+    a = exp(1j*2*pi*f1/FsA);
     
     for k = 1:length(Files)
         disp(strcat('Progresso: ',num2str(k*100/length(Files)),'%'))
@@ -221,27 +256,30 @@ if aSpKurload
 
         data = importdata(filename);
         
-        [acuSpKur(:,k),fKurA] = pkurtosis(data,300e3);
+        acuChirp(:,k) = czt(data,m,w,a);
     end
 
+    fn = (0:m-1)'/m;
+    fChirpA = (f2-f1)*fn + f1;
+    
     clear data;
 end
 
-vZoomFigZ = surf(teA,fKurA,acuSpKur);
-ylim([fKurV(1) fKurV(end)]);
+vZoomFigZ = surf(teA,fChirpA,abs(acuChirp));
+ylim([fChirpV(1) fChirpV(end)]);
 xlim([0 teA(end)]);
 c = colorbar;
 c.Label.String = 'Amplitude [dB]';
 set(vZoomFigZ,'edgecolor','none')
 xlabel('Tempo [h]');
 ylabel('Frequência [Hz]');
-title('Curtose Espectral das Emissões Acústicas');
+title('Chirp-Z das Emissões Acústicas');
 view(2);
 colormap jet
 
-aSpKur.t = teA;
-aSpKur.f = fKurA;
-aSpKur.data = acuSpKur;
+aChirp.t = teA;
+aChirp.f = fChirpA;
+aChirp.data = acuChirp;
 
 save(strcat(fpathVar,'\acusticas_SpCur.mat'),'vSpKurBan');
 savefig(strcat(fpathFig,'\acusticas_SpCur.fig'));

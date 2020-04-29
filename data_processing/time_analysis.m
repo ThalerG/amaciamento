@@ -56,7 +56,7 @@ fvT = strcat(fvFolder,fvT);
 faFolder = strcat(fpathSource,faFolder);
 faT = strcat(faFolder,faT);
 
-data = importaDados(strcat(fpathSource,fGeral));
+data = importTestData(strcat(fpathSource,fGeral));
 
 t = data(:,colTempo)/3600; tSuc = data(:,colTSuc); tComp = data(:,colTComp);
 tInt = data(:,colTInt); tAmb = data(:,colTDes); pSuc = data(:,colPSuc); 
