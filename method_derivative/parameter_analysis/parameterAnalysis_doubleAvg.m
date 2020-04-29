@@ -74,7 +74,7 @@ for k1 = 1:length(fsm)
 end
 
 
-%% Processamento das amostras
+%% Sample processing
 
 totalIt = 0; % Number of iterations
 for k1 = 1:length(path)

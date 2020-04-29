@@ -16,6 +16,7 @@ function [n,ta] = runin_detect_lr(x,t,w,r,s,f)
 %       r = 83
 %       s = 0.05
 %       f = 0
+%       -> Squared error for samples 1-5 = 119.17
 %
 %   See also lrPValue
 

@@ -13,11 +13,12 @@ function [n,ta] = runin_detect_doubleavg(x,t,w1,w2,r,s,f)
 %   of the detected STT.
 %
 %   Recommended values for run-in detection:
-%       w1 = ?
-%       w2 = ?
-%       r = ?
-%       s = ?
-%       f = ?
+%       w1 = 30
+%       w2 = 1
+%       r = 32
+%       s = 7e-4
+%       f = 0
+%       -> Squared error for samples 1-5 = 61.99
 %
 %   See also doubleAvgDerivative
 
