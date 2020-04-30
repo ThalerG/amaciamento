@@ -104,7 +104,7 @@ for k1 = 1:length(path) % For every sample
                 flag = 0;
 
                 for a = 1:length(A) % For every significance level
-                    Rc = T(T(:,1)==l1 & T(:,2)==l23 & T(:,3)==l23 & T(:,4)==a,5);
+                    Rc = T(T(:,1)==L1(l1) & T(:,2)==L23(l23) & T(:,3)==L23(l23) & T(:,4)==A(a),5);
                     for f = 1:length(F)
                         for n = 2:length(dataF) % Counts the number of samples where the null hypothesis (H0: slope = 0) can be accepted 
                             if dataF(n)<=Rc
@@ -156,13 +156,15 @@ save([fsave,'dif.mat'],'dif','tEst','-v7.3');
 
 %% Cost function (quadratic error)
 
-J = zeros(length(L1),length(L2),length(A),length(R),length(F));
+J = zeros(length(L1),length(L23),length(A),length(R),length(F));
 
 for k1 = 1:length(dif)
     for k2 = 1:length(dif{k1})
         J = J+dif{k1}{k2}.^2;
     end
 end
+
+J(isnan(J)) = inf;
 
 save([fsave,'J.mat'],'J','tEst','-v7.3');
 

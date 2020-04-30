@@ -12,14 +12,13 @@ function [n,ta] = runin_detect_Rstats(x,t,lambda1,lambda2,lambda3,alpha,r,f)
 %   the data vector x.
 %
 %   Recommended values for run-in detection:
-%       lambda1 = ?
-%       lambda2 = ?
-%       lambda3 = ?
-%       alpha = ?
-%       r = ?
-%       s = ?
-%       f = ?
-%       -> Squared error for samples 1-5 = ?
+%       lambda1 = 0.1
+%       lambda2 = 0.2
+%       lambda3 = 0.2
+%       alpha = 0.05
+%       r = 62
+%       f = 3
+%       -> Squared error for samples 1-5 = 126.754
 %
 %   See also Rstats_ratio
 
@@ -36,7 +35,6 @@ T = load('criticalR.mat','T'); % Loads the critical R values table (T);
 T = T.T;
 
 Rc = T(T(:,1)==lambda1 & T(:,2)==lambda2 & T(:,3)==lambda3 & T(:,4)==alpha,5);
-
 clear T;
 
 for k = 1:length(pval)
