@@ -1,36 +1,46 @@
-function [n,ta] = runin_detect_Rstats(x,t,w,r,s,f)
-%  runin_detect_lr indicates the STT instant using t-test
+function [n,ta] = runin_detect_Rstats(x,t,lambda1,lambda2,lambda3,alpha,r,f)
+%  runin_detect_Rstats indicates the STT instant using R-statistics test
 %
-%   [n,ta] = runin_detect_lr(x,t,w,r,s,f): Estimates the steady state
-%   transition (STT) by executing a linear regression and t-test over 
-%   the last w samples with significance level s. The STT is 
-%   assumed when this test result persist over at least r samples, with
-%   tolerance of f samples with different result. The t input is the time
-%   vector corresponding to the data vector x.
-%
-%   The outputs n and ta are, respectively, the index and instant
-%   of the detected STT.
+%   [n,ta] = runin_detect_Rstats(x,t,lambda1,lambda2,lambda3,alpha,r,f): 
+%   Estimates the steady state transition (STT) using a R-statistics test.
+%   This test checks if the ratio R of two variances is less than a
+%   predetermined critical R value. lambda1, lamda2, and lambda3 are weight
+%   parameters for the data and variances (0<lambda<=1), and alpha is the 
+%   level of significance (0<alpha<1). The STT is assumed when this test
+%   result persist over at least r samples, with tolerance of f samples 
+%   with different result. The t input is the time vector corresponding to 
+%   the data vector x.
 %
 %   Recommended values for run-in detection:
-%       w = 60
-%       r = 83
-%       s = 0.05
-%       f = 0
-%       -> Squared error for samples 1-5 = 119.17
+%       lambda1 = ?
+%       lambda2 = ?
+%       lambda3 = ?
+%       alpha = ?
+%       r = ?
+%       s = ?
+%       f = ?
+%       -> Squared error for samples 1-5 = ?
 %
-%   See also lrPValue
+%   See also Rstats_ratio
 
 L = length(t);
 
-pval = lrPValue(x(t>0),w); % p-values for every sample
+Rstats = Rstats_ratio(x(t>0),lambda1,lambda2,lambda3); % p-values for every sample
 t = t(t>0);
 L = L-length(t); % Number of samples before the starting time t=0
 
 count = 0;
 flag = 0;
 
+T = load('criticalR.mat','T'); % Loads the critical R values table (T);
+T = T.T;
+
+Rc = T(T(:,1)==lambda1 & T(:,2)==lambda2 & T(:,3)==lambda3 & T(:,4)==alpha,5);
+
+clear T;
+
 for k = 1:length(pval)
-    if pval(k)>s % p-value greater than significance level accepts null hypothesis (slope = 0)
+    if Rstats(k)<=Rc % If R-statistic is less than R-critical, the proccess may be at steady state
         count = count+1;
     else
         if flag<f

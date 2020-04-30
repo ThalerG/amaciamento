@@ -2,7 +2,7 @@ function [n,ta] = runin_detect_lr(x,t,w,r,s,f)
 %  runin_detect_lr indicates the STT instant using t-test
 %
 %   [n,ta] = runin_detect_lr(x,t,w,r,s,f): Estimates the steady state
-%   transition (STT) by executing a linear regression and t-test over 
+%   transition (STT) by linear regression and t-test over 
 %   the last w samples with significance level s. The STT is 
 %   assumed when this test result persist over at least r samples, with
 %   tolerance of f samples with different result. The t input is the time
