@@ -5,7 +5,7 @@ clear; close all; clc;
 rt = 'D:\Documentos\Amaciamento\'; % Root folder
 fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentation for data format)
 
-% Create new folder for generated figures
+% Create new folder for generated files
 c = clock;
 fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
 mkdir(fsave); clear rt c;
@@ -129,7 +129,7 @@ for k1 = 1:length(path) % For every sample
 end
 
 save([fsave,'tAmac.mat'],'fsm','tAmac','-v7.3');
-save([fsave,'parameters.mat'],'w','r','s','f','-v7.3');
+save([fsave,'parameters.mat'],'W','R','S','F','-v7.3');
 
 clear count time fsm
 
