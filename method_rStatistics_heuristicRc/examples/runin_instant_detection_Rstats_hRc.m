@@ -1,4 +1,4 @@
-%% Run-in instant detection - R-statistics (Rc from table)
+%% Run-in instant detection - R-statistics with given Rc
 
 clear; close all; clc;
 
@@ -7,15 +7,15 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 
 % Create new folder for generated figures
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_Rstats_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Rstats_hRc_graphTest_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
 mkdir(fsave);
 
-lambda1 = 0.1;
-lambda2 = 0.2;
-lambda3 = 0.2;
-alpha = 0.05;
-r = 62;
-f = 3;
+lambda1 = 0.32;
+lambda2 = 0.1;
+lambda3 = 0.47;
+Rc = 1.65;
+r = 56;
+f = 0;
 
 sampleStart = 1; % Starting sample
 
@@ -80,7 +80,7 @@ for k1 = sampleStart:length(path)
         axes(ha(k2));
         load([path{k1}{k2} fName]);
         dataF = cRMS.data(cRMS.t>0); t = cRMS.t(cRMS.t>0);
-        [n,ta] = runin_detect_Rstats(dataF,t,lambda1,lambda2,lambda3,alpha,r,f);
+        [n,ta] = runin_detect_Rstats_hRc(dataF,t,lamda1,lambda2,lambda3,Rc,r,f);
         dataF = cRMS.data(cRMS.t>0);
         hold on; plot(t,dataF,'LineWidth',1); yl = ylim();
         line([tEst{k1}(k2),tEst{k1}(k2)],[0 10],'LineWidth',1,'color','k','LineStyle',':');
