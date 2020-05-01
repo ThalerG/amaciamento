@@ -31,7 +31,7 @@ L = L-length(t); % Number of samples before the starting time t=0
 count = 0;
 flag = 0;
 
-for k = 1:length(pval)
+for k = 1:length(Rstats)
     if Rstats(k)<=Rc % If R-statistic is less than R-critical, the proccess may be at steady state
         count = count+1;
     else

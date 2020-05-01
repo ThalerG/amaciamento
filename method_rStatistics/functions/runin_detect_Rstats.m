@@ -37,7 +37,7 @@ T = T.T;
 Rc = T(T(:,1)==lambda1 & T(:,2)==lambda2 & T(:,3)==lambda3 & T(:,4)==alpha,5);
 clear T;
 
-for k = 1:length(pval)
+for k = 1:length(Rstats)
     if Rstats(k)<=Rc % If R-statistic is less than R-critical, the proccess may be at steady state
         count = count+1;
     else
