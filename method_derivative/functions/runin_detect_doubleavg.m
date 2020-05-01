@@ -18,7 +18,7 @@ function [n,ta] = runin_detect_doubleavg(x,t,w1,w2,r,s,f)
 %       r = 32
 %       s = 7e-4
 %       f = 0
-%       -> Squared error for samples 1-5 = 61.99
+%       -> Squared error for samples 1-5 = 60.42
 %
 %   See also doubleAvgDerivative
 

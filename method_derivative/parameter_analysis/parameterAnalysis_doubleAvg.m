@@ -117,7 +117,7 @@ for k1 = 1:length(path) % For every sample
                             end
                         end
                         for r = 1:length(R)
-                            temp = min(time(count>R(r)))-R(r)/60;
+                            temp = min(time(count>R(r)));
                             if isempty(temp)
                                 tAmac{k1}{k2}(w1,w2,r:end,s,f) = NaN;
                                 break
