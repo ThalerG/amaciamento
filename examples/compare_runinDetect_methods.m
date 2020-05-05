@@ -7,7 +7,7 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 
 % Create new folder for generated figures
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\methods_graphCompare_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d')];
+fsave = [rt 'Ferramentas\Arquivos Gerados\methods_graphCompare_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave);
 
 lr_param = [15,62,0.01,0]; % Linear regression parameters: w,r,s,f
