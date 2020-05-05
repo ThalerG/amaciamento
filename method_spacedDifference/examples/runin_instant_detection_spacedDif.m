@@ -7,15 +7,15 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 
 % Create new folder for generated figures
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_graphTest_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\spacedDif_graphTest_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
 % tEst: Manually inputed estimated run-in time
 
-w1 = 30;
-w2 = 1;
-r = 32;
+w = 25;
+n = 30;
+r = 31;
 s = 7e-4;
 f = 0;
 
@@ -83,7 +83,7 @@ for k1 = amStart:length(path)
         axes(ha(k2));
         load([path{k1}{k2} fName]);
         dataF = cRMS.data(cRMS.t>0); t = cRMS.t(cRMS.t>0);
-        [n,ta] = runin_detect_doubleavg(dataF,t,w1,w2,r,s,f);
+        [n,ta] = runin_detect_spacedDif(dataF,t,w,n,r,s,f);
         dataF = cRMS.data(cRMS.t>0);
         hold on; plot(t,dataF,'LineWidth',1); yl = ylim();
         line([tEst{k1}(k2),tEst{k1}(k2)],[0 10],'LineWidth',1,'color','k','LineStyle',':');

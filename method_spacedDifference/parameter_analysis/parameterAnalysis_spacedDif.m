@@ -61,7 +61,7 @@ tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 
 R = 1:70; % Sample relevance
 W = [1,5:5:50]; % Sample window for the data filter
-N = 1:5:100; % Sample window for the difference filter
+N = [1,5:5:100]; % Space between differenced samples
 S = 1e-4:1e-4:5e-2; % Maximum tolerated difference
 F = 0:5; % Sample tolerance
 

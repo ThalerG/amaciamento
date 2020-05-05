@@ -12,12 +12,12 @@ function [n,ta] = runin_detect_spacedDif(x,t,w,n,r,s,f)
 %   of the detected SST.
 %
 %   Recommended values for run-in detection:
-%       w = ?
-%       n = ?
-%       r = ?
-%       s = ?
-%       f = ?
-%       -> Squared error for samples 1-5 = ?
+%       w = 25
+%       n = 30
+%       r = 31
+%       s = 7e-4
+%       f = 0
+%       -> Squared error for samples 1-5 = 60.16
 %
 %   See also spacedDiff
 
