@@ -12,8 +12,9 @@ mkdir(fsave);
 
 lr_param = [15,62,0.01,0]; % Linear regression parameters: w,r,s,f
 doubleAvg_param = [30,1,32,7e-4,0]; % Double average parameters: w1,w2,r,s,f
-Rstats_param = [0.1,0.2,0.2,0.05,62,3]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
+Rstats_param = [0.1,0.2,0.2,0.05,62,0]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
 RstatsRc_param = [0.32,0.1,0.47,1.65,56,0]; % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
+spacedDif_param = [25, 30, 31, 7e-4, 0]; % Spaced difference parameters: w, n, r, s, f
 
 sampleStart = 1; % Starting sample
 
@@ -46,7 +47,7 @@ fsm{4} = {'Amostra 4\N_2019-12-16\';
           'Amostra 4\A_2020-01-06\';
           'Amostra 4\A_2020-01-13\'};
       
-tEst{4} = [7;
+tEst{4} = [8;
            2;
            2;
            2];
@@ -60,11 +61,16 @@ tEst{5} = [13;
            2];      
       
 path = cell(length(fsm),1);
-
+tErr = cell(length(fsm),1);
 for k1 = 1:length(fsm)
+    tErr{k1} = cell(length(fsm{k1}),1);
     path{k1} = strcat(fpr,fsm{k1});
 end
 
+s = zeros(1,5);
+sA = zeros(1,5);
+sN = zeros(1,5);
+n = 0; nA = 0; nN = 0;
 
 %% Graphs
 
@@ -82,17 +88,30 @@ for k1 = sampleStart:length(path)
         [~,taDavg] = runin_detect_doubleavg(dataF,t,doubleAvg_param(1),doubleAvg_param(2),doubleAvg_param(3),doubleAvg_param(4),doubleAvg_param(5));
         [~,taRs] = runin_detect_Rstats(dataF,t,Rstats_param(1),Rstats_param(2),Rstats_param(3),Rstats_param(4),Rstats_param(5),Rstats_param(6));
         [~,taRsH] = runin_detect_Rstats_hRc(dataF,t,RstatsRc_param(1),RstatsRc_param(2),RstatsRc_param(3),RstatsRc_param(4),RstatsRc_param(5),RstatsRc_param(6));
+        [~,taSdif] = runin_detect_spacedDif(dataF,t,spacedDif_param(1),spacedDif_param(2),spacedDif_param(3),spacedDif_param(4),spacedDif_param(5));
         dataF = cRMS.data(cRMS.t>0);
+        tErr{k1}{k2} = ([taLr, taRs, taRsH, taDavg, taSdif] - tEst{k1}(k2)).^2;
+
+        s = s+tErr{k1}{k2};
+        if k2 == 1
+            sN = sN + tErr{k1}{k2};
+            nN = nN + 1;
+        else
+            sA = sA + tErr{k1}{k2};
+            nA = nA + 1;
+        end
+        
         hold on; plot(t,dataF,'LineWidth',1,'color','k'); yl = ylim();
-        c = lines(4);
+        c = lines(5);
         line([tEst{k1}(k2),tEst{k1}(k2)],[0 10],'LineWidth',1,'color','k','LineStyle',':');
         line([taLr,taLr],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(1,:));
         line([taRs,taRs],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(2,:));
         line([taRsH,taRsH],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(3,:));
-        line([taDavg,taDavg],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(4,:));hold off;
+        line([taDavg,taDavg],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(4,:));
+        line([taSdif,taSdif],[0 10],'LineWidth',1.5,'LineStyle','--','color',c(5,:));hold off;
         ylim(yl);
         
-        legend({'Corrente RMS','Instante sugerido','Detecção - Regressão Linear','Detecção - R-statistics (\alpha)','Detecção - R-statistics (Rc)','Detecção - Média dupla'},'location','eastoutside');
+        legend({'Corrente RMS','Instante sugerido','Detecção - Regressão Linear','Detecção - R-statistics (\alpha)','Detecção - R-statistics (Rc)','Detecção - Média dupla', 'Detecção - Diferença espaçada'},'location','eastoutside');
         xlabel('Tempo [h]'); ylabel('Corrente [A]');
         set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
         yticklabels('auto'); xticklabels('auto')
@@ -104,9 +123,14 @@ for k1 = sampleStart:length(path)
             title(['Amaciado ' num2str(k2-1)]);
         end
         hold off;
+        n=n+1;
     end
     savefig([fsave 'am' num2str(k1) 'Amac.fig']);
-    export_fig([fsave 'am' num2str(k1) 'Amac'],'-png','-transparent');
+    export_fig([fsave 'am' num2str(k1) 'Amac'],'-pdf','-transparent');
 %    close
     clear dataF cRMS
 end
+
+MSE = s/n;
+MSE_N = sN/nN;
+MSE_A = sA/nA;

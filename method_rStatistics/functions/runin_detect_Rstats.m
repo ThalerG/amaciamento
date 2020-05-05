@@ -17,14 +17,14 @@ function [n,ta] = runin_detect_Rstats(x,t,lambda1,lambda2,lambda3,alpha,r,f)
 %       lambda3 = 0.2
 %       alpha = 0.05
 %       r = 62
-%       f = 3
+%       f = 0
 %       -> Squared error for samples 1-5 = 126.754
 %
 %   See also Rstats_ratio
 
 L = length(t);
 
-Rstats = Rstats_ratio(x(t>0),lambda1,lambda2,lambda3); % p-values for every sample
+Rstats = Rstats_ratio(x(t>0),lambda1,lambda2,lambda3); % R values for every sample
 t = t(t>0);
 L = L-length(t); % Number of samples before the starting time t=0
 
@@ -37,7 +37,7 @@ T = T.T;
 Rc = T(T(:,1)==lambda1 & T(:,2)==lambda2 & T(:,3)==lambda3 & T(:,4)==alpha,5);
 clear T;
 
-for k = 1:length(Rstats)
+for k = 2:length(Rstats)
     if Rstats(k)<=Rc % If R-statistic is less than R-critical, the proccess may be at steady state
         count = count+1;
     else
@@ -49,14 +49,14 @@ for k = 1:length(Rstats)
         end
     end
     
-    if count>=r % Algorithm stops when steady state is detected
+    if count>r % Algorithm stops when steady state is detected
         n = k+L;
         ta = t(k);
         return
     end
 end
 
-if count<r % No steady state detected
+if count<=r % No steady state detected
     n = NaN;
     ta = NaN;
 end

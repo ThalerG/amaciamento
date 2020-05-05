@@ -88,7 +88,6 @@ it = 0;
 for k1 = 1:length(path) % For every sample
     for k2 = 1:length(path{k1}) % For every test of the sample
         load(path{k1}{k2}); % Loads the RMS current data
-        count = zeros(length(cRMS.data(cRMS.t>0)),1); % Counts the number of samples where the null hypothesis is valid
         time = cRMS.t(cRMS.t>0);
         
         for l1 = 1:length(L1) % For every lambda1 value
@@ -106,6 +105,7 @@ for k1 = 1:length(path) % For every sample
                 for a = 1:length(A) % For every significance level
                     Rc = T(T(:,1)==L1(l1) & T(:,2)==L23(l23) & T(:,3)==L23(l23) & T(:,4)==A(a),5);
                     for f = 1:length(F)
+                        count = zeros(length(cRMS.data(cRMS.t>0)),1); % Counts the number of samples where the null hypothesis is valid
                         for n = 2:length(dataF) % Counts the number of samples where the null hypothesis (H0: slope = 0) can be accepted 
                             if dataF(n)<=Rc
                                 count(n) = count(n-1)+1;
@@ -124,7 +124,7 @@ for k1 = 1:length(path) % For every sample
                                 tAmac{k1}{k2}(l1,l23,a,r:end,f) = NaN;
                                 break
                             else
-                                tAmac{k1}{k2}(l1,l23,a,r,a,f) = temp;
+                                tAmac{k1}{k2}(l1,l23,a,r,f) = temp;
                             end
                         end
                     end

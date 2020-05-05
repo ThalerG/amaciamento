@@ -41,14 +41,14 @@ for k = 1:length(pval)
         end
     end
     
-    if count>=r % Algorithm stops when steady state is detected
+    if count>r % Algorithm stops when steady state is detected
         n = k+L;
         ta = t(k);
         return
     end
 end
 
-if count<r % No steady state detected
+if count<=r % No steady state detected
     n = NaN;
     ta = NaN;
 end
