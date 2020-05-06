@@ -7,7 +7,7 @@ fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentati
 
 % Create new folder for generated files
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\rStatistics_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\rStatisticsHRc_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
@@ -151,7 +151,9 @@ for k1 = 1:length(dif)
     dif{k1} = cell(length(tAmac{k1}),1);
     for k2 = 1:length(tAmac{k1})
         dif{k1}{k2} = tAmac{k1}{k2}-tEst{k1}(k2);
+        tAmac{k1}{k2} = [];
     end
+    tAmac{k1} = [];
 end
 
 clear tAmac
@@ -165,8 +167,12 @@ J = zeros(length(L1),length(L2),length(L3),length(Rc),length(R),length(F));
 for k1 = 1:length(dif)
     for k2 = 1:length(dif{k1})
         J = J+dif{k1}{k2}.^2;
+        dif{k1}{k2} = [];
     end
+    dif{k1} = [];
 end
+
+clear dif;
 
 J(isnan(J)) = inf;
 

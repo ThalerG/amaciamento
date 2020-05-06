@@ -10,19 +10,19 @@ c = clock;
 fsave = [rt 'Ferramentas\Arquivos Gerados\methods_graphCompare_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave);
 
-ajuste_namac = 1;
+ajuste_namac = 0;
 
 if ajuste_namac == 0
     lr_param = [15,62,0.01,0]; % Linear regression parameters: w,r,s,f
     doubleAvg_param = [30,1,32,7e-4,0]; % Double average parameters: w1,w2,r,s,f
-    Rstats_param = [0.1,0.2,0.2,0.05,62,0]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
-    RstatsRc_param = [0.32,0.1,0.47,1.65,56,0]; % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
+    Rstats_param = [0.05,0.2,0.2,0.01,62,0]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
+    RstatsRc_param = [0.32,0.35,0.28,0.9,7,0]; % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
     spacedDif_param = [25, 30, 31, 7e-4, 0]; % Spaced difference parameters: w, n, r, s, f
 else
     lr_param = [60,87,0.05,0]; % Linear regression parameters: w,r,s,f
     doubleAvg_param = [20,1,10,3e-4,0]; % Double average parameters: w1,w2,r,s,f
-    Rstats_param = [0.05,0.5,0.5,0.5,9,0]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
-    RstatsRc_param = [0.02,0.5,0.26,1.4,18,0]; % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
+    Rstats_param = [0.2,0.5,0.5,0.5,7,0]; % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
+    RstatsRc_param = [0.02,0.5,0.26,1.45,18,0]; % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
     spacedDif_param = [35, 5, 9, 1e-4, 0]; % Spaced difference parameters: w, n, r, s, f
 end
 
