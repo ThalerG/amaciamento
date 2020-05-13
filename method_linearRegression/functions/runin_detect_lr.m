@@ -30,7 +30,7 @@ count = 0;
 flag = 0;
 
 for k = 1:length(pval)
-    if pval(k)>s % p-value greater than significance level accepts null hypothesis (slope = 0)
+    if pval(k)>=s % p-value greater than significance level accepts null hypothesis (slope = 0)
         count = count+1;
     else
         if flag<f

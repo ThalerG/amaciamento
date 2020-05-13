@@ -6,7 +6,7 @@ rt = 'D:\Documentos\Amaciamento\'; % Root folder
 fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentation for data format)
 
 % Create new folder for generated files
-c = clock;
+c = clock;1
 fsave = [rt 'Ferramentas\Arquivos Gerados\spacedDif_parameters_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 

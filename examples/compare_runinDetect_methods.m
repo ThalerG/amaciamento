@@ -10,7 +10,7 @@ c = clock;
 fsave = [rt 'Ferramentas\Arquivos Gerados\methods_graphCompare_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave);
 
-ajuste_namac = 0;
+ajuste_namac = 1;
 
 if ajuste_namac == 0
     lr_param = [15,62,0.01,0]; % Linear regression parameters: w,r,s,f
