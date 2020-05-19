@@ -19,6 +19,9 @@ Rstats_param = NaN(n_adjust,6);  % R-statistics (significance) parameters: lambd
 RstatsRc_param = NaN(n_adjust,6); % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
 spacedDif_param = NaN(n_adjust,5); % Spaced difference parameters: w, n, r, s, f
 
+mNames = {'M1','M2.1','M2.2','M3','M4'};
+aNames = {'A1','A2'};
+
 for k0 = 1:n_adjust
     switch k0
         case 1 % Minimizes sum(e²) of all samples
@@ -207,10 +210,10 @@ for k = 1:n_adjust
     hold on
 end
 xticks(1:n_methods);
-xticklabels({'M1','M2.1','M2.2','M3','M4'})
-legend({'A1','A2'},'location','best'); xlim([0.5 n_methods+0.5]);
+xticklabels(mNames)
+legend({aNames},'location','northwest'); xlim([0.5 n_methods+0.5]);
 set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
-ylabel('Corrente [A]');  expandaxes(fig); grid on;
+ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrT.fig']);
 export_fig([fsave 'AvgErrT'],'-pdf','-transparent');
 close
@@ -226,10 +229,10 @@ for k = 1:n_adjust
     hold on
 end
 xticks(1:n_methods);
-xticklabels({'M1','M2.1','M2.2','M3','M4'})
-legend({'A1','A2'},'location','best'); xlim([0.5 n_methods+0.5]);
+xticklabels(mNames)
+legend(aNames,'location','northwest'); xlim([0.5 n_methods+0.5]);
 set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
-ylabel('Corrente [A]');  expandaxes(fig); grid on;
+ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrN.fig']);
 export_fig([fsave 'AvgErrN'],'-pdf','-transparent');
 close
@@ -246,9 +249,9 @@ for k = 1:n_adjust
 end
 xticks(1:n_methods);
 xticklabels({'M1','M2.1','M2.2','M3','M4'})
-legend({'A1','A2'},'location','best'); xlim([0.5 n_methods+0.5]);
+legend({'A1','A2'},'location','northwest'); xlim([0.5 n_methods+0.5]);
 set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
-ylabel('Corrente [A]');  expandaxes(fig); grid on;
+ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrA.fig']);
 export_fig([fsave 'AvgErrA'],'-pdf','-transparent');
 close
