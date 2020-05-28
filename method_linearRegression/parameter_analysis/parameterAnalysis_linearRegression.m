@@ -59,7 +59,7 @@ path = cell(length(fsm),1); % Cell array for the data file path
 tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 
 W = 5:5:100; % Sample window for linear regression
-S = [0.05,0.01,0.1]; % Significance level
+S = [0.01:0.01:0.2]; % Significance level
 R = 5:1:100; % Sample relevance
 F = 0:10; % Sample tolerance
 
@@ -67,7 +67,7 @@ for k1 = 1:length(fsm)
     path{k1} = strcat(fpr,fsm{k1},'corrente_RMS.mat');
     tAmac{k1} = cell(length(fsm{k1}),1);
     for k2 = 1:length(fsm{k1})
-        tAmac{k1}{k2} = zeros(length(W),length(R),length(S),length(F));
+        tAmac{k1}{k2} = zeros(length(W),length(S),length(R),length(F));
     end
 end
 
@@ -116,10 +116,10 @@ for k1 = 1:length(path) % For every sample
                     for r = 1:length(R)
                         temp = min(time(count>R(r)));
                         if isempty(temp)
-                            tAmac{k1}{k2}(w,r:end,s,f) = NaN;
+                            tAmac{k1}{k2}(w,s,r:end,f) = NaN;
                             break
                         else
-                            tAmac{k1}{k2}(w,r,s,f) = temp;
+                            tAmac{k1}{k2}(w,s,r,f) = temp;
                         end
                     end
                 end
@@ -150,7 +150,7 @@ save([fsave,'dif.mat'],'dif','tEst','-v7.3');
 
 %% Cost function (quadratic error)
 
-J = zeros(length(W),length(R),length(S),length(F));
+J = zeros(length(W),length(S),length(R),length(F));
 
 for k1 = 1:length(dif)
     for k2 = 1:length(dif{k1})
@@ -160,10 +160,78 @@ end
 
 save([fsave,'J.mat'],'J','tEst','-v7.3');
 
+%% Minimum values
+
 [minval, minidx] = min(abs(J(:)));
-[m, n, o, p] = ind2sub( size(J), minidx);
-wmin = W(m)
-rmin = R(n)
-smin = S(o)
-fmin = F(p)
-J(m,n,o,p)
+[minInd(1), minInd(2), minInd(3), minInd(4)] = ind2sub( size(J), minidx);
+wmin = W(minInd(1))
+smin = S(minInd(2))
+rmin = R(minInd(3))
+fmin = F(minInd(4))
+
+cmin = min(abs(J(:)));
+cmax = max(abs(J(:)));
+
+nameVar = {'$w$','$\alpha$','$r$','$f$'};
+nvar = 4;
+param = {W,S,R,F};
+
+figure;
+sz = 700; r = 1; gap = 20; marg_h = [45 10]; marg_w = [50 50];
+ha = tightPlots(nvar, nvar, sz, [1 r], gap, marg_h, marg_w,'pixels');
+ha = reshape(ha,nvar,nvar)';
+
+debug = cell(nvar,nvar);
+
+for kx = 1:nvar
+    for ky = 1:nvar
+        axes(ha(ky,kx));
+        ind = num2cell(minInd);
+        ind{kx} = ':'; ind{ky} = ':';
+        x = param{kx}; y = param{ky}; xMin = x(minInd(kx)); yMin = y(minInd(ky));
+        
+        if kx == ky % Empty diagonal graphs
+            z = [];
+            set(gca,'Color','k','XTickMode','auto','XTickLabelMode','auto','YTickMode','auto','YTickLabelMode','auto')
+        elseif kx > ky % Invert rows and columns in case of the upper graphs
+            z = squeeze(J(ind{:}));
+            surf(x,y,z,'edgecolor','none'); view(2);
+            caxis([cmin cmax])
+            set(gca,'ColorScale','log')
+        else
+            z = squeeze(J(ind{:}))';
+            surf(x,y,z,'edgecolor','none'); view(2);
+            caxis([cmin cmax/2])
+            set(gca,'ColorScale','log')
+        end
+        
+        debug{ky,kx} = z;
+        
+        line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
+        line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
+        xlim(x([1 end])); ylim(y([1 end]));
+        if kx == 1
+            ylabel(nameVar{ky},'interpreter','latex'); % Sets label for rightmost column
+        end
+        
+        if ky == nvar
+            xlabel(nameVar{kx},'interpreter','latex'); % Sets label for lowest row
+        end
+    end
+end
+
+set(ha(:,:), 'fontname', 'Times', 'fontsize', 11,'Units','normalized');
+set(ha(1:end-1,:), 'xticklabel', '', 'xtick',[]);
+set(ha(:,2:end), 'yticklabel', '', 'ytick',[]);
+lFig = get(ha(1,1),'Position'); lFig = lFig(4); 
+gapFig = (1-lFig*nvar)/(nvar-1+(marg_h(1)+marg_h(2))/gap); % Normalized units
+topFig = marg_h(2)*gapFig/gap;
+
+cbh = colorbar(ha(3,4)); % Sets the colorbar and adjustments
+cbh.Position(3) = cbh.Position(3)*2;
+cbh.Position(1) = .96-cbh.Position(3);
+cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
+cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
+
+savefig([fsave,'custo_parametros.fig']);
+vecrast(gcf,[fsave,'custo_parametros'],800,'bottom','pdf');
