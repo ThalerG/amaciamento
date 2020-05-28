@@ -168,11 +168,79 @@ J(isnan(J)) = inf;
 
 save([fsave,'J.mat'],'J','tEst','-v7.3');
 
+%% Minimum values
+
 [minval, minidx] = min(abs(J(:)));
-[m, n, o, p, q] = ind2sub( size(J), minidx);
-l1min = L1(m)
-l23min = L23(n)
-alphamin = A(o)
-rmin = R(p)
-fmin = F(q)
-J(m,n,o,p,q)
+[minInd(1), minInd(2), minInd(3), minInd(4), minInd(5)] = ind2sub( size(J), minidx);
+l1min = L1(minInd(1))
+l23min = L23(minInd(2))
+alphamin = A(minInd(3))
+rmin = R(minInd(4))
+fmin = F(minInd(5))
+
+cmin = min(abs(J(:)))
+cmax = max(abs(J(:)));
+
+nameVar = {'$\lambda_1$','$\lambda_{2,3}$','\alpha','$r$','$f$'};
+nvar = 5;
+param = {L1,L23,A,R,F};
+
+figure;
+sz = 700; r = 1; gap = 20; marg_h = [45 10]; marg_w = [50 50];
+ha = tightPlots(nvar, nvar, sz, [1 r], gap, marg_h, marg_w,'pixels');
+ha = reshape(ha,nvar,nvar)';
+
+debug = cell(nvar,nvar);
+
+for kx = 1:nvar
+    for ky = 1:nvar
+        axes(ha(ky,kx));
+        ind = num2cell(minInd);
+        ind{kx} = ':'; ind{ky} = ':';
+        x = param{kx}; y = param{ky}; xMin = x(minInd(kx)); yMin = y(minInd(ky));
+        
+        if kx == ky % Empty diagonal graphs
+            z = [];
+            set(gca,'Color','k','XTickMode','auto','XTickLabelMode','auto','YTickMode','auto','YTickLabelMode','auto')
+        elseif kx > ky % Invert rows and columns in case of the upper graphs
+            z = squeeze(J(ind{:}));
+            surf(x,y,z,'edgecolor','none'); view(2);
+            caxis([cmin cmax])
+            set(gca,'ColorScale','log')
+        else
+            z = squeeze(J(ind{:}))';
+            surf(x,y,z,'edgecolor','none'); view(2);
+            caxis([cmin cmax/2])
+            set(gca,'ColorScale','log')
+        end
+        
+        debug{ky,kx} = z;
+        
+        line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
+        line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
+        xlim(x([1 end])); ylim(y([1 end]));
+        if kx == 1
+            ylabel(nameVar{ky},'interpreter','latex'); % Sets label for rightmost column
+        end
+        
+        if ky == nvar
+            xlabel(nameVar{kx},'interpreter','latex'); % Sets label for lowest row
+        end
+    end
+end
+
+set(ha(:,:), 'fontname', 'Times', 'fontsize', 11,'Units','normalized');
+set(ha(1:end-1,:), 'xticklabel', '', 'xtick',[]);
+set(ha(:,2:end), 'yticklabel', '', 'ytick',[]);
+lFig = get(ha(1,1),'Position'); lFig = lFig(4); 
+gapFig = (1-lFig*nvar)/(nvar-1+(marg_h(1)+marg_h(2))/gap); % Normalized units
+topFig = marg_h(2)*gapFig/gap;
+
+cbh = colorbar(ha(3,4)); % Sets the colorbar and adjustments
+cbh.Position(3) = cbh.Position(3)*2;
+cbh.Position(1) = .96-cbh.Position(3);
+cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
+cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
+
+savefig([fsave,'RStats_custo_parametros.fig']);
+vecrast(gcf,[fsave,'RStats_custo_parametros'],800,'bottom','pdf');

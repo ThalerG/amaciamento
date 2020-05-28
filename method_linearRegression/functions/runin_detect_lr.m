@@ -12,11 +12,11 @@ function [n,ta] = runin_detect_lr(x,t,w,r,s,f)
 %   of the detected STT.
 %
 %   Recommended values for run-in detection:
-%       w = 15
+%       w = 60
+%       s = 0.16
 %       r = 62
-%       s = 0.01
 %       f = 0
-%       -> Squared error for samples 1-5 = 107.52
+%       -> Squared error for samples 1-5 = 88.03
 %
 %   See also lrPValue
 

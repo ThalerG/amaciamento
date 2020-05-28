@@ -169,7 +169,7 @@ smin = S(minInd(2))
 rmin = R(minInd(3))
 fmin = F(minInd(4))
 
-cmin = min(abs(J(:)));
+cmin = min(abs(J(:)))
 cmax = max(abs(J(:)));
 
 nameVar = {'$w$','$\alpha$','$r$','$f$'};
@@ -180,8 +180,6 @@ figure;
 sz = 700; r = 1; gap = 20; marg_h = [45 10]; marg_w = [50 50];
 ha = tightPlots(nvar, nvar, sz, [1 r], gap, marg_h, marg_w,'pixels');
 ha = reshape(ha,nvar,nvar)';
-
-debug = cell(nvar,nvar);
 
 for kx = 1:nvar
     for ky = 1:nvar
@@ -204,8 +202,6 @@ for kx = 1:nvar
             caxis([cmin cmax/2])
             set(gca,'ColorScale','log')
         end
-        
-        debug{ky,kx} = z;
         
         line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
         line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);

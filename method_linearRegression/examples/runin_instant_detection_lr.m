@@ -10,9 +10,9 @@ c = clock;
 fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_graphTest_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave);
 
-w = 35;
+w = 60;
 r = 28;
-s = 0.1;
+s = 0.16;
 f = 0;
 
 sampleStart = 1; % Starting sample
