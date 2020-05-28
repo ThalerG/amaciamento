@@ -203,6 +203,8 @@ for kx = 1:nvar
             set(gca,'ColorScale','log')
         end
         
+        shading interp
+        
         line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
         line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
         xlim(x([1 end])); ylim(y([1 end]));
@@ -230,4 +232,4 @@ cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
 savefig([fsave,'custo_parametros.fig']);
-vecrast(gcf,[fsave,'custo_parametros'],800,'bottom','pdf');
+% vecrast(gcf,[fsave,'custo_parametros'],800,'bottom','pdf');

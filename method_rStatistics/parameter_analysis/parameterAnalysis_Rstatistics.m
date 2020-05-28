@@ -58,9 +58,9 @@ tEst{5} = [13;
 path = cell(length(fsm),1); % Cell array for the data file path
 tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 
-L1 = [0.5, 0.2, 0.1, 0.05, 0.02, 0.01]; % lambda1 values (Exponential average weight for data)
-L23 = [0.5, 0.2, 0.1, 0.05, 0.02, 0.01]; % lambda2 and lambda3 values (Exponential average weights for variance)
-A = [0.5, 0.25, 0.1, 0.05, 0.01]; % Significance level
+L1 = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]; % lambda1 values (Exponential average weight for data)
+L23 = [0.01, 0.02, 0.05, 0.1, 0.2, 0.5]; % lambda2 and lambda3 values (Exponential average weights for variance)
+A = [0.01 0.05 0.1 0.25 0.5]; % Significance level
 R = 1:1:100; % Sample relevance
 F = 0:10; % Sample tolerance
 
@@ -164,8 +164,6 @@ for k1 = 1:length(dif)
     end
 end
 
-J(isnan(J)) = inf;
-
 save([fsave,'J.mat'],'J','tEst','-v7.3');
 
 %% Minimum values
@@ -181,7 +179,7 @@ fmin = F(minInd(5))
 cmin = min(abs(J(:)))
 cmax = max(abs(J(:)));
 
-nameVar = {'$\lambda_1$','$\lambda_{2,3}$','\alpha','$r$','$f$'};
+nameVar = {'$\lambda_1$','$\lambda_{2,3}$','$\alpha$','$r$','$f$'};
 nvar = 5;
 param = {L1,L23,A,R,F};
 
@@ -215,10 +213,9 @@ for kx = 1:nvar
         end
         
         debug{ky,kx} = z;
-        
+        xlim(x([1 end])); ylim(y([1 end]));
         line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
         line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
-        xlim(x([1 end])); ylim(y([1 end]));
         if kx == 1
             ylabel(nameVar{ky},'interpreter','latex'); % Sets label for rightmost column
         end
