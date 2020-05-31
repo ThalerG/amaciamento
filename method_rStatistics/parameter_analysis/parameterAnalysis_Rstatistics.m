@@ -66,8 +66,9 @@ F = 0:10; % Sample tolerance
 
 for k1 = 1:length(fsm)
     path{k1} = strcat(fpr,fsm{k1},'corrente_RMS.mat');
-    tAmac{k1} = cell(length(fsm{k1}),1);
-    for k2 = 1:length(fsm{k1})
+%    tAmac{k1} = cell(length(fsm{k1}),1); % For every test (A1)
+    tAmac{k1} = cell(1,1); % For every run-in test (A2)
+    for k2 = 1:length(tAmac{k1})
         tAmac{k1}{k2} = zeros(length(L1),length(L23),length(A),length(R),length(F));
     end
 end
@@ -78,15 +79,15 @@ T = T.T;
 %% Sample processing
 
 totalIt = 0; % Number of iterations
-for k1 = 1:length(path)
-    totalIt = totalIt+length(path{k1});
+for k1 = 1:length(tAmac)
+    totalIt = totalIt+length(tAmac{k1});
 end
 totalIt = totalIt*length(L1)*length(L23);
 
 it = 0;
 
-for k1 = 1:length(path) % For every sample
-    for k2 = 1:length(path{k1}) % For every test of the sample
+for k1 = 1:length(tAmac) % For every sample
+    for k2 = 1:length(tAmac{k1}) % For every test of the sample 
         load(path{k1}{k2}); % Loads the RMS current data
         time = cRMS.t(cRMS.t>0);
         
@@ -147,6 +148,7 @@ for k1 = 1:length(dif)
     dif{k1} = cell(length(tAmac{k1}),1);
     for k2 = 1:length(tAmac{k1})
         dif{k1}{k2} = tAmac{k1}{k2}-tEst{k1}(k2);
+        tAmac{k1}{k2} = []; % Frees some space in memory
     end
 end
 
@@ -188,7 +190,6 @@ sz = 700; r = 1; gap = 20; marg_h = [45 10]; marg_w = [50 50];
 ha = tightPlots(nvar, nvar, sz, [1 r], gap, marg_h, marg_w,'pixels');
 ha = reshape(ha,nvar,nvar)';
 
-debug = cell(nvar,nvar);
 
 for kx = 1:nvar
     for ky = 1:nvar
@@ -212,10 +213,11 @@ for kx = 1:nvar
             set(gca,'ColorScale','log')
         end
         
-        debug{ky,kx} = z;
         xlim(x([1 end])); ylim(y([1 end]));
         line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
         line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
+        grid on;
+        
         if kx == 1
             ylabel(nameVar{ky},'interpreter','latex'); % Sets label for rightmost column
         end

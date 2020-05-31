@@ -12,13 +12,13 @@ function [n,ta] = runin_detect_Rstats_hRc(x,t,lambda1,lambda2,lambda3,Rc,r,f)
 %   the data vector x.
 %
 %   Recommended values for run-in detection:
-%       lambda1 = 0.32
-%       lambda2 = 0.35
-%       lambda3 = 0.28
-%       Rc = 0.9
-%       r = 7
+%       lambda1 = 0.06
+%       lambda2 = 0.75
+%       lambda3 = 0.21
+%       Rc = 1.35
+%       r = 11
 %       f = 0
-%       -> Squared error for samples 1-5 = 83.52
+%       -> Squared error for samples 1-5 = 43.59
 %
 %   See also Rstats_ratio
 

@@ -1,11 +1,11 @@
-function [n,ta] = runin_detect_doubleavg(x,t,w1,w2,r,s,f)
+function [n,ta] = runin_detect_doubleavg(x,t,w1,w2,d_f_lim,r,f)
 %  runin_detect_singleavg indicates the STT using a filtered derivative test
 %
-%   [n,ta] = runin_detect_singleavg(x,t,w,r,s,f): Estimates the steady
+%   [n,ta] = runin_detect_singleavg(x,t,w,d_f_lim,r,f): Estimates the steady
 %   state transition (STT) by executing a difference test over the x data, 
 %   with moving average filter applied both to the x data and difference 
 %   (w1 and w2 window length, respectively). The STT is assumed 
-%   when the filtered difference is smaller than s for at least r samples, 
+%   when the filtered difference is smaller than d_f_lim for at least r samples, 
 %   with tolerance of f samples with different result. The t input is the 
 %   time vector  corresponding to the data vector x.
 %
@@ -16,7 +16,7 @@ function [n,ta] = runin_detect_doubleavg(x,t,w1,w2,r,s,f)
 %       w1 = 30
 %       w2 = 1
 %       r = 32
-%       s = 7e-4
+%       d_f_lim = 7e-4
 %       f = 0
 %       -> Squared error for samples 1-5 = 60.42
 %
@@ -32,7 +32,7 @@ count = 0;
 flag = 0;
 
 for k = 1:length(der)
-    if abs(der(k))<s
+    if abs(der(k))<d_f_lim
         count = count+1;
     else
         if flag<f

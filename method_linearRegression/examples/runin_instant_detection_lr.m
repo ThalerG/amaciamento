@@ -11,8 +11,8 @@ fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_graphTest_' num2str(c(1)
 mkdir(fsave);
 
 w = 60;
+alpha = 0.16;
 r = 28;
-s = 0.16;
 f = 0;
 
 sampleStart = 1; % Starting sample
@@ -78,7 +78,7 @@ for k1 = sampleStart:length(path)
         axes(ha(k2));
         load([path{k1}{k2} fName]);
         dataF = cRMS.data(cRMS.t>0); t = cRMS.t(cRMS.t>0);
-        [n,ta] = runin_detect_lr(dataF,t,w,r,s,f);
+        [n,ta] = runin_detect_lr(dataF,t,w,alpha,r,f);
         dataF = cRMS.data(cRMS.t>0);
         hold on; plot(t,dataF,'LineWidth',1); yl = ylim();
         line([tEst{k1}(k2),tEst{k1}(k2)],[0 10],'LineWidth',1,'color','k','LineStyle',':');

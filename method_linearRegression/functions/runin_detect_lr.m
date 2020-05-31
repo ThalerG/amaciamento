@@ -1,9 +1,9 @@
-function [n,ta] = runin_detect_lr(x,t,w,r,s,f)
+function [n,ta] = runin_detect_lr(x,t,w,alpha,r,f)
 %  runin_detect_lr indicates the STT instant using t-test
 %
 %   [n,ta] = runin_detect_lr(x,t,w,r,s,f): Estimates the steady state
 %   transition (STT) by linear regression and t-test over 
-%   the last w samples with significance level s. The STT is 
+%   the last w samples with significance level alpha. The STT is 
 %   assumed when this test result persist over at least r samples, with
 %   tolerance of f samples with different result. The t input is the time
 %   vector corresponding to the data vector x.
@@ -13,7 +13,7 @@ function [n,ta] = runin_detect_lr(x,t,w,r,s,f)
 %
 %   Recommended values for run-in detection:
 %       w = 60
-%       s = 0.16
+%       alpha = 0.16
 %       r = 62
 %       f = 0
 %       -> Squared error for samples 1-5 = 88.03
@@ -30,7 +30,7 @@ count = 0;
 flag = 0;
 
 for k = 1:length(pval)
-    if pval(k)>=s % p-value greater than significance level accepts null hypothesis (slope = 0)
+    if pval(k)>=alpha % p-value greater than significance level accepts null hypothesis (slope = 0)
         count = count+1;
     else
         if flag<f

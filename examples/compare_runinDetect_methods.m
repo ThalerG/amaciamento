@@ -13,11 +13,11 @@ mkdir(fsave);
 n_methods = 5; % Number of tested methods
 n_adjust = 2; % Number of different adjustments
 
-lr_param = NaN(n_adjust,4); % Linear regression parameters: w,r,s,f
-doubleAvg_param = NaN(n_adjust,5); % Double average parameters: w1,w2,r,s,f
+lr_param = NaN(n_adjust,4); % Linear regression parameters: w,r,alpha,f
+doubleAvg_param = NaN(n_adjust,5); % Double average parameters: w1,w2,d_f_lim,r,f
 Rstats_param = NaN(n_adjust,6);  % R-statistics (significance) parameters: lambda1,lambda2,lambda3,alpha,r,f
 RstatsRc_param = NaN(n_adjust,6); % R-statistics (Rc) parameters: lambda1,lambda2,lambda3,Rc,r,f
-spacedDif_param = NaN(n_adjust,5); % Spaced difference parameters: w, n, r, s, f
+spacedDif_param = NaN(n_adjust,5); % Spaced difference parameters: w, n, d_lim, r, f
 
 mNames = {'M1','M2.1','M2.2','M3','M4'};
 aNames = {'A1','A2'};
@@ -25,19 +25,18 @@ aNames = {'A1','A2'};
 for k0 = 1:n_adjust
     switch k0
         case 1 % Minimizes sum(e²) of all samples
-            lr_param(k0,:) = [15,62,0.01,0]; 
-            doubleAvg_param(k0,:) = [30,1,32,7e-4,0]; 
+            lr_param(k0,:) = [60,0.16,28,0]; 
+            doubleAvg_param(k0,:) = [30,1,7e-4,32,0]; 
             Rstats_param(k0,:) = [0.05,0.2,0.2,0.01,62,0];
-            RstatsRc_param(k0,:) = [0.32,0.35,0.28,0.9,7,0]; 
-            spacedDif_param(k0,:) = [25, 30, 31, 7e-4, 0]; 
+            RstatsRc_param(k0,:) = [0.06,0.75,0.21,1.35,11,0]; 
+            spacedDif_param(k0,:) = [25, 30, 7e-4, 31, 0]; 
             
         case 2 % Minimizes sum(e²) only of not run-in samples
-            lr_param(k0,:) = [60,87,0.05,0]; 
-            doubleAvg_param(k0,:) = [20,1,10,3e-4,0];
+            lr_param(k0,:) = [95,0.16,46,0]; 
+            doubleAvg_param(k0,:) = [20,1,3e-4,10,0];
             Rstats_param(k0,:) = [0.2,0.5,0.5,0.5,7,0];
-            RstatsRc_param(k0,:) = [0.02,0.5,0.26,1.45,18,0];
-            spacedDif_param(k0,:) = [35, 5, 9, 1e-4, 0];
-            
+            RstatsRc_param(k0,:) = [0.02,0.75,0.28,1.9,18,0];
+            spacedDif_param(k0,:) = [35, 5, 1e-4, 9, 0];
     end
 end
 

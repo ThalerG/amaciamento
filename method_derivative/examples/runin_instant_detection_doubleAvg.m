@@ -16,7 +16,7 @@ mkdir(fsave); clear rt c;
 w1 = 30;
 w2 = 1;
 r = 32;
-s = 7e-4;
+d_f_lim = 7e-4;
 f = 0;
 
 amStart = 1;
@@ -83,7 +83,7 @@ for k1 = amStart:length(path)
         axes(ha(k2));
         load([path{k1}{k2} fName]);
         dataF = cRMS.data(cRMS.t>0); t = cRMS.t(cRMS.t>0);
-        [n,ta] = runin_detect_doubleavg(dataF,t,w1,w2,r,s,f);
+        [n,ta] = runin_detect_doubleavg(dataF,t,w1,w2,d_f_lim,r,f);
         dataF = cRMS.data(cRMS.t>0);
         hold on; plot(t,dataF,'LineWidth',1); yl = ylim();
         line([tEst{k1}(k2),tEst{k1}(k2)],[0 10],'LineWidth',1,'color','k','LineStyle',':');

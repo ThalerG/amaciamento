@@ -59,15 +59,16 @@ path = cell(length(fsm),1); % Cell array for the data file path
 tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 
 W = 5:5:100; % Sample window for linear regression
-S = [0.01:0.01:0.2]; % Significance level
+ALPHA = [0.01:0.01:0.2]; % Significance level
 R = 5:1:100; % Sample relevance
 F = 0:10; % Sample tolerance
 
 for k1 = 1:length(fsm)
     path{k1} = strcat(fpr,fsm{k1},'corrente_RMS.mat');
-    tAmac{k1} = cell(length(fsm{k1}),1);
-    for k2 = 1:length(fsm{k1})
-        tAmac{k1}{k2} = zeros(length(W),length(S),length(R),length(F));
+    tAmac{k1} = cell(length(fsm{k1}),1); % For every test (A1)
+%    tAmac{k1} = cell(1,1); % For every run-in test (A2)
+    for k2 = 1:length(tAmac{k1})
+        tAmac{k1}{k2} = zeros(length(W),length(ALPHA),length(R),length(F));
     end
 end
 
@@ -75,15 +76,15 @@ end
 %% Sample processing
 
 totalIt = 0; % Number of iterations
-for k1 = 1:length(path)
-    totalIt = totalIt+length(path{k1});
+for k1 = 1:length(tAmac)
+    totalIt = totalIt+length(tAmac{k1});
 end
 totalIt = totalIt*length(W);
 
 it = 0;
 
-for k1 = 1:length(path) % For every sample
-    for k2 = 1:length(path{k1}) % For every test of the sample
+for k1 = 1:length(tAmac) % For every sample
+    for k2 = 1:length(tAmac{k1})
         load(path{k1}{k2}); % Loads the RMS current data
         count = zeros(length(cRMS.data(cRMS.t>0)),1); % Counts the number of samples where the null hypothesis is valid
         time = cRMS.t(cRMS.t>0);
@@ -98,11 +99,11 @@ for k1 = 1:length(path) % For every sample
             
             flag = 0;
             
-            for s = 1:length(S) % For every significance level
+            for alpha = 1:length(ALPHA) % For every significance level
                     
                 for f = 1:length(F)
                     for n = 2:length(dataF) % Counts the number of samples where the null hypothesis (H0: slope = 0) can be accepted 
-                        if dataF(n)>S(s)
+                        if dataF(n)>ALPHA(alpha)
                             count(n) = count(n-1)+1;
                         else
                             if flag<F(f)
@@ -116,10 +117,10 @@ for k1 = 1:length(path) % For every sample
                     for r = 1:length(R)
                         temp = min(time(count>R(r)));
                         if isempty(temp)
-                            tAmac{k1}{k2}(w,s,r:end,f) = NaN;
+                            tAmac{k1}{k2}(w,alpha,r:end,f) = NaN;
                             break
                         else
-                            tAmac{k1}{k2}(w,s,r,f) = temp;
+                            tAmac{k1}{k2}(w,alpha,r,f) = temp;
                         end
                     end
                 end
@@ -129,7 +130,7 @@ for k1 = 1:length(path) % For every sample
 end
 
 save([fsave,'tAmac.mat'],'fsm','tAmac','-v7.3');
-save([fsave,'parameters.mat'],'W','R','S','F','-v7.3');
+save([fsave,'parameters.mat'],'W','R','ALPHA','F','-v7.3');
 
 clear count time fsm
 
@@ -141,6 +142,7 @@ for k1 = 1:length(dif)
     dif{k1} = cell(length(tAmac{k1}),1);
     for k2 = 1:length(tAmac{k1})
         dif{k1}{k2} = tAmac{k1}{k2}-tEst{k1}(k2);
+        tAmac{k1}{k2} = []; % Frees some space in memory
     end
 end
 
@@ -150,7 +152,7 @@ save([fsave,'dif.mat'],'dif','tEst','-v7.3');
 
 %% Cost function (quadratic error)
 
-J = zeros(length(W),length(S),length(R),length(F));
+J = zeros(length(W),length(ALPHA),length(R),length(F));
 
 for k1 = 1:length(dif)
     for k2 = 1:length(dif{k1})
@@ -165,7 +167,7 @@ save([fsave,'J.mat'],'J','tEst','-v7.3');
 [minval, minidx] = min(abs(J(:)));
 [minInd(1), minInd(2), minInd(3), minInd(4)] = ind2sub( size(J), minidx);
 wmin = W(minInd(1))
-smin = S(minInd(2))
+alphamin = ALPHA(minInd(2))
 rmin = R(minInd(3))
 fmin = F(minInd(4))
 
@@ -174,7 +176,7 @@ cmax = max(abs(J(:)));
 
 nameVar = {'$w$','$\alpha$','$r$','$f$'};
 nvar = 4;
-param = {W,S,R,F};
+param = {W,ALPHA,R,F};
 
 figure;
 sz = 700; r = 1; gap = 20; marg_h = [45 10]; marg_w = [50 50];
@@ -201,9 +203,7 @@ for kx = 1:nvar
             surf(x,y,z,'edgecolor','none'); view(2);
             caxis([cmin cmax/2])
             set(gca,'ColorScale','log')
-        end
-        
-        shading interp
+        end        
         
         line(x([1 end]),[yMin yMin],[cmax cmax],'color','r','LineWidth',1); % Lines at global minima
         line([xMin xMin],y([1 end]),[cmax cmax],'color','r','LineWidth',1);
@@ -231,5 +231,5 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave,'custo_parametros.fig']);
-% vecrast(gcf,[fsave,'custo_parametros'],800,'bottom','pdf');
+savefig([fsave,'lr_custo_parametros.fig']);
+vecrast(gcf,[fsave,'lr_custo_parametros'],800,'bottom','pdf');
