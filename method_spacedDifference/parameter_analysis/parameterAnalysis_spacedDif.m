@@ -67,8 +67,8 @@ F = 0:5; % Sample tolerance
 
 for k1 = 1:length(fsm)
     path{k1} = strcat(fpr,fsm{k1},'corrente_RMS.mat');
-%    tAmac{k1} = cell(length(fsm{k1}),1); % For every test (A1)
-    tAmac{k1} = cell(1,1); % For every run-in test (A2)
+    tAmac{k1} = cell(length(fsm{k1}),1); % For every test (A1)
+%    tAmac{k1} = cell(1,1); % For every run-in test (A2)
     for k2 = 1:length(tAmac{k1})
         tAmac{k1}{k2} = zeros(length(W),length(N),length(S),length(R),length(F));
     end
@@ -208,7 +208,7 @@ for kx = 1:nvar
         else
             z = squeeze(J(ind{:}))';
             surf(x,y,z,'edgecolor','none'); view(2);
-            caxis([cmin cmax/2])
+            caxis([cmin cmax])
             set(gca,'ColorScale','log')
         end
         

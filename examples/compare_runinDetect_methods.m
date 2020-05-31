@@ -210,7 +210,7 @@ for k = 1:n_adjust
 end
 xticks(1:n_methods);
 xticklabels(mNames)
-legend({aNames},'location','northwest'); xlim([0.5 n_methods+0.5]);
+legend(aNames,'location','northwest'); xlim([0.5 n_methods+0.5]);
 set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
 ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrT.fig']);
@@ -247,8 +247,8 @@ for k = 1:n_adjust
     hold on
 end
 xticks(1:n_methods);
-xticklabels({'M1','M2.1','M2.2','M3','M4'})
-legend({'A1','A2'},'location','northwest'); xlim([0.5 n_methods+0.5]);
+xticklabels(mNames)
+legend(aNames,'location','northwest'); xlim([0.5 n_methods+0.5]);
 set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
 ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrA.fig']);

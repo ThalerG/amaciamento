@@ -201,7 +201,7 @@ for kx = 1:nvar
         else
             z = squeeze(J(ind{:}))';
             surf(x,y,z,'edgecolor','none'); view(2);
-            caxis([cmin cmax/2])
+            caxis([cmin cmax])
             set(gca,'ColorScale','log')
         end        
         
