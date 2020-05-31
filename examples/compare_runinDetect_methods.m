@@ -167,6 +167,10 @@ SumErrT = NaN(n_methods,n_adjust);
 SumErrN = NaN(n_methods,n_adjust);
 SumErrA = NaN(n_methods,n_adjust);
 
+Sum2ErrT = NaN(n_methods,n_adjust);
+Sum2ErrN = NaN(n_methods,n_adjust);
+Sum2ErrA = NaN(n_methods,n_adjust);
+
 AvgErrT = NaN(n_methods,n_adjust);
 AvgErrN = NaN(n_methods,n_adjust);
 AvgErrA = NaN(n_methods,n_adjust);
@@ -187,6 +191,10 @@ for k0 = 1:n_adjust
         SumErrT(k,k0) = sum(abs(ErrT{k,k0}));
         SumErrN(k,k0) = sum(abs(ErrN{k,k0}));
         SumErrA(k,k0) = sum(abs(ErrA{k,k0}));
+        
+        Sum2ErrT(k,k0) = sum(ErrT{k,k0}.^2);
+        Sum2ErrN(k,k0) = sum(ErrN{k,k0}.^2);
+        Sum2ErrA(k,k0) = sum(ErrA{k,k0}.^2);
         
         AvgErrT(k,k0) = mean(ErrT{k,k0});
         AvgErrN(k,k0) = mean(ErrN{k,k0});
@@ -253,4 +261,18 @@ set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
 ylabel('Erro [h]');  expandaxes(fig); grid on;
 savefig([fsave 'AvgErrA.fig']);
 export_fig([fsave 'AvgErrA'],'-pdf','-transparent');
+close
+
+% Sum of errors
+SumStack(:,:,1) = Sum2ErrN;
+SumStack(:,:,2) = Sum2ErrA;
+h = plotBarStackGroups(SumStack,mNames);
+fig = gcf;
+fig.Position = 1e3*[0.4110    0.3786    1.1000    2*0.225108910891089];
+set(h(:,1),'FaceColor', [0    0.4470    0.7410]); set(h(:,2),'FaceColor', [0.8500    0.3250    0.0980]);
+legend({'Não amaciado','Amaciado'},'location','northwest');
+set(gca,'FontSize',14); set(gca,'FontName','Times New Roman');
+ylabel('Soma do erro quadrático [h^2]'); expandaxes(fig); grid on;
+savefig([fsave 'sumError.fig']);
+export_fig([fsave 'sumError'],'-pdf','-transparent');
 close
