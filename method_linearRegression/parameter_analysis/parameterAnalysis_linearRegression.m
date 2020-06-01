@@ -59,7 +59,7 @@ path = cell(length(fsm),1); % Cell array for the data file path
 tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 
 W = 5:5:100; % Sample window for linear regression
-ALPHA = [0.01:0.01:0.2]; % Significance level
+ALPHA = 0.01:0.01:0.2; % Significance level
 R = 5:1:100; % Sample relevance
 F = 0:10; % Sample tolerance
 

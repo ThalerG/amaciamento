@@ -175,6 +175,10 @@ AvgErrT = NaN(n_methods,n_adjust);
 AvgErrN = NaN(n_methods,n_adjust);
 AvgErrA = NaN(n_methods,n_adjust);
 
+MAET = NaN(n_methods,n_adjust);
+MAEN = NaN(n_methods,n_adjust);
+MAEA = NaN(n_methods,n_adjust);
+
 StdErrT = NaN(n_methods,n_adjust);
 StdErrN = NaN(n_methods,n_adjust);
 StdErrA = NaN(n_methods,n_adjust);
@@ -191,7 +195,7 @@ for k0 = 1:n_adjust
         SumErrT(k,k0) = sum(abs(ErrT{k,k0}));
         SumErrN(k,k0) = sum(abs(ErrN{k,k0}));
         SumErrA(k,k0) = sum(abs(ErrA{k,k0}));
-        
+       
         Sum2ErrT(k,k0) = sum(ErrT{k,k0}.^2);
         Sum2ErrN(k,k0) = sum(ErrN{k,k0}.^2);
         Sum2ErrA(k,k0) = sum(ErrA{k,k0}.^2);
@@ -199,6 +203,10 @@ for k0 = 1:n_adjust
         AvgErrT(k,k0) = mean(ErrT{k,k0});
         AvgErrN(k,k0) = mean(ErrN{k,k0});
         AvgErrA(k,k0) = mean(ErrA{k,k0});
+        
+        MAET(k,k0) = mean(abs(ErrT{k,k0}));
+        MAEN(k,k0) = mean(abs(ErrN{k,k0}));
+        MAEA(k,k0) = mean(abs(ErrA{k,k0}));
         
         StdErrT(k,k0) = std(ErrT{k,k0});
         StdErrN(k,k0) = std(ErrN{k,k0});
