@@ -10,13 +10,14 @@ clear; close all; clc;
 cRload = 1; cKload = 1;
 vRload = 1; vKload = 1;
 aRload = 1; aKload = 1;
-pressload = 1; tempload = 1; posload = 1; vazload = 1;
+pressload = 1; tempload = 1; posload = 1; vazload = 1; 
+usucload = 1; % Apenas para versões mais novas, que salvam uSuc
 
-fpathFinal = '\Amostra 5\N_2020-01-22';
+fpathFinal = '\Amostra 2B\N_2020_07_02';
 
-fpathSource = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Dados Preparados';
-fpathVar = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Dados Processados';
-fpathFig = 'C:\Users\G. Thaler\Documents\Projeto Amaciamento\Imagens';
+fpathSource = 'D:\Documentos\Amaciamento\Dados Preparados';
+fpathVar = 'D:\Documentos\Amaciamento\Dados Processados';
+fpathFig = 'D:\Documentos\Amaciamento\Imagens';
 
 fpathSource = strcat(fpathSource,fpathFinal);
 fpathVar = strcat(fpathVar,fpathFinal);
@@ -40,8 +41,9 @@ Ta = 600; % Tempo entre medições de emissões acústicas
 % Colunas da Medição Geral
 
 colTempo = 1; colTSuc = 2; colTComp = 3; colTInt = 4; colTDes = 5; 
-% colPSuc = 6; colPDes = 7; colPInt = 8; colPosSP = 9; colPos = 10; coluSuc = 12; colCompAtivo = 14; colVazao = 18;
-colPSuc = 6; colPDes = 7; colPInt = 8; colPosSP = 9; colPos = 10; colCompAtivo = 12; colVazao = 16;
+colPSuc = 6; colPDes = 7; colPInt = 8; colPosSP = 9; colPos = 10; 
+coluSuc = 12; colCompAtivo = 14; colVazao = 18;
+% colCompAtivo = 12; colVazao = 16; % Versões antigas não salvavam tensão da válvula 
 
 
 % -------------------------------------------------------------------------
@@ -62,6 +64,7 @@ t = data(:,colTempo)/3600; tSuc = data(:,colTSuc); tComp = data(:,colTComp);
 tInt = data(:,colTInt); tAmb = data(:,colTDes); pSuc = data(:,colPSuc); 
 pDes = data(:,colPDes); pInt = data(:,colPInt); posSP = data(:,colPosSP); pos = data(:,colPos);
 compAtivo = data(:,colCompAtivo); vazao = data(:,colVazao);
+uSuc = data(:,coluSuc); % Quando disponível
 
 clear data;
 
@@ -180,7 +183,7 @@ clear colCompAtivo colPDes colPos colPosSP colPSuc colTComp colTDes...
 if pressload
     fig = figure;
     fig.Position = [fig.Position(1:2)-[0,500],900,600];
-    subplot(2,1,1)
+    subplot(3,1,1)
     plot(tempo, pDes)
     hold on;
     plot(tempo, ones(1,length(tempo))*14.7,'LineWidth',2);
@@ -189,23 +192,35 @@ if pressload
     xlim([0 tempo(end)])
     legend({'Pressão de descarga','Setpoint'},'Location','best')
 
-    subplot(2,1,2)
-    plot(tempo, pSuc)
+    
+    subplot(3,1,1)
+    plot(tempo, pDes)
     hold on;
-    plot(tempo, ones(1,length(tempo))*1.148,'LineWidth',2);
+    plot(tempo, ones(1,length(tempo))*14.7,'LineWidth',2);
     hold off;
     ylabel('Pressão [bar]'), xlabel('Tempo [h]')
     xlim([0 tempo(end)])
-    legend({'Pressão de sucção','Setpoint'},'Location','best')
+    legend({'Pressão de descarga','Setpoint'},'Location','best')
+    
+    subplot(3,1,2)
+    plot(tempo, pInt)
+    hold off;
+    ylabel('Pressão [bar]'), xlabel('Tempo [h]')
+    xlim([0 tempo(end)])
+    legend({'Pressão intermediária'},'Location','best')
 
     pD.data = pDes;
     pD.t = tempo;
+    
+    pI.data = pInt;
+    pI.t = tempo;
     
     pS.data = pSuc;
     pS.t = tempo;
     
     save(strcat(fpathVar,'\pressao_Descarga.mat'),'pD');
     save(strcat(fpathVar,'\pressao_Succao.mat'),'pS');
+    save(strcat(fpathVar,'\pressao_Intermediaria.mat'),'pS');
     
     savefig(strcat(fpathFig,'\pressao_DescargaSuccao.fig'));
     close all;
@@ -292,6 +307,25 @@ if posload
     save(strcat(fpathVar,'\posicaoSP.mat'),'posicaoSP');
 
     savefig(strcat(fpathFig,'\posicao.fig'));
+    close all;
+end
+
+% Tensão da válvula de sucção
+
+if usucload
+    fig = figure;
+    fig.Position = [fig.Position(1:2),900,300];
+    plot(tempo, uSuc)
+
+    ylabel('Tensão [V]'), xlabel('Tempo [h]')
+    xlim([0 tempo(end)])
+
+    tensaoSuc.data = uSuc;
+    tensaoSuc.t = tempo;
+
+    save(strcat(fpathVar,'\tensaoSuc.mat'),'tensaoSuc');
+
+    savefig(strcat(fpathFig,'\tensaoSuc.fig'));
     close all;
 end
 
