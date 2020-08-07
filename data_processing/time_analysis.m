@@ -7,11 +7,11 @@ clear; close all; clc;
 
 % Parâmetros
 
-cRload = 1; cKload = 1;
-vRload = 1; vKload = 1;
-aRload = 1; aKload = 1;
-pressload = 1; tempload = 1; posload = 1; vazload = 1; 
-usucload = 1; % Apenas para versões mais novas, que salvam uSuc
+cRload = 1; cKload = 0;
+vRload = 0; vKload = 0;
+aRload = 0; aKload = 0;
+pressload = 0; tempload = 0; posload = 0; vazload = 0; 
+usucload = 0; % Apenas para versões mais novas, que salvam uSuc
 
 fpathFinal = '\Amostra 2B\N_2020_07_02';
 

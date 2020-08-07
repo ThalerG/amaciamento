@@ -44,7 +44,7 @@ sampleStart = 1; % Starting sample
 
 fsm{1} = {'Amostra 1\N_2019-07-01\'};
 
-tEst{1} = 7;
+tEst{1} = 4;
 
 fsm{2} = {'Amostra 2\N_2019-07-09\';
           'Amostra 2\A_2019-08-08\';
@@ -55,8 +55,7 @@ tEst{2} = [7;
            2;
            2;
            2];
-      
-       
+
 fsm{3} = {'Amostra 3\N_2019-12-04\';
           'Amostra 3\A_2019-12-09\';
           'Amostra 3\A_2019-12-11\'};
@@ -71,7 +70,7 @@ fsm{4} = {'Amostra 4\N_2019-12-16\';
           'Amostra 4\A_2020-01-06\';
           'Amostra 4\A_2020-01-13\'};
       
-tEst{4} = [8;
+tEst{4} = [5.5;
            2;
            2;
            2];
@@ -80,10 +79,10 @@ fsm{5} = {'Amostra 5\N_2020-01-22\';
           'Amostra 5\A_2020-01-27\';
           'Amostra 5\A_2020-01-28\'};
 
-tEst{5} = [13;
+tEst{5} = [12.5;
            2;
            2];      
-      
+
 path = cell(length(fsm),1);
 Err = cell(n_methods,n_adjust,length(fsm));
 
