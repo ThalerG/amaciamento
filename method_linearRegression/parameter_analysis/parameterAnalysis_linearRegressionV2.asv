@@ -50,7 +50,7 @@ tAmac = cell(length(fsm),1); % Cell array for the run-in instant
 N = 5:5:100; % Sample window for linear regression
 D = 5:5:100; % Sample window for linear regression
 M = [1,5:5:120]; % Moving average filter window
-ALPHA = 0:0.01:1; % Significance level
+ALPHA = 0:0.001:1; % Significance level
 
 lenN = length(N);
 lenM = length(M);
@@ -109,7 +109,8 @@ parfor n = 1:lenN
     end
 end
 
-save([fsave,'Results.mat'],'Res','ALPHA','maxTPR','N','M','D','maxInd','tEst','EnData','conjVal');
+save([fsave'method_logisticRegression\Results.mat','Res','thr','thrTPR','maxTPR','N','M','D','maxInd','tEst','EnData','conjVal')
+save([fsave,'parameters.mat'],'W','R','ALPHA','F','-v7.3');
 
 clear count time fsm
 

@@ -90,6 +90,7 @@ for n = 1:lenN
 
             Res(n,m,d).TPR = nan(1,length(thr));
             Res(n,m,d).FPR = nan(1,length(thr));
+            
             for k = 1:length(thr)
                 gtest = prob>=thr(k);
                 cMat = confusionmat(classAmac,gtest);
