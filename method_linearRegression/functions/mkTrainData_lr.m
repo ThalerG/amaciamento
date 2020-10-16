@@ -1,4 +1,4 @@
-function [input,output] = mkTrainData_lr(dataInit, tInit, N, M, D, tEst, minT)
+function [data,t] = mkTrainData_lr(dataInit, tInit, N, M, D, tEst, minT)
 
 t = tInit(tInit>0);
 dataInit = dataInit(tInit>0);
@@ -23,7 +23,3 @@ end
 data = data(1:length(t),:);
 
 end
-
-
-end
-
