@@ -35,14 +35,21 @@ fpathCell = {% '\Amostra A1\N_2019_07_01';
 %              '\Amostra B2\A_2020_08_17';
 %              '\Amostra B2\A_2020_08_28';
 %              '\Amostra B2\A_2020_09_02';
-             '\Amostra B2\A_2020_09_08';
-             '\Amostra B2\A_2020_09_09';
-             '\Amostra B2\N_2020_07_02'};
+%              '\Amostra B2\A_2020_09_08';
+%              '\Amostra B2\A_2020_09_09';
+%              '\Amostra B2\N_2020_07_02';
+             '\Amostra B3\A_2020_09_22';
+             '\Amostra B3\A_2020_09_24';
+             '\Amostra B3\N_2020_09_11';
+             '\Amostra B4\A_2020_10_02';
+             '\Amostra B4\A_2020_10_06';
+             '\Amostra B4\N_2020_09_30';
+             };
 
 
-fpathSourceInit = 'D:\Documentos\Amaciamento\EnsaiosBCKP\Dados Preparados';
-fpathVarInit = 'D:\Documentos\Amaciamento\EnsaiosBCKP\Dados Processados';
-fpathFigInit = 'D:\Documentos\Amaciamento\EnsaiosBCKP\Imagens';
+fpathSourceInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Preparados';
+fpathVarInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Processados';
+fpathFigInit = 'D:\Documentos\Amaciamento\Ensaios\Imagens';
 
 
 

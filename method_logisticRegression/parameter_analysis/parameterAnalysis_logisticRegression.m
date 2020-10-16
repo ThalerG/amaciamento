@@ -35,14 +35,16 @@ end
 N = 1:60; % Janela (número de amostras) da regressão
 M = [1,5:5:90]; % Janela da média móvel
 D = 1:60; % Distância entre amostras da regressão
-extra = 0; % Valor adicionado ao tempo de amaciamento para deixar mais conservador
+extra = 0; % Valor adicionado ao tempo de amaciamento para deixar mais conservador [h]
 minT = 10; % Número mínimo de horas considerado por ensaio (normalmente é 2*tEst)
+wMax = 2; % Duração máxima da janela [h];
 thr = 0:0.001:1;
+
 
 lenN = length(N);
 lenM = length(M);
 lenD = length(D);
-numIt = length(D)*length(N)*length(M);
+numIt = nnz(((N-1)'.*D/60)<wMax)*length(M);
 ppm = ParforProgressbar(numIt); % Barra de progresso do parfor
 
 r.TPR = nan(1,length(thr)); r.FPR = nan(1,length(thr)); % r.conf = nan(length(thr),2,2);
@@ -50,15 +52,14 @@ Res = repmat(r,lenN,lenM,lenD); % Matriz com struct contendo TPR e FPR de cada a
 maxTPR = nan(length(N),length(M),length(D)); % Maior TPR encontrado dentro do limite de TPR thrTPR
 thrTPR = 0.05;
 
-parfor n = 1:lenN
+for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
             classAmac = [];
             classCor = [];
-            if ((N(n)-1)*D(d)/60)>2
+            if ((N(n)-1)*D(d)/60)>wmax
                 Res(n,m,d).TPR = nan(1,length(thr));
                 Res(n,m,d).FPR = nan(1,length(thr));
-                ppm.increment();
                 continue
             end
                 
@@ -76,10 +77,10 @@ parfor n = 1:lenN
                     classTemp = strings(length(temp(:,1)),1);
                     classTemp(tempo<tEst{k1}(k2)) = 'nao_amaciado';
                     classTemp(tempo>=tEst{k1}(k2)) = 'amaciado';
+                    classCor = [classCor;temp];
+                    classAmac = [classAmac;classTemp];
                 end
 
-                classCor = [classCor;temp];
-                classAmac = [classAmac;classTemp];
             end
             classAmac = categorical(classAmac);
             [B,dev,stats] = mnrfit(classCor,classAmac);
