@@ -2,11 +2,13 @@
 
 clear; close all; clc;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+% fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Resultados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
@@ -44,8 +46,8 @@ for k1 = 1:size(conjVal,1) % Apaga os valores dos conjuntos de validação
     EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
 end      
        
-N = 1:2:100; % Sample window for linear regression
-D = 1:2:100; % Sample window for linear regression
+N = 2:100; % Sample window for linear regression
+D = 1:100; % Sample window for linear regression
 M = [1,5:5:120]; % Moving average filter window
 ALPHA = 0:0.001:1; % Significance level
 
@@ -92,7 +94,7 @@ parfor n = 1:lenN
             for k = 1:lenAlpha
                 gtest = pVal>=ALPHA(k);
                 cMat = confusionmat(classAmac,gtest);
-                
+                Res(n,m,d).CMat{k} = cMat;
                 Res(n,m,d).TPR(k) = cMat(1,1)/sum(cMat(:,1));
                 Res(n,m,d).FPR(k) = cMat(1,2)/sum(cMat(:,2));
             end
@@ -100,6 +102,8 @@ parfor n = 1:lenN
         end
     end
 end
+
+delete(ppm);
 
 save([fsave,'Results.mat'],'Res','ALPHA','N','M','D','tEst','EnData','conjVal');
 
