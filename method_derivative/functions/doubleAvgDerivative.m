@@ -1,4 +1,4 @@
-function d2 = doubleAvgDerivative(x,w1,w2)
+function [d2, varargout] = doubleAvgDerivative(x,w1,w2,t,tEst,minT)
 % doubleAvgDerivative Filtered derivative of filtered x
 %
 %   d = doubleAvgDerivative(x,w1,w2): For every x(k) element of the x data
@@ -19,22 +19,30 @@ function d2 = doubleAvgDerivative(x,w1,w2)
 %   (w = floor(k/2)). The same goes for k values smaller than the window 
 %   length w2.
 
+d = movmean(x,[w1-1,0]);
+d = d(w1+1:end)-d(1:(end-w1));
 
-d = zeros(1,length(x));
-d2 = zeros(1,length(x));
+d2 = movmean(d,[w2-1,0]);
 
-for k = 2:length(x)
-    
-    if k<(2*w1) % Reduces window length for first 2*w1 samples
-        wt = floor(k/2);
-        d(k) = mean(x((k-wt+1):k))-mean(x((k-2*wt+1):(k-wt)));
+if nargin > 3
+    t = t(w1:length(x));
+else
+    t = w1:length(x);
+end
+
+if nargin > 4
+    if tEst > minT
+        L = length(nonzeros(t<=tEst));
+        t = t(1:2*L);
+        d2 = d2(1:2*L);
     else
-        d(k) = mean(x((k-w1+1):k))-mean(x((k-2*w1+1):(k-w1)));
+        t = t(t<minT);
+        d2 = d2(t<minT);
     end
-    
-    if k<w2 % Reduces window length for first w2 samples
-        d2(k) = mean(d(1:k));
-    else
-        d2(k) = mean(d((k-w2+1):k));
-    end
+end
+
+if nargout == 2
+    varargout{1} = t;
+end
+
 end

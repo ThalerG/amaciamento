@@ -48,7 +48,7 @@ lenD = length(D);
 numIt = nnz(((N-1)'.*D/60)<=wMax)*length(M);
 
 ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 30);
-r.TPR = nan(1,length(thr)); r.FPR = nan(1,length(thr)); % r.conf = nan(length(thr),2,2);
+r.TPR = nan(1,length(thr)); r.FPR = nan(1,length(thr)); r.CMat = repmat({[NaN,NaN;NaN,NaN]},length(thr),1);% r.conf = nan(length(thr),2,2);
 Res = repmat(r,lenN,lenM,lenD); % Matriz com struct contendo TPR e FPR de cada ajuste
 
 
@@ -95,7 +95,7 @@ parfor n = 1:lenN
             for k = 1:length(thr)
                 gtest = prob>=thr(k);
                 cMat = confusionmat(classAmac,gtest);
- %               Res(n,m,d).conf(k,:,:) = cMat;
+                Res(n,m,d).CMat{k} = cMat;
                 Res(n,m,d).TPR(k) = cMat(1,1)/sum(cMat(:,1));
                 Res(n,m,d).FPR(k) = cMat(1,2)/sum(cMat(:,2));
             end

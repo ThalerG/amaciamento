@@ -2,13 +2,13 @@
 
 clear; close all; clc;
 
-rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
-% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
-% fsave = [rt 'Ferramentas\Arquivos Gerados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
-fsave = [rt 'Resultados\linRegression_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\rStatistics_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+% fsave = [rt 'Resultados\rStatistics_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
@@ -46,58 +46,56 @@ for k1 = 1:size(conjVal,1) % Apaga os valores dos conjuntos de validação
     EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
 end      
        
-N = 2:100; % Sample window for linear regression
-D = 1:100; % Sample window for linear regression
-M = [1,5:5:120]; % Moving average filter window
-ALPHA = 0:0.001:1; % Significance level
+L1 = 0.02:0.02:0.8; % lambda1 values (Exponential average weight for data)
+L2 = 0.05:0.05:0.8; % lambda2 values (Exponential average weight for variance numerator)
+L3 = 0.01:0.01:0.8; % lambda3 values (Exponential average weight for variance denominator)
+Rc = 0.5:0.01:4; % Critical R value
 
 wMax = 2; % Duração máxima da janela [h];
 minT = 10; % Número mínimo de horas considerado por ensaio (normalmente é 2*tEst)
 
-lenN = length(N);
-lenM = length(M);
-lenD = length(D);
-lenAlpha = length(ALPHA);
+lenL1 = length(L1);
+lenL2 = length(L2);
+lenL3 = length(L3);
+lenRc = length(Rc);
 
-r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));
-Res = repmat(r,lenN,lenM,lenD);
+r.TPR = nan(1,lenRc); r.FPR = nan(1,lenRc); r.CMat = repmat({[NaN,NaN;NaN,NaN]},lenRc,1);
+Res = repmat(r,lenL1,lenL2,lenL3);
 
 %% Sample processing
 
-numIt = nnz(((N-1)'.*D/60)<=wMax)*length(M);
+numIt = lenL1*lenL2*lenL3;
 ppm = ParforProgressbar(numIt); % Barra de progresso do parfor
 
-parfor n = 1:lenN
-    for d = 1:lenD
-        for m = 1:lenM
+for l1 = 1:lenL1
+    for l2 = 1:lenL2
+        for l3 = 1:lenL3
             classAmac = [];
-            classCor = [];
-            if ((N(n)-1)*D(d)/60)>wMax
-                continue
-            end
-            
+            RTot = [];
+
             for k1 = 1:length(EnData)
                 for k2 = 1:length(EnData{k1})
-                    [cor,tempo] = mkTrainData_lr(EnData{k1}(k2).cRMS,EnData{k1}(k2).tempo,N(n),M(m),D(d),tEst{k1}(k2), minT);
-                    
-                    classTemp = strings(length(cor(:,1)),1);
+                    [Ren,tempo] = Rstats_ratio(EnData{k1}(k2).cRMS(EnData{k1}(k2).tempo>0),L1(l1),L2(l2),L3(l3),tEst{k1}(k2), minT,EnData{k1}(k2).tempo(EnData{k1}(k2).tempo>0)); % R-stats per instant
+                    Ren = Ren';
+                    classTemp = strings(length(Ren(:,1)),1);
                     classTemp(tempo<tEst{k1}(k2)) = 'nao_amaciado';
                     classTemp(tempo>=tEst{k1}(k2)) = 'amaciado';
-                    classCor = [classCor;cor];
+                    RTot = [RTot;Ren];
                     classAmac = [classAmac;classTemp];
                 end
             end
-            
-            pVal = arrayfun(@(ROWIDX) lrPValue(classCor(ROWIDX,:)), (1:size(classCor,1)).');
+
             classAmac = classAmac == 'amaciado';
-            
-            for k = 1:lenAlpha
-                gtest = pVal>=ALPHA(k);
+
+            for r = 1:lenRc
+                gtest = RTot<=Rc(r);
                 cMat = confusionmat(classAmac,gtest);
-                Res(n,m,d).CMat{k} = cMat;
-                Res(n,m,d).TPR(k) = cMat(1,1)/sum(cMat(:,1));
-                Res(n,m,d).FPR(k) = cMat(1,2)/sum(cMat(:,2));
+
+                Res(l1,l2,l3).CMat{r} = cMat;
+                Res(l1,l2,l3).TPR(r) = cMat(1,1)/sum(cMat(:,1));
+                Res(l1,l2,l3).FPR(r) = cMat(1,2)/sum(cMat(:,2));
             end
+
             ppm.increment();
         end
     end
@@ -105,12 +103,12 @@ end
 
 delete(ppm);
 
-save([fsave,'Results.mat'],'Res','ALPHA','N','M','D','tEst','EnData','conjVal');
+save([fsave,'Results.mat'],'Res','L1','L2','L3','Rc','tEst','EnData','conjVal');
 
 figure;
 
 p = plot(Res(1,1,1).FPR,Res(1,1,1).TPR); xlim([0 1]); ylim([0 1]);
-row = dataTipTextRow('Alpha',ALPHA);
+row = dataTipTextRow('Rc',Rc);
 p.DataTipTemplate.DataTipRows(end+1) = row;
 ylabel('True Positive Rate TP/(TP+FN)');
 xlabel('False Positive Rate FP/(FP+TN)');

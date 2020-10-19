@@ -2,8 +2,8 @@
 
 clear; close all; clc;
 
-rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 % rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -59,7 +59,7 @@ lenM = length(M);
 lenD = length(D);
 lenAlpha = length(ALPHA);
 
-r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));
+r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));  r.CMat = repmat({[NaN,NaN;NaN,NaN]},lenALPHA,1);
 Res = repmat(r,lenN,lenM,lenD);
 
 %% Sample processing
@@ -91,12 +91,12 @@ parfor n = 1:lenN
             pVal = arrayfun(@(ROWIDX) lrPValue(classCor(ROWIDX,:)), (1:size(classCor,1)).');
             classAmac = classAmac == 'amaciado';
             
-            for k = 1:lenAlpha
-                gtest = pVal>=ALPHA(k);
+            for alpha = 1:lenAlpha
+                gtest = pVal>=ALPHA(alpha);
                 cMat = confusionmat(classAmac,gtest);
-                Res(n,m,d).CMat{k} = cMat;
-                Res(n,m,d).TPR(k) = cMat(1,1)/sum(cMat(:,1));
-                Res(n,m,d).FPR(k) = cMat(1,2)/sum(cMat(:,2));
+                Res(n,m,d).CMat{alpha} = cMat;
+                Res(n,m,d).TPR(alpha) = cMat(1,1)/sum(cMat(:,1));
+                Res(n,m,d).FPR(alpha) = cMat(1,2)/sum(cMat(:,2));
             end
             ppm.increment();
         end

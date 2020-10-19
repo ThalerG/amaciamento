@@ -57,7 +57,7 @@ lenL1 = length(L1);
 lenL23 = length(L23);
 lenALPHA = length(ALPHA);
 
-r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));
+r.TPR = nan(1,lenALPHA); r.FPR = nan(1,lenALPHA); r.CMat = repmat({[NaN,NaN;NaN,NaN]},lenALPHA,1);
 Res = repmat(r,lenL1,lenL23);
 
 T = load('criticalR.mat','T'); % Loads the critical R values table (T);
@@ -75,8 +75,8 @@ parfor l1 = 1:lenL1
 
         for k1 = 1:length(EnData)
             for k2 = 1:length(EnData{k1})
-                Ren = Rstats_ratio(EnData{k1}(k2).cRMS(EnData{k1}(k2).tempo>0),L1(l1),L23(l23),L23(l23))'; % R-stats per instant
-                tempo = EnData{k1}(k2).tempo(EnData{k1}(k2).tempo>0);
+                [Ren,tempo] = Rstats_ratio(EnData{k1}(k2).cRMS(EnData{k1}(k2).tempo>0),L1(l1),L23(l23),L23(l23),tEst{k1}(k2), minT,EnData{k1}(k2).tempo(EnData{k1}(k2).tempo>0)); % R-stats per instant
+                Ren = Ren';
                 classTemp = strings(length(Ren(:,1)),1);
                 classTemp(tempo<tEst{k1}(k2)) = 'nao_amaciado';
                 classTemp(tempo>=tEst{k1}(k2)) = 'amaciado';

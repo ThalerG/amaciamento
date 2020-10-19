@@ -1,4 +1,4 @@
-function R = Rstats_ratio(x,lambda1,lambda2,lambda3)
+function [R,varargout] = Rstats_ratio(x,lambda1,lambda2,lambda3,tEst,minT,t)
 % Rstats_ratio Returns the ratio of variances required for the R-statistics
 %   This method uses exponentially weighted average and variances to reduce
 %   computational effort.
@@ -8,6 +8,16 @@ function R = Rstats_ratio(x,lambda1,lambda2,lambda3)
 %   lambda3: filter factor of the difference between sequential data
 %
 
+if nargin>4
+    if tEst > minT
+        L = length(nonzeros(t<=tEst));
+        t = t(1:2*L);
+        x = x(1:2*L);
+    else
+        t = t(t<minT);
+        x = x(t<minT);
+    end
+end
 
 xf = zeros(1,length(x)); % Weighted average data
 v = zeros(1,length(x)); % Filtered difference between averaged and original data
@@ -21,6 +31,10 @@ for k = 2:length(x)
     v(k) = lambda2*(x(k)-xf(k-1))^2+(1-lambda2)*v(k-1);
     d(k) = lambda3*(x(k)-x(k-1))^2+(1-lambda3)*d(k-1);
     R(k) = (2-lambda1)*v(k)/d(k);
+end
+
+if nargout == 2
+    varargout{1} = t;
 end
 
 end
