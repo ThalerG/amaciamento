@@ -16,7 +16,7 @@ mkdir(fsave); clear rt c;
 
 load('EnDataA.mat');
 
-conjVal = [2,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
@@ -57,9 +57,9 @@ minT = 10; % Número mínimo de horas considerado por ensaio (normalmente é 2*tEst
 lenN = length(N);
 lenM = length(M);
 lenD = length(D);
-lenAlpha = length(ALPHA);
+lenALPHA = length(ALPHA);
 
-r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));  r.CMat = repmat({[NaN,NaN;NaN,NaN]},lenALPHA,1);
+r.TPR = nan(1,length(ALPHA)); r.FPR = nan(1,length(ALPHA));  % CMat = repmat({[NaN,NaN;NaN,NaN]},lenN,lenM,lenD,lenALPHA,1);
 Res = repmat(r,lenN,lenM,lenD);
 
 %% Sample processing
@@ -91,10 +91,10 @@ parfor n = 1:lenN
             pVal = arrayfun(@(ROWIDX) lrPValue(classCor(ROWIDX,:)), (1:size(classCor,1)).');
             classAmac = classAmac == 'amaciado';
             
-            for alpha = 1:lenAlpha
+            for alpha = 1:lenALPHA
                 gtest = pVal>=ALPHA(alpha);
                 cMat = confusionmat(classAmac,gtest);
-                Res(n,m,d).CMat{alpha} = cMat;
+                % CMat{n,m,d,alpha} = cMat;
                 Res(n,m,d).TPR(alpha) = cMat(1,1)/sum(cMat(:,1));
                 Res(n,m,d).FPR(alpha) = cMat(1,2)/sum(cMat(:,2));
             end
@@ -106,6 +106,7 @@ end
 delete(ppm);
 
 save([fsave,'Results.mat'],'Res','ALPHA','N','M','D','tEst','EnData','conjVal');
+% save([fsave,'cMat.mat'],'CMat','-v7.3');
 
 figure;
 

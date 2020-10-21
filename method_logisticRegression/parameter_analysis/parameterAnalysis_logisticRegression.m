@@ -1,7 +1,15 @@
 clear; % close all;
 
-addpath(genpath('C:\Users\FEESC\Desktop\Amaciamento\'));
-load('C:\Users\FEESC\Desktop\Amaciamento\ProjetoGit\EnDataA.mat');
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+
+% Create new folder for generated files
+c = clock;
+% fsave = [rt 'Ferramentas\Arquivos Gerados\logR_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Resultados\logR_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+mkdir(fsave); clear rt c;
+
+load('EnDataA.mat');
 
 conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
@@ -33,7 +41,7 @@ for k1 = 1:size(conjVal,1) % Apaga os valores dos conjuntos de validação
     EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
 end
        
-N = 1:30; % Janela (número de amostras) da regressão
+N = 1:40; % Janela (número de amostras) da regressão
 M = [1, 5:5:160]; % Janela da média móvel
 D = [1:60,65:5:120]; % Distância entre amostras da regressão
 extra = 0; % Valor adicionado ao tempo de amaciamento para deixar mais conservador [h]
@@ -48,7 +56,7 @@ lenD = length(D);
 numIt = nnz(((N-1)'.*D/60)<=wMax)*length(M);
 
 ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 30);
-r.TPR = nan(1,length(thr)); r.FPR = nan(1,length(thr)); r.CMat = repmat({[NaN,NaN;NaN,NaN]},length(thr),1);% r.conf = nan(length(thr),2,2);
+r.TPR = nan(1,length(thr)); r.FPR = nan(1,length(thr)); % CMat = repmat({[NaN,NaN;NaN,NaN]},lenN,lenM,lenD,length(thr));% r.conf = nan(length(thr),2,2);
 Res = repmat(r,lenN,lenM,lenD); % Matriz com struct contendo TPR e FPR de cada ajuste
 
 
@@ -95,7 +103,7 @@ parfor n = 1:lenN
             for k = 1:length(thr)
                 gtest = prob>=thr(k);
                 cMat = confusionmat(classAmac,gtest);
-                Res(n,m,d).CMat{k} = cMat;
+                % CMat{n,m,d,k} = cMat;
                 Res(n,m,d).TPR(k) = cMat(1,1)/sum(cMat(:,1));
                 Res(n,m,d).FPR(k) = cMat(1,2)/sum(cMat(:,2));
             end
@@ -111,4 +119,5 @@ delete(ppm);
 
 thr = 0:0.001:1;
 
-save('logisticRegression\ResultsNew.mat','Res','thr','N','M','D','tEst','EnData','conjVal')
+save([fsave 'Results.mat'],'Res','thr','N','M','D','tEst','EnData','conjVal')
+% save([fsave,'cMat.mat'],'CMat','-v7.3');

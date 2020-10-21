@@ -2,15 +2,15 @@
 
 clear; close all; clc;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 fpr = [rt 'Dados Processados\']; % General rocessed data folder (see documentation for data format)
 
 % Create new folder for generated files
 c = clock;
-fsave = [rt 'Ferramentas\Arquivos Gerados\spacedDif_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
-% fsave = [rt 'Resultados\spacedDif_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+% fsave = [rt 'Ferramentas\Arquivos Gerados\spacedDif_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Resultados\spacedDif_parameters' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % fsm: Test data folder 
@@ -18,7 +18,7 @@ mkdir(fsave); clear rt c;
 
 load('EnDataA.mat');
 
-conjVal = [2,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
@@ -61,12 +61,12 @@ lenW2 = length(W2);
 lenN = length(N);
 lenS = length(S);
 
-r.TPR = nan(1,lenS); r.FPR = nan(1,lenS); r.CMat = repmat({[NaN,NaN;NaN,NaN]},lenS,1);
+r.TPR = nan(1,lenS); r.FPR = nan(1,lenS); % CMat = repmat({[NaN,NaN;NaN,NaN]},lenW1,lenN,lenW2,lenS);
 Res = repmat(r,lenW1,lenN,lenW2);
 
 %% Sample processing
 
-numIt = nnz((lenN/60)<=wMax)*lenW1*lenW2;
+numIt = nnz((N/60)<=wMax)*lenW1*lenW2;
 ppm = ParforProgressbar(numIt); % Barra de progresso do parfor
 
 parfor w1 = 1:lenW1
@@ -95,7 +95,7 @@ parfor w1 = 1:lenW1
                 gtest = d2Tot<=S(s);
                 cMat = confusionmat(classAmac,gtest);
 
-                Res(w1,n,w2).CMat{s} = cMat;
+                % CMat{w1,n,w2,s} = cMat;
                 Res(w1,n,w2).TPR(s) = cMat(1,1)/sum(cMat(:,1));
                 Res(w1,n,w2).FPR(s) = cMat(1,2)/sum(cMat(:,2));
             end
@@ -108,6 +108,7 @@ end
 delete(ppm);
 
 save([fsave,'Results.mat'],'Res','W1','N', 'W2','S','tEst','EnData','conjVal');
+% save([fsave,'cMat.mat'],'CMat','-v7.3');
 
 figure;
 
