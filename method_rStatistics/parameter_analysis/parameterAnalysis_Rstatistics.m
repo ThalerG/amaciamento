@@ -92,7 +92,7 @@ for k1 = 1:length(tAmac) % For every sample
         
         for l1 = 1:length(L1) % For every lambda1 value
             for l23 = 1:length(L23) % For every lambda2 and lambda3 pair
-                dataF = Rstats_ratio(cRMS.data(cRMS.t>0),L1(l1),L23(l23),L23(l23)); % R-stats per instant
+                dataF = Rstats_ratio_gridSearch(cRMS.data(cRMS.t>0),L1(l1),L23(l23),L23(l23)); % R-stats per instant
                 it=it+1;
                 prog = ['Progresso:' num2str(100*it/totalIt),'%' newline...
                         'Amostra:' num2str(k1) '/' num2str(length(path)) newline...

@@ -24,7 +24,7 @@ function [n,ta] = runin_detect_Rstats(x,t,lambda1,lambda2,lambda3,alpha,r,f)
 
 L = length(t);
 
-Rstats = Rstats_ratio(x(t>0),lambda1,lambda2,lambda3); % R values for every sample
+Rstats = Rstats_ratio_gridSearch(x(t>0),lambda1,lambda2,lambda3); % R values for every sample
 t = t(t>0);
 L = L-length(t); % Number of samples before the starting time t=0
 

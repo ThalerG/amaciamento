@@ -41,10 +41,7 @@ tEst{5} = [12.5;
            2.5];
 
        
-for k1 = 1:size(conjVal,1) % Apaga os valores dos conjuntos de validação
-    tEst{conjVal(k1,1)}(conjVal(k1,2)) = [];
-    EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
-end      
+
        
 N = 2:100; % Sample window for linear regression
 D = 1:100; % Sample window for linear regression

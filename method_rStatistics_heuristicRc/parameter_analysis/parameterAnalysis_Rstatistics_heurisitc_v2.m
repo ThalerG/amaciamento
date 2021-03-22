@@ -75,7 +75,7 @@ parfor l1 = 1:lenL1
 
             for k1 = 1:length(EnData)
                 for k2 = 1:length(EnData{k1})
-                    [Ren,tempo] = Rstats_ratio(EnData{k1}(k2).cRMS(EnData{k1}(k2).tempo>0),L1(l1),L2(l2),L3(l3),tEst{k1}(k2), minT,EnData{k1}(k2).tempo(EnData{k1}(k2).tempo>0)); % R-stats per instant
+                    [Ren,tempo] = Rstats_ratio_gridSearch(EnData{k1}(k2).cRMS(EnData{k1}(k2).tempo>0),L1(l1),L2(l2),L3(l3),tEst{k1}(k2), minT,EnData{k1}(k2).tempo(EnData{k1}(k2).tempo>0)); % R-stats per instant
                     Ren = Ren';
                     classTemp = strings(length(Ren(:,1)),1);
                     classTemp(tempo<tEst{k1}(k2)) = 'nao_amaciado';

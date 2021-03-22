@@ -101,7 +101,7 @@ for k1 = 1:length(tAmac) % For every sample
                         'l2 :' num2str(l2) '/' num2str(length(L2))]; display(prog); % Displays the current progress
 
                 for l3 = 1:length(L3) % For every lambda3 value
-                    dataF = Rstats_ratio(cRMS.data(cRMS.t>0),L1(l1),L2(l2),L3(l3)); % R-stats per instant
+                    dataF = Rstats_ratio_gridSearch(cRMS.data(cRMS.t>0),L1(l1),L2(l2),L3(l3)); % R-stats per instant
 
                     flag = 0;
 
