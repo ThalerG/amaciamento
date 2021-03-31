@@ -1,46 +1,48 @@
+% Junta arquivos de cada ensaio em uma única cell array
+
 fPathCell = {
-%              {'\Amostra A1\N_2019_07_01';}
-%              {'\Amostra A2\A_2019_08_08';
-%              '\Amostra A2\A_2019_08_12';
-%              '\Amostra A2\A_2019_08_28';
-%              '\Amostra A2\N_2019_07_09';}
-%              {'\Amostra A3\A_2019_12_09';
-%              '\Amostra A3\A_2019_12_11';
-%              '\Amostra A3\N_2019_12_04';}
-%              {'\Amostra A4\A_2019_12_19';
-%              '\Amostra A4\A_2020_01_06';
-%              '\Amostra A4\A_2020_01_13';
-%              '\Amostra A4\N_2019_12_16';}
-%              {'\Amostra A5\A_2020_01_27';
-%              '\Amostra A5\A_2020_01_28';
-%              '\Amostra A5\N_2020_01_22';}
-             {'\Amostra B2\A_2020_09_02';
-             '\Amostra B2\A_2020_09_09'};
-             {'\Amostra B3\A_2020_09_22';
-             '\Amostra B3\A_2020_09_24';
-             '\Amostra B3\N_2020_09_11';};
-             {'\Amostra B4\A_2020_10_02';
-             '\Amostra B4\A_2020_10_06';
-             '\Amostra B4\A_2020_10_08';
-             '\Amostra B4\N_2020_09_30';};
-             {'\Amostra B5\A_2020_10_22';
-              '\Amostra B5\A_2020_10_26';
-              '\Amostra B5\A_2020_10_27';
-              '\Amostra B5\N_2020_10_16';};
-              {'\Amostra B6\N_2021_01_27';
-             '\Amostra B6\N_2021_01_28';
-             '\Amostra B6\A_2021_02_02';};
-             {'\Amostra B7\N_2021_02_05';
-             '\Amostra B7\A_2021_02_08';
-             '\Amostra B7\A_2021_02_15';};
-             {'\Amostra B8\N_2021_02_18';
-             '\Amostra B8\A_2021_02_22';
-             '\Amostra B8\A_2021_02_26'};
+             {'\Amostra A1\N_2019_07_01';}
+             {'\Amostra A2\A_2019_08_08';
+             '\Amostra A2\A_2019_08_12';
+             '\Amostra A2\A_2019_08_28';
+             '\Amostra A2\N_2019_07_09';}
+             {'\Amostra A3\A_2019_12_09';
+             '\Amostra A3\A_2019_12_11';
+             '\Amostra A3\N_2019_12_04';}
+             {'\Amostra A4\A_2019_12_19';
+             '\Amostra A4\A_2020_01_06';
+             '\Amostra A4\A_2020_01_13';
+             '\Amostra A4\N_2019_12_16';}
+             {'\Amostra A5\A_2020_01_27';
+             '\Amostra A5\A_2020_01_28';
+             '\Amostra A5\N_2020_01_22';}
+%              {'\Amostra B2\A_2020_09_02';
+%              '\Amostra B2\A_2020_09_09'};
+%              {'\Amostra B3\A_2020_09_22';
+%              '\Amostra B3\A_2020_09_24';
+%              '\Amostra B3\N_2020_09_11';};
+%              {'\Amostra B4\A_2020_10_02';
+%              '\Amostra B4\A_2020_10_06';
+%              '\Amostra B4\A_2020_10_08';
+%              '\Amostra B4\N_2020_09_30';};
+%              {'\Amostra B5\A_2020_10_22';
+%               '\Amostra B5\A_2020_10_26';
+%               '\Amostra B5\A_2020_10_27';
+%               '\Amostra B5\N_2020_10_16';};
+%               {'\Amostra B6\N_2021_01_27';
+%              '\Amostra B6\N_2021_01_28';
+%              '\Amostra B6\A_2021_02_02';};
+%              {'\Amostra B7\N_2021_02_05';
+%              '\Amostra B7\A_2021_02_08';
+%              '\Amostra B7\A_2021_02_15';};
+%              {'\Amostra B8\N_2021_02_18';
+%              '\Amostra B8\A_2021_02_22';
+%              '\Amostra B8\A_2021_02_26'};
              };
          
 fpathVarInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Processados';
 
-EnDataB = cell(length(fPathCell),1);
+EnDataA = cell(length(fPathCell),1);
 EnDataA_Acu = cell(length(fPathCell),1);
 
 for k1 = 1:length(fPathCell)
@@ -80,7 +82,7 @@ for k1 = 1:length(fPathCell)
         load([fP,'\pressao_Succao']);
         load([fP,'\vazao']);
         
-        dat.tempo = pD.t';
+        dat.tempo = pD.t;
         dat.pD = pD.data;
         dat.pS = pS.data;
         
@@ -117,13 +119,13 @@ for k1 = 1:length(fPathCell)
         dat.vaz = vaz.data;
 
         dat.name = fPathCell{k1}{k2}(2:end);
-        EnDataB{k1}(k2) = dat;
+        EnDataA{k1}(k2) = dat;
         
-%         load([fP,'\acusticas_Curtose']);
-%         load([fP,'\acusticas_RMS']);
-%         datAcu.tempo = aRMS.t';
-%         datAcu.aRMS = aRMS.data;
-%         datAcu.aKur = aKur.data;
-%         EnDataA_Acu{k1}(k2) = datAcu;
+        load([fP,'\acusticas_Curtose']);
+        load([fP,'\acusticas_RMS']);
+        datAcu.tempo = aRMS.t';
+        datAcu.aRMS = aRMS.data;
+        datAcu.aKur = aKur.data;
+        EnDataA_Acu{k1}(k2) = datAcu;
     end
 end
