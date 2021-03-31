@@ -6,8 +6,8 @@ EnData = EnDataA;
 
 clear EnDataA;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -69,7 +69,7 @@ vars = {'cRMS', 'cKur', 'vInfRMS', 'vInfKur', 'vSupRMS', 'vSupKur', 'vaz'}; % Va
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+methodML = 'KNN'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
