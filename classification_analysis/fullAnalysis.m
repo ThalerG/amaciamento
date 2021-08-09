@@ -15,13 +15,13 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-conjVal = 20;
+% conjVal = 20;
 % conjVal = [];
-% conjVal = [1,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [5,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
-loadTempoAmac;
+loadTempoAmacA;
 
 %% Parâmetros de busca
 % Opções de métrica de desempenho:
@@ -51,7 +51,7 @@ vars = {'cRMS', 'cKur', 'vInfRMS', 'vInfKur', 'vSupRMS', 'vSupKur', 'vaz'}; % Va
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'KNN'; % Método para classificação
+methodML = 'tree'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -62,7 +62,7 @@ switch methodML
         maxSplitsBusca = 5:5:80;
         paramMLBusca = {maxSplitsBusca};
     case 'SVM'
-        kernelFunction = 'cubic';
+        kernelFunction = 'quadratic';
         kernelScale = 'auto';
         paramML = {kernelFunction,kernelScale};
         

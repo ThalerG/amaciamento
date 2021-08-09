@@ -6,23 +6,9 @@ function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingDat
 %
 %      numNeighbors: Número de neighbors para o modelo KNN (padrão é 10)
 %
-%      distance: métrica de distância. Valores válidos (padrão é 'euclidean'):
-%           'cityblock'     City block distance.
-%           'chebychev'     Chebychev distance (maximum coordinate difference).
-%           'correlation'	One minus the sample linear correlation between observations (treated as sequences of values).
-%           'cosine'        One minus the cosine of the included angle between observations (treated as vectors).
-%           'euclidean'     Euclidean distance.
-%           'hamming'   	Hamming distance, percentage of coordinates that differ.
-%           'jaccard'   	One minus the Jaccard coefficient, the percentage of nonzero coordinates that differ.
-%           'mahalanobis'	Mahalanobis distance, computed using a positive definite covariance matrix C. The default value of C is the sample covariance matrix of X, as computed by cov(X,'omitrows'). To specify a different value for C, use the 'Cov' name-value pair argument.
-%           'minkowski' 	Minkowski distance. The default exponent is 2. To specify a different exponent, use the 'Exponent' name-value pair argument.
-%           'seuclidean'	Standardized Euclidean distance. Each coordinate difference between X and a query point is scaled, meaning divided by a scale value S. The default value of S is the standard deviation computed from X, S = std(X,'omitnan'). To specify another value for S, use the Scale name-value pair argument.
-%           'spearman'      One minus the sample Spearman's rank correlation between observations (treated as sequences of values
+%      kernelFunction: 
 %       
-%      weight: função de peso da distância. Valores válidos (padrão é 'equal'):
-%           'equal'             No weighting
-%           'inverse'           Weight is 1/distance
-%           'squaredinverse'	Weight is 1/distance2
+%      kernelScale: 
 %      
 %      folds: número de folds da validação cruzada (k-fold)
 %           
