@@ -1,56 +1,82 @@
-function [reordered,changeMatrix] = orderClusters(clusterTable,timeWindow)
+function [reordered,varargout] = orderClusters(clusterStruct,timeWindow)
 
-reordered = clusterTable;
+reordered = clusterStruct;
 
-for k1 = 1:height(clusterTable) % Para cada configuração na tabela
-    cluster = clusterTable.Cluster(k1); cluster = cluster{1};
-    uncluster = unique(cluster); % Nome das clusters
-    imax = length(uncluster);
-    
-    ensaio = clusterTable.Ensaio(k1); ensaio = ensaio{1};
-    
-    changeMatrix = [uncluster,nan(imax,1)]; % Array para troca de valores: changeMatrix(1,k)->changeMatrix(2,k)
-    tempo = clusterTable.Tempo(k1); tempo = tempo{1};
-    i = 1;
+% Matriz com colunas: Tempo, ordem do ensaio, cluster classificado
+EnTemTot = [clusterStruct.Ensaio,clusterStruct.Tempo,clusterStruct.Cluster];
+EnTemTot = sortrows(EnTemTot);
 
+uncluster = unique(EnTemTot(:,3)); % Nome das clusters antigas
+unensaio = unique(EnTemTot(:,1)); % "Nome" dos ensaios
+
+imax = length(uncluster); % Total de clusters
+
+changeMatrix = [uncluster,nan(imax,1)]; % Array para troca de valores: changeMatrix(1,k)->changeMatrix(2,k)
+
+propTot = [];
+propTime = [];
+propEnsaio = [];
+ord = [];
+for k = 1:length(unensaio)
+    tempo = EnTemTot(EnTemTot(:,1)==unensaio(k),2);
+    cluster = EnTemTot(EnTemTot(:,1)==unensaio(k),3);
     
-    for k2 = 1:length(unique(ensaio)) % Para cada ensaio
-        tempoTemp = tempo(ensaio==k2);
-        clusterTemp = cluster(ensaio==k2);
+    tmax = tempo(1)+timeWindow;
+    
+    y = [];
+    x = [];
+    prop = [];
+    k2 = 1;
+    
+    while tmax<tempo(end)
+        cTemp = cluster((tempo<tmax)&(tempo>=(tmax-timeWindow)));
         
-        tmax= tempoTemp(1)+timeWindow;
-        
-        prop = nan(1,imax);
-        
-        while (tmax<=tempoTemp(end)) && (i<=imax) % Percorre o ensaio até terminar ou completar as clusters
-            cl = clusterTemp((tempoTemp<tmax)&(tempoTemp>=(tmax-timeWindow)));
-            
-            for k = 1:length(uncluster) % Para cada cluster
-                prop(k) = nnz(cl==uncluster(k))/length(cl);
-            end
-            
-            [~,ind] = max(prop);
-            
-            if ~any(changeMatrix(:,2) == uncluster(ind))
-                changeMatrix(i,2) = uncluster(ind);
-                i = i+1;
-            end
-            
-            tmax = tmax+timeWindow;
+        for p = 1:length(uncluster)
+            temp(p) = nnz(cTemp==uncluster(p))/length(cTemp);
         end
         
-        for k = 1:imax
-            if isnan(changeMatrix(k,2))
-                changeMatrix(k,2) = i;
-                i = i+1;
-            end
-        end
-        
-        newCluster = nan(size(cluster));
-        for k = 1:size(changeMatrix,1)
-            newCluster(cluster==changeMatrix(k,1)) = changeMatrix(k,2);
-        end
+        prop(k2,:) = temp;
+        [~,sort] = sortrows(temp','descend'); % Rankeia por proporção
+        [~,sort] = sortrows(sort);
+        sort(temp == 0) = length(uncluster); % Valores 0 vão por último na ordem
+        y(k2,:) = sort';
+        x(k2) = tmax;
+        tmax = tmax+timeWindow; % Atualiza a janela
+        k2 = k2+1;
     end
-    
-    reordered.Cluster(k1) = {newCluster};
+        
+    [~,temp] = max(y,[],1);
+    propEnsaio = [propEnsaio;repmat(unensaio(k),length(x),1)];
+    ord = [ord;y];
+    propTot = [propTot;prop];
+    propTime = [propTime;x'];
+end
+
+for k = 1:length(uncluster)
+    [val,ind] = min(ord(:,k));
+    changeMatrix(k,2) = (val-1)*size(ord,1)+ind; % "Rank" do cluster (esquema olímpico, primeiro procura por 1o lugar, depois 2o...)
+end
+
+[~,i] = sortrows(changeMatrix(:,2));
+[~,i] = sortrows(i);
+
+changeMatrix(:,2) = i;
+
+for k = 1:size(changeMatrix,1)
+    reordered.Cluster(clusterStruct.Cluster==changeMatrix(k,1)) = changeMatrix(k,2);
+    proportions.Proportion(:,changeMatrix(k,2)) = propTot(:,k); % Ordena as colunas das proporções
+end
+
+proportions.Time = propTime;
+proportions.Ensaio = propEnsaio;
+
+switch nargout
+    case 1
+        varargout = {};
+    case 2
+        varargout = {changeMatrix};
+    case 3
+        varargout = {changeMatrix,proportions};
+    otherwise
+        error('Wrong number of output arguments');
 end

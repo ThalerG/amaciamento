@@ -2,7 +2,8 @@ clear; close all;
 
 tWind = 1; 
 
-[cRMS, cKur, cVar, vibInfRMS, vibInfKur, vibInfVar, vibSupRMS, vibSupKur, vibSupVar] = importClusters('amostra3_clusters.csv');
+[result] = importClusters('amostra3_clusters.csv',3);
+
 
 [cRMS,~] = orderClusters(cRMS,tWind);
 [cKur,~] = orderClusters(cKur,tWind);
@@ -15,6 +16,10 @@ tWind = 1;
 [vibSupRMS,~] = orderClusters(vibSupRMS,tWind);
 [vibSupKur,~] = orderClusters(vibSupKur,tWind);
 [vibSupVar,~] = orderClusters(vibSupVar,tWind);
+
+[vaz,~] = orderClusters(vibSupRMS,tWind);
+[vaz,~] = orderClusters(vibSupKur,tWind);
+[vaz,~] = orderClusters(vibSupVar,tWind);
 
 en=1;
 

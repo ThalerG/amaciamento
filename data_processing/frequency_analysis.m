@@ -28,13 +28,13 @@ fpathCell = {
 %              '\Amostra A5\N_2020_01_22';
 %              '\Amostra B2\A_2020_09_02';
 %              '\Amostra B2\A_2020_09_09';
+%              '\Amostra B3\N_2020_09_11';
 %              '\Amostra B3\A_2020_09_22';
 %              '\Amostra B3\A_2020_09_24';
-%              '\Amostra B3\N_2020_09_11';
+%              '\Amostra B4\N_2020_09_30';
 %              '\Amostra B4\A_2020_10_02';
 %              '\Amostra B4\A_2020_10_06';
 %              '\Amostra B4\A_2020_10_08';
-%              '\Amostra B4\N_2020_09_30';
 %              '\Amostra B5\N_2020_10_16';
 %              '\Amostra B5\A_2020_10_22';
 %              '\Amostra B5\A_2020_10_26';
@@ -45,11 +45,25 @@ fpathCell = {
 %              '\Amostra B7\N_2021_02_05';
 %              '\Amostra B7\A_2021_02_08';
 %              '\Amostra B7\A_2021_02_15';
+              '\Amostra B7\A_2021_07_24';
 %              '\Amostra B8\N_2021_02_18';
 %              '\Amostra B8\A_2021_02_22';
-             '\Amostra B8\A_2021_02_26';
-              };
-
+%              '\Amostra B8\A_2021_02_26';
+%              '\Amostra B10\N_2021_03_22';
+%              '\Amostra B10\A_2021_03_25';
+%              '\Amostra B10\A_2021_03_30';
+%              '\Amostra B11\N_2021_04_05';
+%              '\Amostra B11\A_2021_04_08';
+%              '\Amostra B11\A_2021_04_22';
+%              '\Amostra B12\N_2021_04_27';
+%              '\Amostra B12\A_2021_04_30';
+%              '\Amostra B12\A_2021_05_03'; 
+%              '\Amostra B12\A_2021_05_04';
+%              '\Amostra B15\N_2021_05_31';
+%              '\Amostra B15\A_2021_06_07';
+%              '\Amostra B15\A_2021_06_09';
+%              '\Amostra B15\A_2021_06_15';
+               };
 
 fpathSourceInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Preparados';
 fpathVarInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Processados';
@@ -141,7 +155,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fcFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq(:,1);
         end
@@ -189,7 +203,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fcFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq(:,1);
         end
@@ -237,7 +251,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fcFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq(:,1);
         end
@@ -287,7 +301,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fvFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             zx(:,k) = freq(:,1);
             zy(:,k) = freq(:,2);
@@ -382,7 +396,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fvFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             zx(:,k) = freq(:,1);
             zy(:,k) = freq(:,2);
@@ -476,7 +490,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fvFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             zx(:,k) = freq(:,1);
             zy(:,k) = freq(:,2);
@@ -573,7 +587,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(facuFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq;
         end
@@ -619,7 +633,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(facuFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq;
         end
@@ -665,7 +679,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(facuFolder,'\',Files(k));
 
-            freq = importdata(filename);
+            freq = table2array(readtable(filename));
 
             z(:,k) = freq;
         end

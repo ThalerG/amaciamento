@@ -21,7 +21,7 @@ conjVal = 20;
 
 % Tempos de amaciamento esperados:
 
-loadTempoAmac;
+loadTempoAmacA;
 
 %% Parâmetros de busca
 % Opções de métrica de desempenho:
