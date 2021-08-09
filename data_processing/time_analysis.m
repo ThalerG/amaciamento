@@ -16,54 +16,72 @@ usucload = 1; % Apenas para versões mais novas, que salvam uSuc
 discardEnd = 1; % Descarta valores após o compressor ser desligado
 
 fpathCell = {
-             '\Amostra A1\N_2019_07_01';
-             '\Amostra A2\A_2019_08_08';
-             '\Amostra A2\A_2019_08_12';
-             '\Amostra A2\A_2019_08_28';
-             '\Amostra A2\N_2019_07_09';
-             '\Amostra A3\A_2019_12_09';
-             '\Amostra A3\A_2019_12_11';
-             '\Amostra A3\N_2019_12_04';
-             '\Amostra A4\A_2019_12_19';
-             '\Amostra A4\A_2020_01_06';
-             '\Amostra A4\A_2020_01_13';
-             '\Amostra A4\N_2019_12_16';
-             '\Amostra A5\A_2020_01_27';
-             '\Amostra A5\A_2020_01_28';
-             '\Amostra A5\N_2020_01_22';
+% %              '\Amostra A1\N_2019_07_01';
+%              '\Amostra A2\A_2019_08_08';
+%              '\Amostra A2\A_2019_08_12';
+%              '\Amostra A2\A_2019_08_28';
+%              '\Amostra A2\N_2019_07_09';
+%              '\Amostra A3\A_2019_12_09';
+%              '\Amostra A3\A_2019_12_11';
+%              '\Amostra A3\N_2019_12_04';
+%              '\Amostra A4\A_2019_12_19';
+%              '\Amostra A4\A_2020_01_06';
+% %              '\Amostra A4\A_2020_01_13';
+%              '\Amostra A4\N_2019_12_16';
+%              '\Amostra A5\A_2020_01_27';
+%              '\Amostra A5\A_2020_01_28';
+%              '\Amostra A5\N_2020_01_22';
 %              '\Amostra B2\A_2020_09_02';
 %              '\Amostra B2\A_2020_09_09';
+%              '\Amostra B3\N_2020_09_11';
 %              '\Amostra B3\A_2020_09_22';
 %              '\Amostra B3\A_2020_09_24';
-%              '\Amostra B3\N_2020_09_11';
+%              '\Amostra B4\N_2020_09_30';
 %              '\Amostra B4\A_2020_10_02';
 %              '\Amostra B4\A_2020_10_06';
 %              '\Amostra B4\A_2020_10_08';
-%              '\Amostra B4\N_2020_09_30';
 %              '\Amostra B5\N_2020_10_16';
 %              '\Amostra B5\A_2020_10_22';
-%              '\Amostra B5\A_2020_10_26';
+% %              '\Amostra B5\A_2020_10_26';
 %              '\Amostra B5\A_2020_10_27';
-%              '\Amostra B6\N_2021_01_27';
-%              '\Amostra B6\N_2021_01_28';
-%              '\Amostra B6\A_2021_02_02';
+% %              '\Amostra B6\N_2021_01_27';
+% %              '\Amostra B6\N_2021_01_28';
+% %              '\Amostra B6\A_2021_02_02';
 %              '\Amostra B7\N_2021_02_05';
 %              '\Amostra B7\A_2021_02_08';
 %              '\Amostra B7\A_2021_02_15';
+              '\Amostra B7\A_2021_07_24';
 %              '\Amostra B8\N_2021_02_18';
 %              '\Amostra B8\A_2021_02_22';
 %              '\Amostra B8\A_2021_02_26';
+%              '\Amostra B10\N_2021_03_22';
+%              '\Amostra B10\A_2021_03_25';
+%              '\Amostra B10\A_2021_03_30';
+%              '\Amostra B11\N_2021_04_05';
+%              '\Amostra B11\A_2021_04_08';
+%              '\Amostra B11\A_2021_04_22';
+%              '\Amostra B12\N_2021_04_27';
+%              '\Amostra B12\A_2021_04_30';
+% %              '\Amostra B12\A_2021_05_03';
+%              '\Amostra B12\A_2021_05_04';
+%              '\Amostra B15\N_2021_05_31';
+% %              '\Amostra B15\A_2021_06_07';
+%              '\Amostra B15\A_2021_06_09';
+%              '\Amostra B15\A_2021_06_15';
               };
 
 fpathSourceInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Preparados';
-fpathVarInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Processados';
-fpathFigInit = 'D:\Documentos\Amaciamento\Ensaios\Imagens';
+fpathVarInit = 'D:\Documentos\Amaciamento\Ensaios\Dados Processados (Dissertação)';
+fpathFigInit = 'D:\Documentos\Amaciamento\Ensaios\Imagens (Dissertação)';
 
 
 
 Tc = 60; % Tempo entre medições da corrente
 Tv = 60; % Tempo entre medições da vibração
 Ta = 600; % Tempo entre medições de emissões acústicas
+
+pDesSP = 7.616;
+pSucSP = 0.626;
 
 % Colunas da Medição Geral
 
@@ -77,8 +95,8 @@ coluSuc = 12; colCompAtivo = 14; colVazao = 18;
 %                         Adaptação de variáveis
 for kf = 1:length(fpathCell)
     
-    aRload = 1;
-    aKload = 1;
+    %aRload = 1;
+    %aKload = 1;
     
     fpathFinal = fpathCell{kf};
     
@@ -111,7 +129,7 @@ for kf = 1:length(fpathCell)
     data = data(2:end,:); % Descarta a primeira amostra
     compAtivo = data(:,colCompAtivo);
     
-    if discardEnd
+    if discardEnd % Descarta valores após desligar
         kEnd = find(compAtivo,1,'last');
         data = data(1:kEnd,:);
     end
@@ -142,7 +160,7 @@ for kf = 1:length(fpathCell)
         Files = sort(string({mf.name}'));
         clear mf;
         
-        teC = (((1:length(Files))-1)*Tc-t0)/3600;
+        teC = [NaN;tempo];
         
         cRMS = zeros(length(Files),1);
         cKur = zeros(length(Files),1);
@@ -161,7 +179,7 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fcFolder,'\',Files(k));
 
-            data = importdata(filename);
+            data = table2array(readtable(filename));
             if size(data,2)>1
                 data = data(:,1);
             end
@@ -170,25 +188,29 @@ for kf = 1:length(fpathCell)
             cKur(k) = kurtosis(data);
             cSke(k) = skewness(data);
             cShape(k) = cRMS(k)/(mean(abs(data)));
-            cTHD(k) = thd(data);
+            try
+                cTHD(k) = thd(data(:,1));
+            catch
+                warning('Erro no THD Corrente');
+                cTHD(k) = NaN;
+            end
             cPeak(k) = max(abs(data));
             cCrest(k) = cPeak(k)/cRMS(k);
             cVar(k) = var(data);
             cStd(k) = std(data);
-            temp = abs(data - mean(data));
         end
 
-        cRMS = cRMS(teC<tEnd); cRMS = cRMS(2:end); 
-        cKur = cKur(teC<tEnd); cKur = cKur(2:end);
-        cSke = cSke(teC<tEnd); cSke = cSke(2:end);
-        cShape = cShape(teC<tEnd); cShape = cShape(2:end);
-        cTHD = cTHD(teC<tEnd); cTHD = cTHD(2:end);
-        cCrest = cCrest(teC<tEnd); cCrest = cCrest(2:end);
-        cPeak = cPeak(teC<tEnd); cPeak = cPeak(2:end);
-        cVar = cVar(teC<tEnd); cVar = cVar(2:end);
-        cStd = cStd(teC<tEnd); cStd = cStd(2:end);
-        teC = teC(teC<tEnd); teC = teC(2:end);
-        cRMS = cRMS-mean(cRMS(teC<0));
+        cRMS = cRMS(teC<=tEnd);
+        cKur = cKur(teC<=tEnd);
+        cSke = cSke(teC<=tEnd);
+        cShape = cShape(teC<=tEnd);
+        cTHD = cTHD(teC<=tEnd);
+        cCrest = cCrest(teC<=tEnd);
+        cPeak = cPeak(teC<=tEnd);
+        cVar = cVar(teC<=tEnd);
+        cStd = cStd(teC<=tEnd);
+        teC = teC(teC<=tEnd);
+%        cRMS = cRMS-mean(cRMS(teC<0));
         delete(ppm);
         
         clear data;
@@ -203,7 +225,7 @@ for kf = 1:length(fpathCell)
         Files = sort(string({mf.name}'));
         clear mf;
         
-        tV = (((1:length(Files))-1)*Tv-t0)/3600;
+        tV = [NaN;tempo];
 
         vxRMS = zeros(length(Files),1);
         vxKur = zeros(length(Files),1);
@@ -243,13 +265,18 @@ for kf = 1:length(fpathCell)
 
             filename = strcat(fvFolder,'\',Files(k));
 
-            data = importdata(filename);
+            data = table2array(readtable(filename));
 
             vxRMS(k) = rms(data(:,1));
             vxKur(k) = kurtosis(data(:,1)); 
             vxSke(k) = skewness(data(:,1));
             vxShape(k) = vxRMS(k)/(mean(abs(data(:,1)))); 
-            vxTHD(k) = thd(data(:,1));
+            try
+                vxTHD(k) = thd(data(:,1));
+            catch
+                warning('Erro no THD Vib x');
+                vxTHD(k) = NaN;
+            end
             vxPeak(k) = max(abs(data(:,1)));
             vxCrest(k) = vxPeak(k)/vxRMS(k);
             vxStd(k) = std(data(:,1));
@@ -259,7 +286,12 @@ for kf = 1:length(fpathCell)
             vyKur(k) = kurtosis(data(:,2));
             vySke(k) = skewness(data(:,2));
             vyShape(k) = vyRMS(k)/(mean(abs(data(:,2))));
-            vyTHD(k) = thd(data(:,2));
+            try
+                vyTHD(k) = thd(data(:,1));
+            catch
+                warning('Erro no THD Vib y');
+                vyTHD(k) = NaN;
+            end
             vyPeak(k) = max(abs(data(:,2)));
             vyCrest(k) = vyPeak(k)/vyRMS(k);
             vyStd(k) = std(data(:,2));
@@ -269,43 +301,48 @@ for kf = 1:length(fpathCell)
             vzKur(k) = kurtosis(data(:,3));
             vzSke(k) = skewness(data(:,3));
             vzShape(k) = vzRMS(k)/(mean(abs(data(:,3))));
-            vzTHD(k) = thd(data(:,3));
+            try
+                vzTHD(k) = thd(data(:,1));
+            catch
+                warning('Erro no THD Vib z');
+                vzTHD(k) = NaN;
+            end
             vzPeak(k) = max(abs(data(:,3)));
             vzCrest(k) = vzPeak(k)/vzRMS(k);
             vzStd(k) = std(data(:,3));
             vzVar(k) = var(data(:,3));
         end
         
-        vxRMS = vxRMS(tV<tEnd); vxRMS = vxRMS(2:end); 
-        vxKur = vxKur(tV<tEnd); vxKur = vxKur(2:end);
-        vxSke = vxSke(tV<tEnd); vxSke = vxSke(2:end);
-        vxShape = vxShape(tV<tEnd); vxShape = vxShape(2:end);
-        vxTHD = vxTHD(tV<tEnd); vxTHD = vxTHD(2:end);
-        vxCrest = vxCrest(tV<tEnd); vxCrest = vxCrest(2:end);
-        vxPeak = vxPeak(tV<tEnd); vxPeak = vxPeak(2:end);
-        vxVar = vxVar(tV<tEnd); vxVar = vxVar(2:end);
-        vxStd = vxStd(tV<tEnd); vxStd = vxStd(2:end);
+        vxRMS = vxRMS(tV<=tEnd);
+        vxKur = vxKur(tV<=tEnd);
+        vxSke = vxSke(tV<=tEnd);
+        vxShape = vxShape(tV<=tEnd);
+        vxTHD = vxTHD(tV<=tEnd);
+        vxCrest = vxCrest(tV<=tEnd);
+        vxPeak = vxPeak(tV<=tEnd);
+        vxVar = vxVar(tV<=tEnd);
+        vxStd = vxStd(tV<=tEnd);
         
-        vyRMS = vyRMS(tV<tEnd); vyRMS = vyRMS(2:end); 
-        vyKur = vyKur(tV<tEnd); vyKur = vyKur(2:end);
-        vySke = vySke(tV<tEnd); vySke = vySke(2:end);
-        vyShape = vyShape(tV<tEnd); vyShape = vyShape(2:end);
-        vyTHD = vyTHD(tV<tEnd); vyTHD = vyTHD(2:end);
-        vyCrest = vyCrest(tV<tEnd); vyCrest = vyCrest(2:end);
-        vyPeak = vyPeak(tV<tEnd); vyPeak = vyPeak(2:end);
-        vyVar = vyVar(tV<tEnd); vyVar = vyVar(2:end);
-        vyStd = vyStd(tV<tEnd); vyStd = vyStd(2:end);
+        vyRMS = vyRMS(tV<=tEnd);
+        vyKur = vyKur(tV<=tEnd);
+        vySke = vySke(tV<=tEnd);
+        vyShape = vyShape(tV<=tEnd);
+        vyTHD = vyTHD(tV<=tEnd);
+        vyCrest = vyCrest(tV<=tEnd);
+        vyPeak = vyPeak(tV<=tEnd);
+        vyVar = vyVar(tV<=tEnd);
+        vyStd = vyStd(tV<=tEnd);
         
-        vzRMS = vzRMS(tV<tEnd); vzRMS = vzRMS(2:end); 
-        vzKur = vzKur(tV<tEnd); vzKur = vzKur(2:end);
-        vzSke = vzSke(tV<tEnd); vzSke = vzSke(2:end);
-        vzShape = vzShape(tV<tEnd); vzShape = vzShape(2:end);
-        vzTHD = vzTHD(tV<tEnd); vzTHD = vzTHD(2:end);
-        vzCrest = vzCrest(tV<tEnd); vzCrest = vzCrest(2:end);
-        vzPeak = vzPeak(tV<tEnd); vzPeak = vzPeak(2:end);
-        vzVar = vzVar(tV<tEnd); vzVar = vzVar(2:end);
-        vzStd = vzStd(tV<tEnd); vzStd = vzStd(2:end);
-        tV = tV(tV<tEnd); tV = tV(2:end);
+        vzRMS = vzRMS(tV<=tEnd);
+        vzKur = vzKur(tV<=tEnd);
+        vzSke = vzSke(tV<=tEnd);
+        vzShape = vzShape(tV<=tEnd);
+        vzTHD = vzTHD(tV<=tEnd);
+        vzCrest = vzCrest(tV<=tEnd);
+        vzPeak = vzPeak(tV<=tEnd);
+        vzVar = vzVar(tV<=tEnd);
+        vzStd = vzStd(tV<=tEnd);
+        tV = tV(tV<=tEnd);
         
         delete(ppm);
         clear data;
@@ -323,7 +360,7 @@ for kf = 1:length(fpathCell)
             Files = sort(string({mf.name}'));
             clear mf;
             
-            teA = (((1:length(Files))-1)*Ta-t0)/3600;
+            teA = [NaN;tempo];
 
             aRMS = zeros(length(Files),1);
             aKur = zeros(length(Files),1);
@@ -335,15 +372,15 @@ for kf = 1:length(fpathCell)
 
                 filename = strcat(faFolder,'\',Files(k));
 
-                data = importdata(filename);
+                data = table2array(readtable(filename));
 
                 aRMS(k) = rms(data);
                 aKur(k) = kurtosis(data);
             end
 
-            aRMS = aRMS(teA<tEnd); aRMS = aRMS(2:end); 
-            aKur = aKur(teA<tEnd); aKur = aKur(2:end);
-            teA = teA(teA<tEnd); teA = teA(2:end);
+            aRMS = aRMS(teA<=tEnd);
+            aKur = aKur(teA<=tEnd);
+            teA = teA(teA<=tEnd);
             delete(ppm);
             
             clear data;
@@ -355,42 +392,46 @@ for kf = 1:length(fpathCell)
     % Pressão
 
     if pressload
+        
+        pDes = pDes(tempo<=tEnd);
+        pSuc = pSuc(tempo<=tEnd);
+        pInt = pInt(tempo<=tEnd);
+        
         fig = figure;
         fig.Position = [fig.Position(1:2)-[0,500],900,600];
         subplot(3,1,1)
-        plot(tempo, pDes)
+        plot(tempo(tempo<=tEnd), pDes)
         hold on;
-        plot(tempo, ones(1,length(tempo))*14.7,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), ones(1,length(tempo(tempo<=tEnd)))*pDesSP,'LineWidth',2);
         hold off;
         ylabel('Pressão [bar]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
-        legend({'Pressão de descarga','Setpoint'},'Location','best')
-
-
-        subplot(3,1,1)
-        plot(tempo, pDes)
-        hold on;
-        plot(tempo, ones(1,length(tempo))*14.7,'LineWidth',2);
-        hold off;
-        ylabel('Pressão [bar]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         legend({'Pressão de descarga','Setpoint'},'Location','best')
 
         subplot(3,1,2)
-        plot(tempo, pInt)
+        plot(tempo(tempo<=tEnd), pSuc)
+        hold on;
+        plot(tempo(tempo<=tEnd), ones(1,length(tempo(tempo<=tEnd)))*pSucSP,'LineWidth',2);
         hold off;
         ylabel('Pressão [bar]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
+        legend({'Pressão de Sucção','Setpoint'},'Location','best')
+
+        subplot(3,1,3)
+        plot(tempo(tempo<=tEnd), pInt)
+        hold off;
+        ylabel('Pressão [bar]'), xlabel('Tempo [h]')
+        xlim([0 tEnd])
         legend({'Pressão intermediária'},'Location','best')
 
         pD.data = pDes;
-        pD.t = tempo;
+        pD.t = tempo(tempo<=tEnd);
 
         pI.data = pInt;
-        pI.t = tempo;
+        pI.t = tempo(tempo<=tEnd);
 
         pS.data = pSuc;
-        pS.t = tempo;
+        pS.t = tempo(tempo<=tEnd);
 
         save(strcat(fpathVar,'\pressao_Descarga.mat'),'pD');
         save(strcat(fpathVar,'\pressao_Succao.mat'),'pS');
@@ -401,12 +442,12 @@ for kf = 1:length(fpathCell)
 
         fig = figure;
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
-        plot(tempo, pDes)
+        plot(tempo(tempo<=tEnd), pDes)
         hold on;
-        plot(tempo, ones(1,length(tempo))*14.7,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), ones(1,length(tempo(tempo<=tEnd)))*pDesSP,'LineWidth',2);
         hold off;
         ylabel('Pressão [bar]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         legend({'Pressão de descarga','Setpoint'},'Location','best')
 
         savefig(strcat(fpathFig,'\pressao_Descarga.fig'));
@@ -414,12 +455,12 @@ for kf = 1:length(fpathCell)
 
         fig = figure;
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
-        plot(tempo, pSuc)
+        plot(tempo(tempo<=tEnd), pSuc)
         hold on;
-        plot(tempo, ones(1,length(tempo))*1.148,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), ones(1,length(tempo(tempo<=tEnd)))*pSucSP,'LineWidth',2);
         hold off;
         ylabel('Pressão [bar]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         legend({'Pressão de sucção','Setpoint'},'Location','best')
 
         savefig(strcat(fpathFig,'\pressao_Succao.fig'));
@@ -429,26 +470,31 @@ for kf = 1:length(fpathCell)
     % Temperatura
 
     if tempload
+        tSuc = pSuc(tempo<=tEnd);
+        tComp = tComp(tempo<=tEnd);
+        tInt = tInt(tempo<=tEnd);
+        tAmb = tAmb(tempo<=tEnd);
+        
         fig = figure;
         fig.Position = [fig.Position(1:2),900,300];
-        plot(tempo, tSuc,'LineWidth',2)
+        plot(tempo(tempo<=tEnd), tSuc,'LineWidth',2)
         hold on;
-        plot(tempo, tComp,'LineWidth',2);
-        plot(tempo, tInt,'LineWidth',2);
-        plot(tempo, tAmb,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), tComp,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), tInt,'LineWidth',2);
+        plot(tempo(tempo<=tEnd), tAmb,'LineWidth',2);
         hold off;
         ylabel('Temperatura [ºC]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         legend({'Sucção','Corpo','Intermediária','Descarga'},'Location','best')
 
         tS.data = tSuc;
-        tS.t = tempo;
+        tS.t = tempo(tempo<=tEnd);
         tC.data = tComp;
-        tC.t = tempo;
+        tC.t = tempo(tempo<=tEnd);
         tI.data = tInt;
-        tI.t = tempo;
+        tI.t = tempo(tempo<=tEnd);
         tA.data = tAmb;
-        tA.t = tempo;
+        tA.t = tempo(tempo<=tEnd);
 
         save(strcat(fpathVar,'\temperatura_Succao.mat'),'tS');
         save(strcat(fpathVar,'\temperatura_Compressor.mat'),'tC');
@@ -462,20 +508,23 @@ for kf = 1:length(fpathCell)
     % Posicao
 
     if posload
+        pos = pos(tempo<=tEnd);
+        posSP = posSP(tempo<=tEnd);
+        
         fig = figure;
         fig.Position = [fig.Position(1:2),900,300];
-        plot(tempo, pos)
+        plot(tempo(tempo<=tEnd), pos)
         hold on;
-        plot(tempo, posSP);
+        plot(tempo(tempo<=tEnd), posSP);
         hold off;
         ylabel('Posição [Passos]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         legend({'Posição','Referência'},'Location','best')
 
         posicao.data = pos;
-        posicao.t = tempo;
+        posicao.t = tempo(tempo<=tEnd);
         posicaoSP.data = posSP;
-        posicaoSP.t = tempo;
+        posicaoSP.t = tempo(tempo<=tEnd);
 
         save(strcat(fpathVar,'\posicao'),'posicao');
         save(strcat(fpathVar,'\posicaoSP.mat'),'posicaoSP');
@@ -487,15 +536,17 @@ for kf = 1:length(fpathCell)
     % Tensão da válvula de sucção
 
     if usucload && ~isnan(uSuc(1))
+        uSuc = uSuc(tempo<=tEnd);
+        
         fig = figure;
         fig.Position = [fig.Position(1:2),900,300];
-        plot(tempo, uSuc)
+        plot(tempo(tempo<=tEnd), uSuc)
 
         ylabel('Tensão [V]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
 
         tensaoSuc.data = uSuc;
-        tensaoSuc.t = tempo;
+        tensaoSuc.t = tempo(tempo<=tEnd);
 
         save(strcat(fpathVar,'\tensaoSuc.mat'),'tensaoSuc');
 
@@ -506,14 +557,16 @@ for kf = 1:length(fpathCell)
     % Vazão
 
     if vazload
+        vazao = vazao(tempo<=tEnd);
+        
         fig = figure;
         fig.Position = [fig.Position(1:2),900,300];
-        plot(tempo, vazao)
+        plot(tempo(tempo<=tEnd), vazao)
         ylabel('Vazão [kg/h]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
 
         vaz.data = vazao;
-        vaz.t = tempo;
+        vaz.t = tempo(tempo<=tEnd);
         save(strcat(fpathVar,'\vazao.mat'),'vaz');
 
         savefig(strcat(fpathFig,'\vazao.fig'));
@@ -716,7 +769,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxRMS)
         ylabel('Valor RMS [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_RMS.fig'));
         close all;
@@ -725,7 +778,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyRMS)
         ylabel('Valor RMS [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_RMS.fig'));
         close all;
@@ -734,7 +787,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzRMS)
         ylabel('Valor RMS [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_RMS.fig'));
         close all;
@@ -780,7 +833,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxSke)
         ylabel('Assimetria [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Ske.fig'));
         close all;
@@ -789,7 +842,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vySke)
         ylabel('Assimetria [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Ske.fig'));
         close all;
@@ -798,7 +851,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzSke)
         ylabel('Assimetria [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Ske.fig'));
         close all;
@@ -843,7 +896,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxShape)
         ylabel('Fator de forma [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Shape.fig'));
         close all;
@@ -852,7 +905,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyShape)
         ylabel('Fator de forma [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Shape.fig'));
         close all;
@@ -861,7 +914,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzShape)
         ylabel('Fator de forma [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Shape.fig'));
         close all;
@@ -906,7 +959,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxTHD)
         ylabel('THD [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_THD.fig'));
         close all;
@@ -915,7 +968,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyTHD)
         ylabel('THD [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_THD.fig'));
         close all;
@@ -924,7 +977,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzTHD)
         ylabel('THD [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_THD.fig'));
         close all;
@@ -969,7 +1022,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxCrest)
         ylabel('Fator de crista [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Crest.fig'));
         close all;
@@ -978,7 +1031,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyCrest)
         ylabel('Fator de crista [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Crest.fig'));
         close all;
@@ -987,7 +1040,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzCrest)
         ylabel('Fator de crista [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Crest.fig'));
         close all;
@@ -1032,7 +1085,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxPeak)
         ylabel('Pico [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Peak.fig'));
         close all;
@@ -1041,7 +1094,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyPeak)
         ylabel('Pico [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Peak.fig'));
         close all;
@@ -1050,7 +1103,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzPeak)
         ylabel('Pico [g]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Peak.fig'));
         close all;
@@ -1095,7 +1148,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxStd)
         ylabel('Desvio Padrão [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Std.fig'));
         close all;
@@ -1104,7 +1157,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyStd)
         ylabel('Desvio Padrão [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Std.fig'));
         close all;
@@ -1113,7 +1166,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzStd)
         ylabel('Desvio Padrão [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Std.fig'));
         close all;
@@ -1158,7 +1211,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vxVar)
         ylabel('Variância [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaInf_Var.fig'));
         close all;
@@ -1167,7 +1220,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vyVar)
         ylabel('Variância [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
         savefig(strcat(fpathFig,'\vibracao_Bancada_Var.fig'));
         close all;
@@ -1176,7 +1229,7 @@ for kf = 1:length(fpathCell)
         fig.Position = [fig.Position(1:2)-[0,500],900,300];
         plot(tV, vzVar)
         ylabel('Variância [adim]'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota superior do compressor');
         savefig(strcat(fpathFig,'\vibracao_CalotaSup_Var.fig'));
         close all;
@@ -1190,19 +1243,19 @@ for kf = 1:length(fpathCell)
         subplot(3,1,1)  
         plot(tV, vxKur)
         ylabel('Curtose'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
 
         subplot(3,1,2) 
         plot(tV, vyKur)
         ylabel('Curtose'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Bancada');
 
         subplot(3,1,3) 
         plot(tV, vzKur)
         ylabel('Curtose'), xlabel('Tempo [h]')
-        xlim([0 tempo(end)])
+        xlim([0 tEnd])
         title('Calota inferior do compressor');
 
         vInfKur.data = vxKur;
@@ -1288,4 +1341,5 @@ for kf = 1:length(fpathCell)
         savefig(strcat(fpathFig,'\acusticas_Curtose.fig'));
         close all;
     end
+    
 end

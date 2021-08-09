@@ -2,16 +2,17 @@
 
 clear; close all;
 
-load('EnDataA.mat');
+load('EnDataB_DissertacaoA.mat');
 
-EnData = EnDataA; % Carrega os dados dos ensaios
+EnData = EnDataB; % Carrega os dados dos ensaios
 
-loadTempoAmacA; % Carrega as estimativas de amaciamento
+%loadTempoAmacA; % Carrega as estimativas de amaciamento
 
-dest = 'D:\Documentos\Amaciamento\Apresentações\2021_03_26 - Nicolas (dados)\';
+dest = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
 
 for k1 = 1:length(EnData)
     for k2 = 1:length(EnData{k1})
+        tEst{k1}(k2) = 0;
         temp = EnData{k1}(k2);
         name = strrep(temp.name(9:end),'\','_'); % Formata o nome do ensaio
         fname = [dest,name,'tAm',num2str(tEst{k1}(k2)),'.csv'];
