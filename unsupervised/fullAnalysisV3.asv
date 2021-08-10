@@ -102,6 +102,7 @@ for kgr = 1:height(un) % Para cada combinação
         for km = 1:length(methods) % Para cada método
             for kp = 1:length(paramMethod{km}) % Para cada parâmetro de detecção
                 for kc = 1:nClus % Para cada cluster
+                    resultadosTemp = struct2table(resultadosBase,'AsArray',true); resultadosTemp(1,:) = [];
                     for kam = 1:length(rOr) % Para cada amostra
                         
                         % Calcula as proporções de clusters por janela
@@ -142,6 +143,7 @@ for kgr = 1:height(un) % Para cada combinação
                     it = it + 1;
                     waitbar(it/numIt);
                 end
+                resultadosTemp{kam}
             end
         end
     end
