@@ -136,7 +136,7 @@ for kgr = 1:height(un) % Para cada combinação
                     % Transfere o resultado da análise como uma linha da
                     % tabela com todas as análises
                     resultadosTotal = [resultadosTotal;r];
-                    clear r;
+                    clear r resp;
                     
                     % Atualiza a waitbar
                     it = it + 1;
@@ -147,20 +147,25 @@ for kgr = 1:height(un) % Para cada combinação
     end
 end
 
-gg = resultadosTotal(resultadosTotal.Pass == true,:);
+% Tabela de resultados aprovados em todos as condições
+resultadosAprovados = resultadosTotal(resultadosTotal.Pass == true,:);
 
-amostras = gg.Amostra{1};
-for k = 2:height(gg)
-    amostras = unique([amostras, gg.Amostra{k}]);
+amostras = resultadosAprovados.Amostra{1};
+for k = 2:height(resultadosAprovados)
+    amostras = unique([amostras, resultadosAprovados.Amostra{k}]);
 end
 
-amostras = sort(amostras);
+% Ordena as amostras corretamente (Ex.: {"B1", "B2", "B10"..} ao invés de {"B1", "B10", "B2"..})
+R = cell2mat(regexp(amostras ,'(?<Name>\D+)(?<Nums>\d+)','names'));
+tmp = sortrows([{R.Name}' num2cell(cellfun(@(x)str2double(x),{R.Nums}'))]);
+amostras = strcat(tmp(:,1) ,cellfun(@(x) num2str(x), tmp(:,2),'unif',0));
 
-tDetec = nan(3,height(gg),length(amostras));
+tDetec = nan(3,height(resultadosAprovados),length(amostras));
 
-for k1 = 1:height(gg)
-    for k2 = 1:length(gg.Amostra{k1})
-        i = find(strcmp(gg.Amostra{k1}{k2},amostras));
-        tDetec(:,k1,i) = gg.TimeDetect{k1}{k2};
+% Monta a matriz com os tempos detectados
+for k1 = 1:height(resultadosAprovados)
+    for k2 = 1:length(amostras)
+        i = find(strcmp(resultadosAprovados.Amostra{k1}{k2},amostras));
+        tDetec(:,k1,i) = resultadosAprovados.TimeDetect{k1}{k2};
     end
 end
