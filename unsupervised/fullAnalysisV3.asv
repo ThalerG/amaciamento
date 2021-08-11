@@ -7,7 +7,7 @@ clear; close all;
 % clusterização
 
 % Pasta com os dados de clusters. 
-fold = 'D:\Documentos\Amaciamento\Clusterizações\Dissertacao - Modelo A\';
+fold = 'D:\Documentos\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 fold = dir(fold); fold = fold(3:end);
 
 % Identifica as amostras contidas na pasta
@@ -102,7 +102,7 @@ for kgr = 1:height(un) % Para cada combinação
         for km = 1:length(methods) % Para cada método
             for kp = 1:length(paramMethod{km}) % Para cada parâmetro de detecção
                 for kc = 1:nClus % Para cada cluster
-                    
+                    resP = nan(1,length(rOr));
                     for kam = 1:length(rOr) % Para cada amostra
                         
                         % Calcula as proporções de clusters por janela
@@ -125,6 +125,8 @@ for kgr = 1:height(un) % Para cada combinação
                         r.Obs{1}{kam} = resP(kam).Obs; % Observações do método
                     end
                     
+                    if (strcmp(rOr(kam).Grandeza,"cRMS")&&(rOr(kam).N==1)&&(rOr(kam).M==30)&&...
+                            (rOr(kam).D==1)&&(rOr(kam).Window==1)
                     
                     % Passa todos os dados para uma única struct
                     r.Pass = all([resP.Pass]); % O método só é aprovado quando todas as detecções atendem aos critérios
@@ -138,7 +140,7 @@ for kgr = 1:height(un) % Para cada combinação
                     % Transfere o resultado da análise como uma linha da
                     % tabela com todas as análises
                     resultadosTotal = [resultadosTotal;r];
-                    clear r resP;
+                    clear r resp;
                     
                     % Atualiza a waitbar
                     it = it + 1;
