@@ -149,17 +149,18 @@ end
 
 gg = resultadosTotal(resultadosTotal.Pass == true,:);
 
-tAmac = nan(height(gg),length(resultadosTotal.TimeDetect(1)));
-tJaAmac = nan(height(gg),length(resultadosTotal.TimeDetect(1)));
-
-for k1 = 1:height(gg)
-    TDec = gg.TimeDetect(k1,:);
-    for k2 = 1:length(TDec)
-        TimeAmac = TDec{k2};
-        tAmac(k1,k2) = TimeAmac(1);
-        tJaAmac(k1,k2) = max(TimeAmac(2:3));
-    end
+amostras = gg.Amostra{1};
+for k = 2:height(gg)
+    amostras = unique([amostras, gg.Amostra{k}]);
 end
 
-ggGr = gg(min(tAmac,[],2)>=4,:);
-tAmacGr = tAmac(min(tAmac,[],2)>=4,:);
+amostras = sort(amostras);
+
+tDetec = nan(3,height(gg),length(amostras));
+
+for k1 = 1:height(gg)
+    for k2 = 1:length(gg.Amostra{k1})
+        i = find(strcmp(gg.Amostra{k1}{k2},amostras));
+        tDetec(:,k1,i) = gg.TimeDetect{k1}{k2};
+    end
+end
