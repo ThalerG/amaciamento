@@ -102,7 +102,6 @@ for kgr = 1:height(un) % Para cada combinação
         for km = 1:length(methods) % Para cada método
             for kp = 1:length(paramMethod{km}) % Para cada parâmetro de detecção
                 for kc = 1:nClus % Para cada cluster
-                    resultadosTemp = struct2table(resultadosBase,'AsArray',true); resultadosTemp(1,:) = [];
                     for kam = 1:length(rOr) % Para cada amostra
                         
                         % Calcula as proporções de clusters por janela
@@ -143,7 +142,6 @@ for kgr = 1:height(un) % Para cada combinação
                     it = it + 1;
                     waitbar(it/numIt);
                 end
-                resultadosTemp{kam}
             end
         end
     end
@@ -151,8 +149,14 @@ end
 
 gg = resultadosTotal(resultadosTotal.Pass == true,:);
 
-tAmac = nan(height(gg),length(resultadosTotal.TimeDetect(1)));
-tJaAmac = nan(height(gg),length(resultadosTotal.TimeDetect(1)));
+amostras = gg.Amostra{1};
+for k = 2:height(gg)
+    amostras = unique([amostras, gg.Amostra{k}]);
+end
+
+amostras = sort(amostras);
+
+tDetec = nan(3,height(gg),length(amostras));
 
 for k1 = 1:height(gg)
     TDec = gg.TimeDetect(k1,:);
