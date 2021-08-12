@@ -13,7 +13,7 @@ for k1 = 1:length(unEnsaios) % Para cada ensaio
     
     grt = propTemp>thr;
     
-    if any(grt) % O cluster aparece no ensaio
+    if any(grt) % O cluster passa do limiar no ensaio
         tempoProp = timeTemp(grt);
         res.TimeDetect(k1) = tempoProp(1);
     else % Cluster não aparece no ensaio
