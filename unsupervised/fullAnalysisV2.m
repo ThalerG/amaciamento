@@ -2,7 +2,7 @@
 
 clear; close all;
 
-fold = 'D:\Documentos\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
+fold = 'D:\Documentos\Amaciamento\Clusterizações\Dissertacao - Modelo A\';
 fold = dir(fold); fold = fold(3:end);
 am = regexp({fold.name},'.\d*_','match'); am = unique([am{:}]);
 

@@ -167,7 +167,9 @@ tDetec = nan(3,height(resultadosAprovados),length(amostras));
 % Monta a matriz com os tempos detectados
 for k1 = 1:height(resultadosAprovados)
     for k2 = 1:length(amostras)
-        i = find(strcmp(resultadosAprovados.Amostra{k1}{k2},amostras));
-        tDetec(:,k1,i) = resultadosAprovados.TimeDetect{k1}{k2};
+        i = find(strcmp(resultadosAprovados.Amostra{k1},amostras{k2}));
+        if ~isempty(i)
+            tDetec(:,k1,k2) = resultadosAprovados.TimeDetect{k1}{i};
+        end
     end
 end
