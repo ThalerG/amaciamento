@@ -25,9 +25,9 @@ results = table();
 for k = 1:length(tbl.Properties.VariableNames)
     gran = regexp(tbl.Properties.VariableNames{k},'.*M\d','match');
     gran = gran{1}(1:(end-2));
-    if (strcmp(amostra,'B5'))&&(strcmp(gran,'Vazao'))
+    if (strcmp(amostra,'B5'))&&(strcmp(gran(1:5),'Vazao'))
         continue
-    elseif (strcmp(amostra,'B7'))&&(strcmp(gran(1:5),'CorrenteRMS'))
+    elseif (strcmp(amostra,'B7'))&&(strcmp(gran,'CorrenteRMS'))
         continue
     elseif (strcmp(amostra,'B8'))&&(strcmp(gran(1:5),'Vibra'))
         continue
