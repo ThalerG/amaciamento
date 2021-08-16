@@ -1,6 +1,6 @@
 clear; close all;
 
-load('EnDataA.mat');
+load('EnDataA_Dissertacao.mat');
 
 EnData = EnDataA; 
 
@@ -21,7 +21,7 @@ conjVal = 20;
 
 % Tempos de amaciamento esperados:
 
-loadTempoAmacA;
+loadTempoAmacADissert;
 
 %% Parâmetros de busca
 % Opções de métrica de desempenho:
@@ -149,6 +149,7 @@ end
 clear preProc;
 
 parfor n = 1:lenN
+% for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);
