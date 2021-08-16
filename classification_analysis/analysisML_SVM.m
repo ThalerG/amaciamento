@@ -14,9 +14,11 @@ ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 5);
 
 parfor k1 = 1:len1
     for k2 = 1:len2
-        paramMLTemp = {paramMLBusca{1}(k1),paramMLBusca{2}(k2)};
-        analysisMLAn(k1,k2).kernelFunction = paramMLBusca{1}(k1);
-        analysisMLAn(k1,k2).kernelScale = paramMLBusca{2}(k2);
+        kFun = paramMLBusca{1}(k1); kFun = kFun{1};
+        kScale = paramMLBusca{2}(k2); kScale = kScale{1};
+        paramMLTemp = {kFun,kScale};
+        analysisMLAn(k1,k2).kernelFunction = kFun;
+        analysisMLAn(k1,k2).kernelScale = kScale;
         
         [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel);
 

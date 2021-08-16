@@ -6,8 +6,8 @@ EnData = EnDataA;
 
 clear EnDataA;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -15,9 +15,9 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-conjVal = 20;
+% conjVal = 20;
 % conjVal = [];
-% conjVal = [1,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [5,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
@@ -62,7 +62,7 @@ switch methodML
         maxSplitsBusca = 5:5:80;
         paramMLBusca = {maxSplitsBusca};
     case 'SVM'
-        kernelFunction = 'cubic';
+        kernelFunction = 'quadratic';
         kernelScale = 'auto';
         paramML = {kernelFunction,kernelScale};
         
