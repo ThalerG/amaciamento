@@ -7,7 +7,7 @@ clear; close all;
 % clusterização
 
 % Pasta com os dados de clusters. 
-fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - All\';
+fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 fold = dir(fold); fold = fold(3:end);
 
 % Identifica as amostras contidas na pasta
