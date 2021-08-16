@@ -15,9 +15,9 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-% conjVal = 20;
+conjVal = 20;
 % conjVal = [];
-conjVal = [5,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+% conjVal = [5,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
@@ -41,7 +41,7 @@ D = [1:10,15:5:25, 30:10:90 100:20:180]; % Distância entre amostras da regressão
 
 wMax = 3; % Duração máxima da janela [h]
 
-vars = {'cRMS', 'cKur', 'vInfRMS', 'vInfKur', 'vSupRMS', 'vSupKur', 'vaz'}; % Variáveis utilizadas
+vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
 
 %%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
 
@@ -51,7 +51,7 @@ vars = {'cRMS', 'cKur', 'vInfRMS', 'vInfKur', 'vSupRMS', 'vSupKur', 'vaz'}; % Va
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+methodML = 'logReg'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
