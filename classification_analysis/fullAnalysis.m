@@ -51,7 +51,7 @@ vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSu
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'logReg'; % Método para classificação
+methodML = 'SVM'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
