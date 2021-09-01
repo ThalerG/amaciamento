@@ -6,8 +6,8 @@ EnData = EnDataA;
 
 clear EnDataA;
 
-% rt = 'D:\Documentos\Amaciamento\'; % Root folder
-rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -15,9 +15,9 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-conjVal = 20;
+% conjVal = 20;
 % conjVal = [];
-% conjVal = [5,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
 % Tempos de amaciamento esperados:
 
@@ -51,7 +51,7 @@ vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSu
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'SVM'; % Método para classificação
+methodML = 'tree'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -108,7 +108,10 @@ FSmethod = 'hex_none'; % Método para feature selection
 % "Safe-level SMOTE"
 
 % paramOvers = {method,% of new samples,k neighbors, standardize}
-paramOvers = {'none', 200, 10, false};
+paramOvers = {'SMOTE', 500, 10, false};
+
+OversOptions.NumNeighbors = paramOvers{3};
+OversOptions.Standardize = paramOvers{4};
 
 %% Pasta e arquivos
 
@@ -161,11 +164,42 @@ parfor n = 1:lenN
              end
              
              if numel(conjVal) == 1
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
+                [Ttrain,~,~,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
              else
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
+                [Ttrain,~,~,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
              end
-
+             
+             % Oversampling
+             switch paramOvers{1}
+                 case "SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = mySMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "ADASYN"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = myADASYN(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "Borderline SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = myBorderlineSMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "Safe-level SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = mySafeLevelSMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+             end
+             
+             Xtrain = Ttrain{:,1:(end-1)};
+             Ytrain = Ttrain{:,end}==1;
+             
              [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
              preProcAn(n,m,d).time_Train = timeTrain;
              
