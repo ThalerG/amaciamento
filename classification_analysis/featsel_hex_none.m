@@ -27,7 +27,7 @@ clear featSel;
 parfor v = 1:lenVars
      featSelAn(v).Vars = allVars{v};
 
-     [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,featSelAn(v).Vars);
+     [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,featSelAn(v).Vars,paramOvers,standardize);
      [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
      
      featSelAn(v).time_Train = timeTrain;

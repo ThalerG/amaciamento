@@ -20,7 +20,7 @@ parfor k1 = 1:len1
         analysisMLAn(k1,k2).kernelFunction = kFun;
         analysisMLAn(k1,k2).kernelScale = kScale;
         
-        [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel);
+        [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel,paramOvers,standardize);
 
         [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramMLTemp);
 

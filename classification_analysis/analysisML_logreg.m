@@ -3,7 +3,7 @@
 analysisMLAn.ROC_AUC_Train = NaN; analysisMLAn.fselBeta_Train = NaN; analysisMLAn.MMC_Train = NaN; analysisMLAn.time_Train = NaN;
 analysisMLAn.ROC_AUC_Test = NaN; analysisMLAn.fselBeta_Test = NaN; analysisMLAn.MMC_Test = NaN;
 
-[Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel, paramOvers);
+[Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel,paramOvers,standardize);
 
 [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
 

@@ -6,7 +6,7 @@ featSel.ROC_AUC_Test = NaN; featSel.fselBeta_Test = NaN; featSel.MMC_Test = NaN;
 
 featSelAn(1) = featSel;
 
-[Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars);
+[Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars,paramOvers,standardize);
 [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
 featSelAn(ind).time_Train = timeTrain;
 
@@ -40,7 +40,7 @@ while true
          featSelAn(ind).Vars = varTemp;
          featSelAn(ind).Vars(k) = [];
          
-         [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,featSelAn(ind).Vars(k));
+         [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,featSelAn(ind).Vars(k),paramOvers,standardize);
          
          [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, param);
          featSelAn(ind).time_Train = timeTrain;

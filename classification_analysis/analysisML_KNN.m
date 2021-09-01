@@ -21,7 +21,7 @@ parfor k1 = 1:len1
             analysisMLAn(k1,k2,k3).distance = paramMLBusca{2}{k2};
             analysisMLAn(k1,k2,k3).weight = paramMLBusca{3}{k3};
 
-            [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel, paramOvers);
+            [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel,paramOvers,standardize);
 
             [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramMLTemp);
 

@@ -46,6 +46,8 @@ N = 3; % Janela (número de amostras) da regressão
 M = 170; % Janela da média móvel
 D = 30; % Distância entre amostras da regressão
 
+standardize = true;
+
 vars = {'cRMS', 'cKur', 'vInfRMS', 'vInfKur', 'vSupRMS', 'vSupKur', 'vaz'}; % Variáveis utilizadas
 
 %%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
@@ -94,9 +96,9 @@ paramOvers = {'none', 200, 10, false};
 
 
  if numel(conjVal) == 1
-    [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars);
+    [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars,paramOvers,standardize);
  else
-    [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars);
+    [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars,paramOvers,standardize);
  end
 
  c1 = clock;

@@ -45,7 +45,7 @@ wMax = 3.02; % Duração máxima da janela [h]
 
 vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
 
-standardize = true;
+
 
 %%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
 
@@ -114,6 +114,9 @@ FSmethod = 'hex_none'; % Método para feature selection
 % paramOvers = {method,% of new samples,k neighbors, standardize}
 paramOvers = {'SMOTE', 500, 10, false};
 
+OversOptions.NumNeighbors = paramOvers{3};
+OversOptions.Standardize = paramOvers{4};
+
 %% Pasta e arquivos
 
 % Cria pasta para análise
@@ -124,7 +127,7 @@ mkdir(fsave); clear rt c;
 fid = fopen([fsave, 'log.txt'], 'w');
 print_logIntro;
 
-%% Análise de pré-processamento    
+%% Análise de pré-processamento
 
 fsave_preProc = [fsave,'analise_preProcessamento\'];
 
@@ -165,10 +168,41 @@ for n = 1:lenN
              end
              
              if numel(conjVal) == 1
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnDataAnalise,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,~,~,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
              else
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnDataAnalise,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,~,~,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars);
              end
+             
+             % Oversampling
+             switch paramOvers{1}
+                 case "SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = mySMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "ADASYN"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = myADASYN(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "Borderline SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = myBorderlineSMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+                 case "Safe-level SMOTE"
+                     num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+                     Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
+                     [newdata,~] = mySafeLevelSMOTE(Ttrain, "0", num, OversOptions);
+                     Ttrain = [Ttrain;newdata];
+                     Ttrain.Amaciado = str2double(Ttrain.Amaciado);
+             end
+             
+             Xtrain = Ttrain{:,1:(end-1)};
+             Ytrain = Ttrain{:,end}==1;
              
              [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
              preProcAn(n,m,d).time_Train = timeTrain;

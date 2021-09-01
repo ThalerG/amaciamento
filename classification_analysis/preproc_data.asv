@@ -1,4 +1,4 @@
-function [Ttrain,Xtrain,Ytrain,Xtest,Ytest,varargout] = preproc_data(EnData,tEst,conjVal,N,M,D,minT,varNames,paramOvers,standardize)
+function [Ttrain,Xtrain,Ytrain,Xtest,Ytest,varargout] = preproc_data(EnData,tEst,conjVal,N,M,D,minT,varNames,standardize,paramOvers)
 %PREPROC_DATA Realiza pré-processamento dos dados para machine learning
 %   Se conjVal tem apenas um elemento, é a porcentagem de dados do conjunto
 %   reservada para teste.
@@ -11,7 +11,7 @@ if nargin < 9
 end
 
 if standardize
-     EnData = standardizeEnData(EnData,varNames);
+     EnData = standardizeEnData(EnData,vars);
 end
 
 if size(conjVal,2)==1

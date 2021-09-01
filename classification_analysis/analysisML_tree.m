@@ -16,7 +16,7 @@ parfor k1 = 1:len1
     paramMLTemp = {paramMLBusca{1}(k1)};
     analysisMLAn(k1).maxSplits = paramMLBusca{1}(k1);
     
-    [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel, paramOvers);
+    [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,varsSel,paramOvers,standardize);
 
     [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramMLTemp);
 
