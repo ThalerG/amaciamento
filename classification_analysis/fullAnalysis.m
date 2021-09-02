@@ -35,11 +35,9 @@ selBeta = 0.5; % Valor de selBeta caso o método seja F-selBeta
 
 %%%%%%%%%%%%%%% Pré-processamento: %%%%%%%%%%%%%%
 
-% N = 1:5; % Janela (número de amostras) da regressão
-% M = [1, 5:5:25, 30:10:180]; % Janela da média móvel
-% D = [1:10,15:5:25, 30:10:90 100:20:180]; % Distância entre amostras da regressão
-
-N = 4; M = 180:181; D = 50;
+N = 1:5; % Janela (número de amostras) da regressão
+M = [1, 5:5:25, 30:10:180]; % Janela da média móvel
+D = [1:10,15:5:25, 30:10:90 100:20:180]; % Distância entre amostras da regressão
 
 wMax = 3.02; % Duração máxima da janela [h]
 
@@ -51,11 +49,11 @@ standardize = true;
 
 % logReg -> Regressão logística
 % tree -> Árvore
-% SVM -> SVM cúbica
+% SVM -> SVM
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+methodML = 'KNN'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -152,8 +150,8 @@ end
 
 clear preProc;
 
-% parfor n = 1:lenN
-for n = 1:lenN
+parfor n = 1:lenN
+% for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);
@@ -165,9 +163,9 @@ for n = 1:lenN
              end
              
              if numel(conjVal) == 1
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnDataAnalise,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
              else
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnDataAnalise,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
              end
              
              [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
