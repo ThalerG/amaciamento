@@ -6,8 +6,8 @@ EnData = EnDataA;
 
 clear EnDataA;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -110,12 +110,12 @@ FSmethod = 'hex_none'; % Método para feature selection
 % "Safe-level SMOTE"
 
 % paramOvers = {method,% of new samples,k neighbors, standardize}
-paramOvers = {'SMOTE', 500, 10, false};
+paramOvers = {'SMOTE', 0, 10, false};
 
 %% Pasta e arquivos
 
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloA_TestePorEnsaio_SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % Cria arquivo de log
@@ -150,8 +150,8 @@ end
 
 clear preProc;
 
-parfor n = 1:lenN
-% for n = 1:lenN
+% parfor n = 1:lenN
+for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);

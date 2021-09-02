@@ -1,4 +1,4 @@
-function [Ttrain,Xtrain,Ytrain,Xtest,Ytest,varargout] = preproc_data(EnData,tEst,conjVal,N,M,D,minT,varNames,standardize,paramOvers)
+function [Ttrain,Xtrain,Ytrain,Xtest,Ytest,varargout] = preproc_data(EnData,tEst,conjVal,N,M,D,minT,varNames,paramOvers,standardize)
 %PREPROC_DATA Realiza pré-processamento dos dados para machine learning
 %   Se conjVal tem apenas um elemento, é a porcentagem de dados do conjunto
 %   reservada para teste.
@@ -11,7 +11,7 @@ if nargin < 9
 end
 
 if standardize
-     EnData = standardizeEnData(EnData,vars);
+     EnData = standardizeEnData(EnData,varNames);
 end
 
 if size(conjVal,2)==1
@@ -50,31 +50,33 @@ varnames = append(varNames,num); varnames = reshape(varnames,[],1); % Gera array
 varnames = [varnames; 'Amaciado']; % Prepara array com nomes de todos os preditores + classe
 Ttrain = array2table([Xtrain,Ytrain],'VariableNames',varnames); % Transforma array em tabela
 
+if paramOvers{2} == 0
+    num = nnz(Ttrain.Amaciado==1)-nnz(Ttrain.Amaciado==0;
+else
+    num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
+end
+    
 OversOptions.NumNeighbors = paramOvers{3};
 OversOptions.Standardize = paramOvers{4};
 
 % Oversampling
 switch paramOvers{1}
      case "SMOTE"
-         num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
          Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
          [newdata,~] = mySMOTE(Ttrain, "0", num, OversOptions);
          Ttrain = [Ttrain;newdata];
          Ttrain.Amaciado = str2double(Ttrain.Amaciado);
      case "ADASYN"
-         num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
          Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
          [newdata,~] = myADASYN(Ttrain, "0", num, OversOptions);
          Ttrain = [Ttrain;newdata];
          Ttrain.Amaciado = str2double(Ttrain.Amaciado);
      case "Borderline SMOTE"
-         num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
          Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
          [newdata,~] = myBorderlineSMOTE(Ttrain, "0", num, OversOptions);
          Ttrain = [Ttrain;newdata];
          Ttrain.Amaciado = str2double(Ttrain.Amaciado);
      case "Safe-level SMOTE"
-         num = floor(nnz(Ttrain.Amaciado==0)*paramOvers{2}/100);
          Ttrain.Amaciado = cellstr((num2str(Ttrain.Amaciado)));
          [newdata,~] = mySafeLevelSMOTE(Ttrain, "0", num, OversOptions);
          Ttrain = [Ttrain;newdata];
