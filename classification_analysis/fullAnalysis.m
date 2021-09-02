@@ -151,8 +151,8 @@ end
 
 clear preProc;
 
-% parfor n = 1:lenN
-for n = 1:lenN
+parfor n = 1:lenN
+% for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);
