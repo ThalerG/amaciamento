@@ -41,7 +41,8 @@ D = [1:10,15:5:25, 30:10:90 100:20:180]; % Distância entre amostras da regressão
 
 wMax = 3.02; % Duração máxima da janela [h]
 
-vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
+% vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
+vars = {'cRMS', 'cKur', 'cVar', 'vaz'}; % Variáveis utilizadas
 
 standardize = true;
 
