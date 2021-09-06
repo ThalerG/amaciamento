@@ -5,12 +5,13 @@ dataInit = dataInit(tInit>0);
 
 
 t = t(((N-1)*D+1):end);
-if tEst > minT
-    L = length(nonzeros(t<=tEst));
-    t = t(1:2*L);
-else
-    t = t(t<minT);
-end
+% if tEst > minT
+%     L = length(nonzeros(t<=tEst));
+%     t = t(1:2*L);
+% else
+    t = t(t<=minT);
+    dataInit = dataInit(tInit<=minT);
+% end
 
 dataInit = movmean(dataInit,[M-1,0]);
 

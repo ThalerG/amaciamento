@@ -6,8 +6,8 @@ EnData = EnDataA;
 
 clear EnDataA;
 
-% rt = 'D:\Documentos\Amaciamento\'; % Root folder
-rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -46,6 +46,8 @@ vars = {'cRMS', 'cKur', 'cVar', 'vaz'}; % Variáveis utilizadas
 
 standardize = true;
 
+
+tMin = 20;
 %%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
 
 % logReg -> Regressão logística
@@ -53,8 +55,8 @@ standardize = true;
 % SVM -> SVM
 % KNN -> K-Nearest Neighbors
 
-kFold = 5; % Número de kFold para classificação
-methodML = 'KNN'; % Método para classificação
+kFold = 20; % Número de kFold para classificação
+methodML = 'tree'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -111,7 +113,7 @@ FSmethod = 'hex_none'; % Método para feature selection
 % "Safe-level SMOTE"
 
 % paramOvers = {method,% of new samples,k neighbors, standardize}
-paramOvers = {'SMOTE', 0, 10, false};
+paramOvers = {'SMOTE', 200, 10, false};
 
 %% Pasta e arquivos
 
@@ -151,8 +153,8 @@ end
 
 clear preProc;
 
-parfor n = 1:lenN
-% for n = 1:lenN
+% parfor n = 1:lenN
+for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);
@@ -164,9 +166,9 @@ parfor n = 1:lenN
              end
              
              if numel(conjVal) == 1
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),tMin,vars,paramOvers,standardize);
              else
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),tMin,vars,paramOvers,standardize);
              end
              
              [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
