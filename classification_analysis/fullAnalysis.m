@@ -54,7 +54,7 @@ standardize = true;
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'KNN'; % Método para classificação
+methodML = 'logReg'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -111,7 +111,7 @@ FSmethod = 'hex_none'; % Método para feature selection
 % "Safe-level SMOTE"
 
 % paramOvers = {method,% of new samples,k neighbors, standardize}
-paramOvers = {'SMOTE', 0, 10, false};
+paramOvers = {'SMOTE', 200, 10, false};
 
 %% Pasta e arquivos
 
