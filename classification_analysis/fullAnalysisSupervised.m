@@ -2,12 +2,19 @@ clear; close all;
 
 load('EnDataA_Dissertacao.mat');
 
+% Tempo mínimo e máximo para avaliação dos ensaios
+tempoMin = 1;
+tempoMaxA = 20;
+tempoMaxB = 40;
+
+cortaEnsaios;
+
 EnData = EnDataA; 
 
 clear EnDataA;
 
-% rt = 'D:\Documentos\Amaciamento\'; % Root folder
-rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
 % Create new folder for generated files
 c = clock;
@@ -46,8 +53,6 @@ vars = {'cRMS', 'cKur', 'cVar', 'vaz'}; % Variáveis utilizadas
 
 standardize = true;
 
-
-tMin = 20;
 %%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
 
 % logReg -> Regressão logística
@@ -55,8 +60,8 @@ tMin = 20;
 % SVM -> SVM
 % KNN -> K-Nearest Neighbors
 
-kFold = 20; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+kFold = 5; % Número de kFold para classificação
+methodML = 'KNN'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -67,12 +72,16 @@ switch methodML
         maxSplitsBusca = 5:5:80;
         paramMLBusca = {maxSplitsBusca};
     case 'SVM'
-        kernelFunction = 'quadratic';
+        kernelFunction = 'linear';
         kernelScale = 'auto';
+%         kernelFunction = 'gaussian';
+%         kernelScale = 1;
         paramML = {kernelFunction,kernelScale};
-        
+%         
         kernelFunctionBusca = {'linear','quadratic','cubic'};
         kernelScaleBusca = {'auto'};
+%         kernelFunctionBusca = {'gaussian'};
+%         kernelScaleBusca = [0.5,1,2];
         paramMLBusca = {kernelFunctionBusca,kernelScaleBusca};
     case 'KNN'
         numNeighbors = 10;
@@ -111,14 +120,15 @@ FSmethod = 'hex_none'; % Método para feature selection
 % "ADASYN"
 % "Borderline SMOTE"
 % "Safe-level SMOTE"
+% "RandomUndersampling"
 
 % paramOvers = {method,% of new samples,k neighbors, standardize}
-paramOvers = {'SMOTE', 200, 10, false};
+paramOvers = {'SMOTE+RU', 200, 5, false};
 
 %% Pasta e arquivos
 
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloA_TestePorEnsaio_SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloA_TestePorEnsaio_RU\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % Cria arquivo de log
@@ -153,8 +163,8 @@ end
 
 clear preProc;
 
-% parfor n = 1:lenN
-for n = 1:lenN
+parfor n = 1:lenN
+% for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
              preProcAn(n,m,d).N = N(n);
@@ -166,9 +176,9 @@ for n = 1:lenN
              end
              
              if numel(conjVal) == 1
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),tMin,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
              else
-                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),tMin,vars,paramOvers,standardize);
+                [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
              end
              
              [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);

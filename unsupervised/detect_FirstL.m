@@ -1,4 +1,4 @@
-function [res] = detect_First(proportion,time,ensaio,cluster,thr)
+function [res] = detect_FirstL(proportion,time,ensaio,cluster,thr)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
@@ -11,10 +11,10 @@ for k1 = 1:length(unEnsaios) % Para cada ensaio
     propTemp = proportion(ensaio == unEnsaios(k1),cluster);
     timeTemp = time(ensaio == unEnsaios(k1));
     
-    grt = propTemp>thr;
+    low = propTemp<thr;
     
-    if any(grt) % O cluster passa do limiar no ensaio
-        tempoProp = timeTemp(grt);
+    if any(low) % O cluster desce do limiar no ensaio
+        tempoProp = timeTemp(low);
         res.TimeDetect(k1) = tempoProp(1);
     else % Cluster não aparece no ensaio
         res.TimeDetect(k1) = NaN;

@@ -1,4 +1,4 @@
-function [trainedClassifier, prediction, score, time] = train_ML_Tree(trainingData, maxSplits, folds, paramOvers)
+function [trainedClassifier, prediction, score, time] = train_ML_Tree(trainingData, maxSplits, folds)
 %  TRAIN_ML_TREE Treina um classificador por árvore de decisão
 %      trainingData: tabela com preditores e resposta. A resposta deve ser
 %      a última coluna à direita.
@@ -7,18 +7,6 @@ function [trainedClassifier, prediction, score, time] = train_ML_Tree(trainingDa
 %
 %      folds: número de folds da validação cruzada (k-fold)
 %           
-%      paramOvers: parâmetros para oversampling.
-%           paramOvers{1}       Algoritmo para oversampling. Valores
-%             válidos (padrão é 'none'):
-%                "none"
-%                "SMOTE"
-%                "ADASYN"
-%                "Borderline SMOTE"
-%                "Safe-level SMOTE"
-%           paramOvers{2}       porcentagem de novas amostras geradas no
-%             oversampling [%]
-%           paramOvers{3}       Número de k-neighbors
-%           paramOvers{4}       standardize? [logical]
 %
 %  Output:
 %      trainedClassifier: estrutura com o modelo treinado.
@@ -42,51 +30,15 @@ if nargin < 3
     folds = 5;
 end
 
-if nargin < 4
-    paramOvers{1} = 'none';
-end
 
-switch paramOvers{1} % Oversampling
-    case "SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = mySMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "ADASYN"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~]  = myADASYN(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "Borderline SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = myBorderlineSMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "Safe-level SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = mySafeLevelSMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "none"
-        trainingDataOvers = trainingData;
-end
-
-predictorsOvers = trainingDataOvers(:, 1:(end-1));
-responseOvers = double(trainingDataOvers{:, end});
+predictors = trainingData(:, 1:(end-1));
+response = double(trainingData{:, end});
 
 c1 = clock;
 % Configura e treina a árvore
 classificationTree = fitctree(...
-    predictorsOvers, ...
-    responseOvers, ...
+    predictors, ...
+    response, ...
     'SplitCriterion', 'gdi', ...
     'MaxNumSplits', maxSplits, ...
     'Surrogate', 'off', ...
@@ -108,7 +60,7 @@ if folds>1
     score = nan(size(score));
     prediction = nan(size(prediction));
     for k=1:folds
-        [partitionedClassifier,~,~] = train_ML_Tree(trainingData(cvp.training(k), :), maxSplits, 1, paramOvers);
+        [partitionedClassifier,~,~] = train_ML_Tree(trainingData(cvp.training(k), :), maxSplits, 1);
         [predictionTemp,scoreTemp] = partitionedClassifier.predict(predictors);
         score(cvp.test(k)) = scoreTemp(cvp.test(k));
         prediction(cvp.test(k)) = predictionTemp(cvp.test(k),:);

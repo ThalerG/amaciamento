@@ -18,14 +18,7 @@ switch methodML
                 str = [str, ', '];
             end
         end
-        str = [str, '\n  Escalas do kernel: ']; temp = paramMLBusca{2};
-        for k = 1:length(temp)
-            str = [str, temp{k}];
-            if k ~= length(temp)
-                str = [str, ', '];
-            end
-        end
-        clear temp;
+        str = [str, '\n  Escalas do kernel: ', array2minstr(paramMLBusca{2})];
     case 'KNN'
         str = [str, 'K nearest neighbors'];
         str = [str, '\n\n  Parâmetros da busca: '];

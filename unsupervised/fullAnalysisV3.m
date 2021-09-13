@@ -7,7 +7,8 @@ clear; close all;
 % clusterização
 
 % Pasta com os dados de clusters. 
-fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
+% fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
+fold = 'D:\Documentos\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 fold = dir(fold); fold = fold(3:end);
 
 % Identifica as amostras contidas na pasta
@@ -44,10 +45,10 @@ nClus = 3;
 windows = [0.5,1,1.5,2];
 
 % Métodos de detecção
-methods = {'GThr','LThr','Dom','First'};  
+methods = {'LThr','GThr','Dom','FirstL','FirstG'};  
 
 % Parâmetros de busca para cada método
-paramMethod = [{0.1:0.1:1},{0:0.1:0.9},{NaN},{0:0.1:0.9}];
+paramMethod = [{0.1:0.1:1},{0:0.1:0.9},{NaN},{0.1:0.1:1},{0:0.1:0.9}];
 
 % Inicialização vazia da tabela com resultados:
 resultadosBase.Grandeza = ''; % Grandeza analisada
@@ -116,8 +117,10 @@ for kgr = 1:height(un) % Para cada combinação
                                 resP(kam) = detect_LThr(prop.Proportion,prop.Time,prop.Ensaio,kc,paramMethod{km}(kp));
                             case 'Dom'
                                 resP(kam) = detect_Dom(prop.Proportion,prop.Time,prop.Ensaio,kc);
-                            case 'First'
-                                resP(kam) = detect_First(prop.Proportion,prop.Time,prop.Ensaio,kc,paramMethod{km}(kp));
+                            case 'FirstG'
+                                resP(kam) = detect_FirstG(prop.Proportion,prop.Time,prop.Ensaio,kc,paramMethod{km}(kp));
+                            case 'FirstL'
+                                resP(kam) = detect_FirstL(prop.Proportion,prop.Time,prop.Ensaio,kc,paramMethod{km}(kp));
                             otherwise
                                 error('Método desconhecido')
                         end

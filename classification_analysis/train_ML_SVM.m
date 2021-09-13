@@ -1,4 +1,4 @@
-function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingData, kernelFunction, kernelScale, folds, paramOvers)
+function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingData, kernelFunction, kernelScale, folds)
 %  TRAIN_ML_KNN Treina um classificador K-Nearest Neighbors
 %  Input:
 %      trainingData: tabela com preditores e resposta. A resposta deve ser
@@ -12,18 +12,6 @@ function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingDat
 %      
 %      folds: número de folds da validação cruzada (k-fold)
 %           
-%      paramOvers: parâmetros para oversampling.
-%           paramOvers{1}       Algoritmo para oversampling. Valores
-%             válidos (padrão é 'none'):
-%               % "none"
-%                "SMOTE"
-%                "ADASYN"
-%                "Borderline SMOTE"
-%                "Safe-level SMOTE"
-%           paramOvers{2}       porcentagem de novas amostras geradas no
-%             oversampling [%]
-%           paramOvers{3}       Número de k-neighbors
-%           paramOvers{4}       standardize? [logical]
 %           
 %  Output:
 %      trainedClassifier: estrutura com o modelo treinado.
@@ -44,6 +32,7 @@ function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingDat
 
 if nargin < 2
     kernelFunction = 'linear';
+    folds = 5;
 end
 
 if nargin < 3
@@ -52,47 +41,6 @@ end
 
 if nargin < 4
     folds = 5;
-end
-
-if nargin < 5
-    paramOvers{1} = 'none';
-end
-
-if nargin < 2
-    folds = 5;
-end
-
-switch paramOvers{1} % Oversampling
-    case "SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = mySMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "ADASYN"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~]  = myADASYN(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "Borderline SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = myBorderlineSMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "Safe-level SMOTE"
-        options.NumNeighbors =  paramOvers{3};
-        options.Standardize =  paramOvers{4};
-        NSamp = paramOvers{2}*length(Ytrain);
-        [newdata,~] = mySafeLevelSMOTE(trainingData,0,NSamp,...
-            options);
-        trainingDataOvers = [trainingData;newdata];
-    case "none"
-        trainingDataOvers = trainingData;
 end
 
 
@@ -113,18 +61,19 @@ switch kernelFunction
         error(['SVM kernel function "',kernelFunction,'" not recognized'])
 end
 
-predictorsOvers = trainingDataOvers(:, 1:(end-1));
-responseOvers = double(trainingDataOvers{:, end});
+predictors = trainingData(:, 1:(end-1));
+response = double(trainingData{:, end});
 
 c1 = clock;
 % Configura e treina o SVM
 classificationSVM = fitcsvm(...
-    predictorsOvers, ...
-    responseOvers, ...
+    predictors, ...
+    response, ...
     'KernelFunction', kFun, ...
     'PolynomialOrder', fOrder, ...
     'KernelScale', kernelScale, ...
     'BoxConstraint', 1, ...
+    'CacheSize', 4000, ...
     'Standardize', true, ...
     'ClassNames', [0; 1]);
 c2 = clock;
@@ -144,7 +93,7 @@ if folds>1
     score = nan(size(score));
     prediction = nan(size(prediction));
     for k=1:folds
-        [partitionedClassifier,~,~] = train_ML_SVM(trainingData(cvp.training(k), :), kernelFunction, kernelScale, 1, paramOvers);
+        [partitionedClassifier,~,~] = train_ML_SVM(trainingData(cvp.training(k), :), kernelFunction, kernelScale, 1);
         [predictionTemp,scoreTemp] = partitionedClassifier.predict(predictors);
         score(cvp.test(k)) = scoreTemp(cvp.test(k));
         prediction(cvp.test(k)) = predictionTemp(cvp.test(k),:);
