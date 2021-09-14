@@ -28,11 +28,7 @@ conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensai
 
 descarte = [4,3;4,2];
 
-if ~isempty(descarte)
-    for k = 1:length(descarte(:,1))
-        EnData{descarte(k,1)}(descarte(k,2)) = [];
-    end
-end
+if ~isempty(de
 
 % Tempos de amaciamento esperados:
 
