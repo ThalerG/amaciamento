@@ -22,11 +22,12 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-% conjVal = 20;
+conjVal = 20;
 % conjVal = [];
-conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+% conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
-descarte = [4,3;4,2];
+% descarte = [4,3;4,2];
+descarte = [];
 
 if ~isempty(descarte)
     for k = 1:length(descarte(:,1))
@@ -72,7 +73,7 @@ standardize = true;
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'KNN'; % Método para classificação
+methodML = 'logReg'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -139,7 +140,7 @@ paramOvers = {'SMOTE+RU', 200, 5, false};
 %% Pasta e arquivos
 
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_TestePorEnsaio_RU\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_Teste8020_RU+SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % Cria arquivo de log
