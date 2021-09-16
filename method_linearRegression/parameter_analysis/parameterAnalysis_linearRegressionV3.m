@@ -64,10 +64,11 @@ parfor n = 1:lenN
                 continue
             end
             for v = 1:lenV
-                [X,Y] = preTrain(EnData,tEst,N(n),M(m),D(d),minT,vars(v));
-
-                pVal = arrayfun(@(ROWIDX) lrPValue(X(ROWIDX,:)), (1:size(X,1)).');
-                Y = Y == 1;
+                if numel(conjVal) == 1
+                   [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                else
+                   [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
+                end
 
                 for alpha = 1:lenALPHA
                     gtest = pVal>=ALPHA(alpha);

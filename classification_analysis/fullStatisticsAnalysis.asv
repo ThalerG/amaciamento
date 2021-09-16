@@ -22,12 +22,12 @@ c = clock;
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-conjVal = 20;
+% conjVal = 20;
 % conjVal = [];
-% conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
 
-% descarte = [4,3;4,2];
-descarte = [];
+descarte = [4,3;4,2];
+% descarte = [];
 
 if ~isempty(descarte)
     for k = 1:length(descarte(:,1))
@@ -52,78 +52,22 @@ selMethod = 'MCC';
 
 selBeta = 1; % Valor de selBeta caso o método seja F-selBeta
 
-%%%%%%%%%%%%%%% Pré-processamento: %%%%%%%%%%%%%%
-
-N = 1:5; % Janela (número de amostras) da regressão
-M = [1, 5, 10:10:180]; % Janela da média móvel
-D = [1:2:5, 10:10:90, 100:20:180]; % Distância entre amostras da regressão
-
 wMax = 3.02; % Duração máxima da janela [h]
 
 % vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
 vars = {'cRMS', 'cKur', 'cVar', 'vaz'}; % Variáveis utilizadas
-
 standardize = true;
 
-%%%%%%%%%%%%%%% Classificador: %%%%%%%%%%%%%%
+%%%%%%%%%%%%%%% Teste T: %%%%%%%%%%%%%%
 
-% logReg -> Regressão logística
-% tree -> Árvore
-% SVM -> SVM
-% KNN -> K-Nearest Neighbors
+N = 2:100; % Sample window for linear regression
+M = [1, 5, 10:10:180]; % Janela da média móvel
+D = [1:2:5, 10:10:90, 100:20:180]; % Distância entre amostras da regressão
+ALPHA = 0:0.001:1; % Significance level
 
-kFold = 5; % Número de kFold para classificação
-methodML = 'logReg'; % Método para classificação
+%%%%%%%%%%%%%%% Diferença espaçada: %%%%%%%%%%%%%%
 
-% Parâmetros para análise de pré-processamento e feature selection
-switch methodML
-    case 'tree'
-        maxSplits = 20;
-        paramML = {maxSplits};
-        
-        maxSplitsBusca = 5:5:80;
-        paramMLBusca = {maxSplitsBusca};
-    case 'SVM'
-        kernelFunction = 'linear';
-        kernelScale = 'auto';
-%         kernelFunction = 'gaussian';
-%         kernelScale = 1;
-        paramML = {kernelFunction,kernelScale};
-%         
-        kernelFunctionBusca = {'linear','quadratic','cubic'};
-        kernelScaleBusca = {'auto'};
-%         kernelFunctionBusca = {'gaussian'};
-%         kernelScaleBusca = [0.5,1,2];
-        paramMLBusca = {kernelFunctionBusca,kernelScaleBusca};
-    case 'KNN'
-        numNeighbors = 10;
-        distance = 'Euclidean';
-        weight = 'equal';
-        paramML = {numNeighbors, distance, weight};
-        
-        numNeighborsBusca = [1, 5:5:100];
-        distanceBusca = {'Euclidean'};
-        weightBusca = {'equal'};
-        paramMLBusca = {numNeighborsBusca, distanceBusca, weightBusca};
-    case 'logReg'
-        paramML = {};
-        
-        paramMLBusca = {};
-    otherwise
-        str = ['Model "',methodML,'" not recognized'];
-        error(str)
-end
-
-%%%%%%%%%%%%%%% Feature selection: %%%%%%%%%%%%%%
-
-
-% hex_XXXX -> Método "híbrido" de seleção de grandezas extensiva e o filtro de variáveis XXXX
-% hgr_XXXX -> Método "híbrido" de seleção de grandezas greedy e o filtro de variáveis XXXX
-% none -> Sem filtro de variáveis
-% mRMR -> Score por mínima redundância, máxima relevância
-
-maxFeatures = 200; % Número máximo de features selecionadas
-FSmethod = 'hex_none'; % Método para feature selection
+S = 1e-4:1e-4:5e-2; % Maximum tolerated difference
 
 %%%%%%%%%%%%%%% Oversampling: %%%%%%%%%%%%%%
 
@@ -140,48 +84,45 @@ paramOvers = {'SMOTE+RU', 200, 5, false};
 %% Pasta e arquivos
 
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_Teste8020_RU+SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_Teste8020_RU+SMOTE\classification_Statistics_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
-% Cria arquivo de log
-fid = fopen([fsave, 'log.txt'], 'w');
-print_logIntro;
+%% Teste t
 
-%% Análise de pré-processamento    
+fsave_tTest = [fsave,'teste_t\'];
 
-fsave_preProc = [fsave,'analise_preProcessamento\'];
-
-mkdir(fsave_preProc);
+mkdir(fsave_tTest);
 
 numIt = nnz(((N-1)'.*D/60)<=wMax)*length(M);
 
 cstart = clock;
 
-% preproc_printStart;
-
 ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 5);
 
-preProc.N = NaN; preProc.M = NaN; preProc.D = NaN;
-preProc.ROC_AUC_Train = NaN; preProc.fselBeta_Train = NaN; preProc.MMC_Train = NaN; preProc.time_Train = NaN;
-preProc.ROC_AUC_Test = NaN; preProc.fselBeta_Test = NaN; preProc.MMC_Test = NaN;
+tTest.N = NaN; tTest.M = NaN; tTest.D = NaN; tTest.Alpha = NaN; tTest.Var = ""; 
+tTest.ROC_AUC_Train = NaN; tTest.fselBeta_Train = NaN; tTest.MMC_Train = NaN; tTest.time_Train = NaN;
+tTest.ROC_AUC_Test = NaN; tTest.fselBeta_Test = NaN; tTest.MMC_Test = NaN;
 
-lenN = length(N); lenM = length(M); lenD = length(D);
+lenN = length(N); lenM = length(M); lenD = length(D); lenV = length(Var); lenALPHA = length(Alpha);
 
-preProcAn = repmat(preProc, lenN, lenM, lenD);
+tTestAn = repmat(tTest, lenN, lenM, lenD, lenV, lenALPHA);
 
 if numel(conjVal) == 1
-    indTest = cell(lenN,lenM,lenD);
+    indTest = cell(lenN,lenM,lenD, lenV, lenALPHA);
 end
 
-clear preProc;
+clear tTest;
 
 parfor n = 1:lenN
 % for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
-             preProcAn(n,m,d).N = N(n);
-             preProcAn(n,m,d).M = M(m);
-             preProcAn(n,m,d).D = D(d);
+            for v = 1:lenV
+             tTestAn(n,m,d,v,a).N = N(n);
+             tTestAn(n,m,d,v,a).M = M(m);
+             tTestAn(n,m,d,v,a).D = D(d);
+             tTestAn(n,m,d,v,a).Var = vars(v);
+             
              
              if ((N(n)-1)*D(d)/60)>wMax
                  continue
@@ -193,13 +134,19 @@ parfor n = 1:lenN
                 [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars,paramOvers,standardize);
              end
              
-             [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
-             preProcAn(n,m,d).time_Train = timeTrain;
+             [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodSt, kFold, paramML);
+             tTestAn(n,m,d).time_Train = timeTrain;
              
-             [predictTest,scoreTest] = trainedClassifier.predict(Xtest);
+             for a = 1:lenALPHA
+                 tTestAn(n,m,d,v,a).Alpha = ALPHA(a);
+                 [predictTest,scoreTest] = trainedClassifier.predict(Xtest);
+                 [tTestAn(n,m,d,v,a).ROC_AUC_Train, tTestAn(n,m,d,v,a).fselBeta_Train, tTestAn(n,m,d,v,a).MMC_Train] = performanceMetrics(double(Ytrain), predictTrain, scoreTrain, selBeta);
+                 [tTestAn(n,m,d,v,a).ROC_AUC_Test, tTestAn(n,m,d,v,a).fselBeta_Test, tTestAn(n,m,d,v,a).MMC_Test] = performanceMetrics(double(Ytest), predictTest, scoreTest, selBeta);
+             end
              
-             [preProcAn(n,m,d).ROC_AUC_Train, preProcAn(n,m,d).fselBeta_Train, preProcAn(n,m,d).MMC_Train] = performanceMetrics(double(Ytrain), predictTrain, scoreTrain, selBeta);
-             [preProcAn(n,m,d).ROC_AUC_Test, preProcAn(n,m,d).fselBeta_Test, preProcAn(n,m,d).MMC_Test] = performanceMetrics(double(Ytest), predictTest, scoreTest, selBeta);
+             
+             tTestAn(n,m,d,v,:).ROC_AUC_Train =;
+             tTestAn(n,m,d,v,:).ROC_AUC_Test =;
              
              ppm.increment();
         end
@@ -213,25 +160,25 @@ cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(
 
 preproc_graph;
 
-preProcAn = reshape(preProcAn,[],1);
-preProcAn(isnan([preProcAn(:).ROC_AUC_Train]')) = [];
-preProcAnTable = struct2table(preProcAn);
+tTestAn = reshape(tTestAn,[],1);
+tTestAn(isnan([tTestAn(:).ROC_AUC_Train]')) = [];
+preProcAnTable = struct2table(tTestAn);
 
-save([fsave_preProc 'results_rawMatrix'],'preProcAn');
+save([fsave_tTest 'results_rawMatrix'],'tTestAn');
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
-        preProcAnTable = sortrows(preProcAnTable,'ROC_AUC_Train','descend','MissingPlacement','last');
+        preProcAnTable = sortrows(preProcAnTable,'ROC_AUC_Train','descend');
     case 'Fbeta'
-        preProcAnTable = sortrows(preProcAnTable,'fselBeta_Train','descend','MissingPlacement','last');
+        preProcAnTable = sortrows(preProcAnTable,'fselBeta_Train','descend');
     case 'MCC'
-        preProcAnTable = sortrows(preProcAnTable,'MMC_Train','descend','MissingPlacement','last');
+        preProcAnTable = sortrows(preProcAnTable,'MMC_Train','descend');
     otherwise
         error(['Performance metric "', selMethod,'" not recognized'])
 end
 
-save([fsave_preProc 'parameters'],'D','N','M','selMethod','selBeta');
-save([fsave_preProc 'results_rankedTable'],'preProcAnTable');
+save([fsave_tTest 'parameters'],'D','N','M','selMethod','selBeta');
+save([fsave_tTest 'results_rankedTable'],'preProcAnTable');
 
 
 if numel(conjVal) == 1
@@ -285,11 +232,11 @@ save([fsave_featSel 'results_rawMatrix'],'featSelAn');
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
-        featSelAnTable = sortrows(featSelAnTable,'ROC_AUC_Train','descend','MissingPlacement','last');
+        featSelAnTable = sortrows(featSelAnTable,'ROC_AUC_Train','descend');
     case 'Fbeta'
-        featSelAnTable = sortrows(featSelAnTable,'fselBeta_Train','descend','MissingPlacement','last');
+        featSelAnTable = sortrows(featSelAnTable,'fselBeta_Train','descend');
     case 'MCC'
-        featSelAnTable = sortrows(featSelAnTable,'MMC_Train','descend','MissingPlacement','last');
+        featSelAnTable = sortrows(featSelAnTable,'MMC_Train','descend');
     otherwise
         error(['Performance metric "', selMethod,'" not recognized'])
 end
@@ -317,7 +264,7 @@ cstart = clock;
 
 analysisML_printStart;
 
-switch methodML
+switch methodSt
     case 'logReg'
         analysisML_logreg;
     case 'tree'
@@ -341,11 +288,11 @@ analysisML_graph;
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
-        analysisMLAnTable = sortrows(analysisMLAnTable,'ROC_AUC_Train','descend','MissingPlacement','last');
+        analysisMLAnTable = sortrows(analysisMLAnTable,'ROC_AUC_Train','descend');
     case 'Fbeta'
-        analysisMLAnTable = sortrows(analysisMLAnTable,'fselBeta_Train','descend','MissingPlacement','last');
+        analysisMLAnTable = sortrows(analysisMLAnTable,'fselBeta_Train','descend');
     case 'MCC'
-        analysisMLAnTable = sortrows(analysisMLAnTable,'MMC_Train','descend','MissingPlacement','last');
+        analysisMLAnTable = sortrows(analysisMLAnTable,'MMC_Train','descend');
     otherwise
         error(['Performance metric "', selMethod,'" not recognized'])
 end
