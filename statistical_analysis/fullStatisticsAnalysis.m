@@ -85,10 +85,10 @@ M = [1, 5, 10:10:180]; % Janela da média móvel
 D = [1:2:5, 10:10:90, 100:20:180]; % Distância entre amostras da regressão
 ALPHA = 0:0.001:1;
 
-N = 5:5:10; % Sample window for linear regression
-M = 10:10:30; % Janela da média móvel
-D = 10:10:30; % Distância entre amostras da regressão
-ALPHA = 0:0.01:1;
+% N = 5:5:10; % Sample window for linear regression
+% M = 10:10:30; % Janela da média móvel
+% D = 10:10:30; % Distância entre amostras da regressão
+% ALPHA = 0:0.01:1;
 
 %%%%%%%%%%%%%%% Oversampling: %%%%%%%%%%%%%%
 
@@ -318,10 +318,10 @@ L2 = 0.05:0.05:0.8; % lambda2 values (Exponential average weight for variance nu
 L3 = 0.01:0.01:0.8; % lambda3 values (Exponential average weight for variance denominator)
 Rc = 1:0.01:5; % Critical R value
 
-L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
-L2 = 0.05:0.5:0.85; % lambda2 values (Exponential average weight for variance numerator)
-L3 = 0.01:0.5:0.81; % lambda3 values (Exponential average weight for variance denominator)
-Rc = 1:0.5:4; % Critical R value
+% L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
+% L2 = 0.05:0.5:0.85; % lambda2 values (Exponential average weight for variance numerator)
+% L3 = 0.01:0.5:0.81; % lambda3 values (Exponential average weight for variance denominator)
+% Rc = 1:0.5:4; % Critical R value
 
 lenL1 = length(L1);
 lenL2 = length(L2);
