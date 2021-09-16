@@ -1,17 +1,17 @@
-szStruct = size(tTestAn);
+szStruct = size(rStHAn);
 
-nameVar = {'$N$','$M$','$D$','$\alpha$'};
+nameVar = {'$\lambda_{1}$','$\lambda_{2}$','$\lambda_{3}$','$R_c$'};
 nvar = length(nameVar);
-param = {N,M,D,ALPHA};
+param = {L1,L2,L3,Rc};
 
 %%% MMC Train
 
-MMC_Train = [tTestAn.MMC_Train]; MMC_Train = reshape(MMC_Train,szStruct);
+MMC_Train = [rStHAn.MMC_Train]; MMC_Train = reshape(MMC_Train,szStruct);
 
 [~, maxidx] = max(MMC_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(MMC_Train), maxidx);
 
-MMC_Train = squeeze(MMC_Train(:,:,:,maxInd(4),:)); clear maxInd;
+MMC_Train = squeeze(MMC_Train(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(MMC_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(MMC_Train), maxidx);
 
@@ -75,20 +75,20 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_MMC_Train.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_MMC_Train'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_MMC_Train.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_MMC_Train'],800,'bottom','pdf');
 close all;
 
 clear MMC_Train maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh
 
 %%% ROC_AUC Train
 
-AUC_Train = [tTestAn.ROC_AUC_Train]; AUC_Train = reshape(AUC_Train,szStruct);
+AUC_Train = [rStHAn.ROC_AUC_Train]; AUC_Train = reshape(AUC_Train,szStruct);
 
 [~, maxidx] = max(AUC_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(AUC_Train), maxidx);
 
-AUC_Train = squeeze(AUC_Train(:,:,:,maxInd(4),:)); clear maxInd;
+AUC_Train = squeeze(AUC_Train(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(AUC_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(AUC_Train), maxidx);
 
@@ -152,20 +152,20 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_ROCAUC_Train.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_ROCAUC_Train'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_ROCAUC_Train.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_ROCAUC_Train'],800,'bottom','pdf');
 close all;
 
 clear AUC_Train maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh
 
 %%% fBeta Train
 
-fBeta_Train = [tTestAn.fselBeta_Train]; fBeta_Train = reshape(fBeta_Train,szStruct);
+fBeta_Train = [rStHAn.fselBeta_Train]; fBeta_Train = reshape(fBeta_Train,szStruct);
 
 [~, maxidx] = max(fBeta_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(fBeta_Train), maxidx);
 
-fBeta_Train = squeeze(fBeta_Train(:,:,:,maxInd(4),:)); clear maxInd;
+fBeta_Train = squeeze(fBeta_Train(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(fBeta_Train(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(fBeta_Train), maxidx);
 
@@ -228,20 +228,20 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_fBeta_Train.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_fBeta_Train'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_fBeta_Train.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_fBeta_Train'],800,'bottom','pdf');
 close all;
 
 clear fBeta_Train maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh
 
 %%% MMC Test
 
-MMC_Test = [tTestAn.MMC_Test]; MMC_Test = reshape(MMC_Test,szStruct);
+MMC_Test = [rStHAn.MMC_Test]; MMC_Test = reshape(MMC_Test,szStruct);
 
 [~, maxidx] = max(MMC_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(MMC_Test), maxidx);
 
-MMC_Test = squeeze(MMC_Test(:,:,:,maxInd(4),:)); clear maxInd;
+MMC_Test = squeeze(MMC_Test(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(MMC_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(MMC_Test), maxidx);
 
@@ -304,20 +304,20 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_MMC_Test.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_MMC_Test'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_MMC_Test.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_MMC_Test'],800,'bottom','pdf');
 close all;
 
 clear MMC_Test maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh
 
 %%% AUC Test
 
-AUC_Test = [tTestAn.ROC_AUC_Test]; AUC_Test = reshape(AUC_Test,szStruct);
+AUC_Test = [rStHAn.ROC_AUC_Test]; AUC_Test = reshape(AUC_Test,szStruct);
 
 [~, maxidx] = max(AUC_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(AUC_Test), maxidx);
 
-AUC_Test = squeeze(AUC_Test(:,:,:,maxInd(4),:)); clear maxInd;
+AUC_Test = squeeze(AUC_Test(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(AUC_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(AUC_Test), maxidx);
 
@@ -380,20 +380,20 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_AUC_Test.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_AUC_Test'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_AUC_Test.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_AUC_Test'],800,'bottom','pdf');
 close all;
 
 clear AUC_Test maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh
 
 %%% fBeta Test
 
-fBeta_Test = [tTestAn.fselBeta_Test]; fBeta_Test = reshape(fBeta_Test,szStruct);
+fBeta_Test = [rStHAn.fselBeta_Test]; fBeta_Test = reshape(fBeta_Test,szStruct);
 
 [~, maxidx] = max(fBeta_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4), maxInd(5)] = ind2sub( size(fBeta_Test), maxidx);
 
-fBeta_Test = squeeze(fBeta_Test(:,:,:,maxInd(4),:)); clear maxInd;
+fBeta_Test = squeeze(fBeta_Test(maxInd(1),:,:,:,:)); clear maxInd;
 [~, maxidx] = max(fBeta_Test(:));
 [maxInd(1), maxInd(2), maxInd(3), maxInd(4)] = ind2sub( size(fBeta_Test), maxidx);
 
@@ -456,8 +456,8 @@ cbh.Position(1) = .96-cbh.Position(3);
 cbh.Position(4) = lFig*nvar+gapFig*(nvar-1);
 cbh.Position(2) = 1-topFig-(gapFig*(nvar-1)+lFig*nvar)/2-cbh.Position(4)/2;
 
-savefig([fsave_tTest,'tTest_graph_fBeta_Test.fig']);
-vecrast(gcf,[fsave_tTest,'tTest_graph_fBeta_Test'],800,'bottom','pdf');
+savefig([fsave_rStH,'rStH_graph_fBeta_Test.fig']);
+vecrast(gcf,[fsave_rStH,'rStH_graph_fBeta_Test'],800,'bottom','pdf');
 close all;
 
 clear fBeta_Test maxidx cmax cmin sz r gap marg_h marg_w ha ind x y xmax ymax z lFig gapFig topFig cbh

@@ -1,46 +1,65 @@
 clear; close all;
 
-load('EnDataA_Dissertacao.mat');
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+
+loadA = 1;
+testeEnsaio = 1;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
 tempoMin = 1;
 tempoMaxA = 20;
 tempoMaxB = 40;
 
-cortaEnsaios;
+if loadA
+    load('EnDataA_Dissertacao.mat');
+    cortaEnsaios;
+    EnData = EnDataA; 
+    clear EnDataA;
+    
+    % Tempos de amaciamento esperados:
+    loadTempoAmacAPopular; txt = 'ModeloAPop_';
+    % loadTempoAmacAConservador; txt = 'ModeloACon_';
+    
+    if testeEnsaio
+        conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+        descarte = [4,3;4,2];
+        txt = [txt,'TestePorEnsaio_'];
+    else
+        conjVal = 20;
+        descarte = [];
+        txt = [txt,'Teste8020_'];
+    end
 
-EnData = EnDataA; 
+else
+    load('EnDataB_DissertacaoA.mat');
+    cortaEnsaios;
+    EnData = EnDataB; 
+    clear EnDataB;
+    
+    % Tempos de amaciamento esperados:
+    loadTempoAmacBPopular; txt = 'ModeloBPop_';
+    % loadTempoAmacBConservador; txt = 'ModeloBCon_';
+    
+    if testeEnsaio
+        conjVal = [7,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+        descarte = [7,3;7,2];
+        txt = [txt,'TestePorEnsaio_'];
+    else
+        conjVal = 20;
+        descarte = [];
+        txt = [txt,'Teste8020_'];
+    end
+end
 
-clear EnDataA;
-
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
-
-% Create new folder for generated files
-c = clock;
 
 %% Preparação dos conjuntos
-
-% conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-% conjVal = 20;
-% conjVal = [];
-conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-
-descarte = [4,3;4,2];
-% descarte = [];
 
 if ~isempty(descarte)
     for k = 1:length(descarte(:,1))
         EnData{descarte(k,1)}(descarte(k,2)) = [];
     end
 end
-
-% Tempos de amaciamento esperados:
-
-loadTempoAmacAPopular;
-% loadTempoAmacAConservador;
-% loadTempoAmacBPopular;
-% loadTempoAmacBConservador;
 
 %% Parâmetros de busca
 % Opções de métrica de desempenho:
@@ -66,10 +85,10 @@ M = [1, 5, 10:10:180]; % Janela da média móvel
 D = [1:2:5, 10:10:90, 100:20:180]; % Distância entre amostras da regressão
 ALPHA = 0:0.001:1;
 
-% N = 5:5:10; % Sample window for linear regression
-% M = 10:10:30; % Janela da média móvel
-% D = 10:10:30; % Distância entre amostras da regressão
-% ALPHA = 0:0.01:1;
+N = 5:5:10; % Sample window for linear regression
+M = 10:10:30; % Janela da média móvel
+D = 10:10:30; % Distância entre amostras da regressão
+ALPHA = 0:0.01:1;
 
 %%%%%%%%%%%%%%% Oversampling: %%%%%%%%%%%%%%
 
@@ -85,9 +104,15 @@ paramOvers = {'none', 200, 5, false};
 
 %% Pasta e arquivos
 
+c = clock;
+
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_TestePorEnsaio_RU+SMOTE\classification_Statistics_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_' txt 'RU+SMOTE\classification_Statistics_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
+
+% Cria arquivo de log
+fid = fopen([fsave, 'log.txt'], 'w');
+print_logIntroSt;
 
 %% Teste t
 
@@ -110,6 +135,9 @@ tTestAn = repmat(tTest, lenN, lenM, lenD, lenV, lenALPHA);
 if numel(conjVal) == 1
     indTest = cell(lenN,lenM,lenD, lenV);
 end
+
+cstart = clock;
+tTest_printStart;
 
 clear tTest;
 
@@ -152,7 +180,12 @@ parfor n = 1:lenN
     end
 end
 
-% tTest_graph;
+delete(ppm);
+
+cend = clock;
+cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
+
+tTest_graph;
 
 tTestAn = reshape(tTestAn,[],1);
 tTestAn(isnan([tTestAn(:).ROC_AUC_Train]')) = [];
@@ -173,6 +206,8 @@ end
 
 save([fsave_tTest 'parameters'],'D','N','M','vars','ALPHA','selMethod','selBeta');
 save([fsave_tTest 'results_rankedTable'],'tTestAnTable');
+
+tTest_printEnd;
 
 clear ALPHA tTestAnTable
 
@@ -201,6 +236,9 @@ spcDifAn = repmat(spcDif, lenM, lenD, lenV, lenDmax);
 if numel(conjVal) == 1
     indTest = cell(lenM,lenD,lenV);
 end
+
+cstart = clock;
+spcDif_printStart;
 
 clear spcDif;
 
@@ -241,7 +279,12 @@ parfor m = 1:lenM
     end
 end
 
-% spcDif_graph;
+delete(ppm);
+
+cend = clock;
+cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
+
+spcDif_graph;
 
 spcDifAn = reshape(spcDifAn,[],1);
 spcDifAn(isnan([spcDifAn(:).ROC_AUC_Train]')) = [];
@@ -263,6 +306,8 @@ end
 save([fsave_spcDif 'parameters'],'D','M','vars','dMax','selMethod','selBeta');
 save([fsave_spcDif 'results_rankedTable'],'spcDifAnTable');
 
+spcDif_printEnd;
+
 clear dMax spcDifAnTable
 
 %%
@@ -273,10 +318,10 @@ L2 = 0.05:0.05:0.8; % lambda2 values (Exponential average weight for variance nu
 L3 = 0.01:0.01:0.8; % lambda3 values (Exponential average weight for variance denominator)
 Rc = 1:0.01:5; % Critical R value
 
-% L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
-% L2 = 0.05:0.5:0.85; % lambda2 values (Exponential average weight for variance numerator)
-% L3 = 0.01:0.5:0.81; % lambda3 values (Exponential average weight for variance denominator)
-% Rc = 1:0.5:4; % Critical R value
+L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
+L2 = 0.05:0.5:0.85; % lambda2 values (Exponential average weight for variance numerator)
+L3 = 0.01:0.5:0.81; % lambda3 values (Exponential average weight for variance denominator)
+Rc = 1:0.5:4; % Critical R value
 
 lenL1 = length(L1);
 lenL2 = length(L2);
@@ -300,6 +345,9 @@ rStHAn = repmat(rStH, lenV, lenL1, lenL2, lenL3, lenRc);
 if numel(conjVal) == 1
     indTest = cell(lenV, lenL1, lenL2, lenL3);
 end
+
+cstart = clock;
+rStH_printStart;
 
 clear rStH;
 
@@ -330,7 +378,12 @@ parfor v = 1:lenV
     end
 end
 
-% rStH_graph;
+delete(ppm);
+
+cend = clock;
+cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
+
+rStH_graph;
 
 rStHAn = reshape(rStHAn,[],1);
 rStHAn(isnan([rStHAn(:).ROC_AUC_Train]')) = [];
@@ -351,6 +404,8 @@ end
 
 save([fsave_rStH 'parameters'],'L1','L2','L3','Rc','vars','selMethod','selBeta');
 save([fsave_rStH 'results_rankedTable'],'rStHAnTable');
+
+rStH_printEnd;
 
 clear L1 L2 L3 Rc rStHAnTable
 
@@ -386,6 +441,9 @@ if numel(conjVal) == 1
     indTest = cell(lenV, lenL1, lenL23);
 end
 
+cstart = clock;
+rStTb_printStart;
+
 clear rStTb;
 Rtb = []
 parfor v = 1:lenV
@@ -412,7 +470,12 @@ parfor v = 1:lenV
     end
 end
 
-% rStTb_graph;
+delete(ppm);
+
+cend = clock;
+cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
+
+rStTb_graph;
 
 rStTbAn = reshape(rStTbAn,[],1);
 rStTbAn(isnan([rStTbAn(:).ROC_AUC_Train]')) = [];
@@ -434,4 +497,8 @@ end
 save([fsave_rStTb 'parameters'],'L1','L23','ALPHA','vars','selMethod','selBeta');
 save([fsave_rStTb 'results_rankedTable'],'rStTbAnTable');
 
+rStTb_printEnd;
+
 clear L1 L23 ALPHA rStTbAnTable
+
+fclose(fid);

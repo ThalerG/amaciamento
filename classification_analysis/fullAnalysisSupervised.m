@@ -1,46 +1,66 @@
 clear; close all;
 
-load('EnDataA_Dissertacao.mat');
+rt = 'D:\Documentos\Amaciamento\'; % Root folder
+% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+
+loadA = 0;
+testeEnsaio = 1;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
 tempoMin = 1;
 tempoMaxA = 20;
 tempoMaxB = 40;
 
-cortaEnsaios;
+if loadA
+    load('EnDataA_Dissertacao.mat');
+    cortaEnsaios;
+    EnData = EnDataA; 
+    clear EnDataA;
+    
+    % Tempos de amaciamento esperados:
+    loadTempoAmacAPopular; txt = 'ModeloAPop_';
+    % loadTempoAmacAConservador; txt = 'ModeloACon_';
+    
+    if testeEnsaio
+        conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+        descarte = [4,3;4,2];
+        txt = [txt,'TestePorEnsaio_'];
+    else
+        conjVal = 20;
+        descarte = [];
+        txt = [txt,'Teste8020_'];
+    end
 
-EnData = EnDataA; 
-
-clear EnDataA;
-
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
-
-% Create new folder for generated files
-c = clock;
+else
+    load('EnDataB_DissertacaoA.mat');
+    cortaEnsaios;
+    EnData = EnDataB; 
+    clear EnDataB;
+    
+    % Tempos de amaciamento esperados:
+    loadTempoAmacBPopular; txt = 'ModeloBPop_';
+    % loadTempoAmacBConservador; txt = 'ModeloBCon_';
+    
+    if testeEnsaio
+        conjVal = [7,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
+        descarte = [7,3;7,2];
+        txt = [txt,'TestePorEnsaio_'];
+    else
+        conjVal = 20;
+        descarte = [];
+        txt = [txt,'Teste8020_'];
+    end
+end
 
 %% Preparação dos conjuntos
 
 % conjVal = [1,1;4,2;5,3]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-conjVal = 20;
-% conjVal = [];
-% conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
-
-% descarte = [4,3;4,2];
-descarte = [];
 
 if ~isempty(descarte)
     for k = 1:length(descarte(:,1))
         EnData{descarte(k,1)}(descarte(k,2)) = [];
     end
 end
-
-% Tempos de amaciamento esperados:
-
-loadTempoAmacAPopular;
-% loadTempoAmacAConservador;
-% loadTempoAmacBPopular;
-% loadTempoAmacBConservador;
 
 %% Parâmetros de busca
 % Opções de métrica de desempenho:
@@ -73,7 +93,7 @@ standardize = true;
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'logReg'; % Método para classificação
+methodML = 'tree'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -139,8 +159,10 @@ paramOvers = {'SMOTE+RU', 200, 5, false};
 
 %% Pasta e arquivos
 
+c = clock;
+
 % Cria pasta para análise
-fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_ModeloAPop_Teste8020_RU+SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
+fsave = [rt 'Ferramentas\Arquivos Gerados\Dissertacao_' txt 'RU+SMOTE\classification_' methodML '_' num2str(c(1)-2000) num2str(c(2),'%02d') num2str(c(3),'%02d') '_' num2str(c(4),'%02d') num2str(c(5),'%02d') '\'];
 mkdir(fsave); clear rt c;
 
 % Cria arquivo de log
@@ -157,7 +179,7 @@ numIt = nnz(((N-1)'.*D/60)<=wMax)*length(M);
 
 cstart = clock;
 
-% preproc_printStart;
+preproc_printStart;
 
 ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 5);
 

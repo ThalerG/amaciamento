@@ -25,7 +25,7 @@ for k = 2:(length(array))
     
     d = array(k+1)-array(k);
     
-    if d == d0
+    if abs(d - d0)<eps
         if f <2
             f = f + 1;
         end
