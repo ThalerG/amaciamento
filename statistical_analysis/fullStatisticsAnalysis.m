@@ -81,9 +81,9 @@ standardize = false;
 
 
 N = 5:5:100; % Sample window for linear regression
-M = [1, 5, 10:10:180]; % Janela da média móvel
+M = [1, 5, 10:10:90, 100:20:180]; % Janela da média móvel
 D = [1:2:5, 10:10:90, 100:20:180]; % Distância entre amostras da regressão
-ALPHA = 0:0.001:1;
+ALPHA = [0:0.01:0.89, 0.9:0.001:1];
 
 % N = 5:5:10; % Sample window for linear regression
 % M = 10:10:30; % Janela da média móvel
@@ -146,12 +146,11 @@ parfor n = 1:lenN
 % for n = 1:lenN
     for m = 1:lenM
         for d = 1:lenD
+            
+            if ((N(n)-1)*D(d)/60)>wMax
+                continue
+            end
             for v = 1:lenV
-
-                 if ((N(n)-1)*D(d)/60)>wMax
-                     continue
-                 end
-
                  if numel(conjVal) == 1
                     [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{n,m,d,v}] = preproc_data(EnData,tEst,conjVal,N(n),M(m),D(d),Inf,vars(v),paramOvers,standardize);
                  else
@@ -209,7 +208,7 @@ save([fsave_tTest 'results_rankedTable'],'tTestAnTable');
 
 tTest_printEnd;
 
-clear ALPHA tTestAnTable
+clear ALPHA tTestAnTable tTestAn
 
 %%
 %%%%%%%%%%%%%%% Diferença espaçada: %%%%%%%%%%%%%%
@@ -247,10 +246,11 @@ ds =[]
 parfor m = 1:lenM
 % for m = 1:lenM
     for d = 1:lenD
+         if ((N-1)*D(d)/60)>wMax
+             continue
+         end
         for v = 1:lenV
-             if ((N-1)*D(d)/60)>wMax
-                 continue
-             end
+             
 
              if numel(conjVal) == 1
                 [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest{m,d,v}] = preproc_data(EnData,tEst,conjVal,N,M(m),D(d),Inf,vars(v),paramOvers,standardize);
@@ -308,7 +308,7 @@ save([fsave_spcDif 'results_rankedTable'],'spcDifAnTable');
 
 spcDif_printEnd;
 
-clear dMax spcDifAnTable
+clear dMax spcDifAnTable spcDifAn
 
 %%
 %%%%%%%%%%%%%%% Estatística R (heurística): %%%%%%%%%%%%%%
@@ -316,7 +316,7 @@ clear dMax spcDifAnTable
 L1 = 0.02:0.02:0.8; % lambda1 values (Exponential average weight for data)
 L2 = 0.05:0.05:0.8; % lambda2 values (Exponential average weight for variance numerator)
 L3 = 0.01:0.01:0.8; % lambda3 values (Exponential average weight for variance denominator)
-Rc = 1:0.01:5; % Critical R value
+Rc = [1:0.01:3, 3.2:0.2:5]; % Critical R value
 
 % L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
 % L2 = 0.05:0.5:0.85; % lambda2 values (Exponential average weight for variance numerator)
@@ -332,7 +332,7 @@ fsave_rStH = [fsave,'rStH\'];
 
 mkdir(fsave_rStH);
 
-numIt = lenL1*lenL2*lenL3;
+numIt = lenL1*lenL2*lenL3*lenV;
 
 ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 5);
 
@@ -352,8 +352,8 @@ rStH_printStart;
 clear rStH;
 
 Rh = []
-parfor v = 1:lenV
-% for v = 1:lenV
+for v = 1:lenV
+% parfor v = 1:lenV
     for l1 = 1:lenL1
         for l2 = 1:lenL2
             for l3 = 1:lenL3
@@ -372,8 +372,10 @@ parfor v = 1:lenV
                     predictTest = Rtest<Rc(r);
                     [rStHAn(v,l1,l2,l3,r).ROC_AUC_Train, rStHAn(v,l1,l2,l3,r).fselBeta_Train, rStHAn(v,l1,l2,l3,r).MMC_Train] = performanceMetrics(double(Ytrain), double(predictTrain), scoreTrain, selBeta);
                     [rStHAn(v,l1,l2,l3,r).ROC_AUC_Test, rStHAn(v,l1,l2,l3,r).fselBeta_Test, rStHAn(v,l1,l2,l3,r).MMC_Test] = performanceMetrics(double(Ytest), double(predictTest), scoreTest, selBeta);
-               end
+                end
+                ppm.increment();
             end
+            l3
         end
     end
 end
@@ -424,7 +426,7 @@ fsave_rStTb = [fsave,'rStTb\'];
 
 mkdir(fsave_rStTb);
 
-numIt = lenL1*lenL23;
+numIt = lenL1*lenL23*lenV;
 
 T = load('criticalR.mat','T'); % Loads the critical R values table (T);
 T = T.T;
@@ -466,6 +468,7 @@ parfor v = 1:lenV
                 [rStTbAn(v,l1,l23,a).ROC_AUC_Train, rStTbAn(v,l1,l23,a).fselBeta_Train, rStTbAn(v,l1,l23,a).MMC_Train] = performanceMetrics(double(Ytrain), double(predictTrain), scoreTrain, selBeta);
                 [rStTbAn(v,l1,l23,a).ROC_AUC_Test, rStTbAn(v,l1,l23,a).fselBeta_Test, rStTbAn(v,l1,l23,a).MMC_Test] = performanceMetrics(double(Ytest), double(predictTest), scoreTest, selBeta);
             end
+            ppm.increment();
         end
     end
 end
