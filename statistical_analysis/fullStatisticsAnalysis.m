@@ -1,9 +1,9 @@
 clear; close all;
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
-loadA = 1;
+loadA = 0;
 testeEnsaio = 1;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
@@ -290,7 +290,7 @@ spcDifAn = reshape(spcDifAn,[],1);
 spcDifAn(isnan([spcDifAn(:).ROC_AUC_Train]')) = [];
 spcDifAnTable = struct2table(spcDifAn);
 
-save([fsave_spcDif 'results_rawMatrix'],'spcDifAn');
+save([fsave_spcDif 'results_rawMatrix'],'spcDifAn','-v7.3');
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
@@ -313,9 +313,9 @@ clear dMax spcDifAnTable spcDifAn
 %%
 %%%%%%%%%%%%%%% Estatística R (heurística): %%%%%%%%%%%%%%
 
-L1 = 0.02:0.02:0.8; % lambda1 values (Exponential average weight for data)
+L1 = 0.02:0.04:0.8; % lambda1 values (Exponential average weight for data)
 L2 = 0.05:0.05:0.8; % lambda2 values (Exponential average weight for variance numerator)
-L3 = 0.01:0.01:0.8; % lambda3 values (Exponential average weight for variance denominator)
+L3 = 0.01:0.02:0.8; % lambda3 values (Exponential average weight for variance denominator)
 Rc = [1:0.01:3, 3.2:0.2:5]; % Critical R value
 
 % L1 = 0.02:0.5:0.82; % lambda1 values (Exponential average weight for data)
@@ -352,8 +352,8 @@ rStH_printStart;
 clear rStH;
 
 Rh = []
-for v = 1:lenV
-% parfor v = 1:lenV
+% for v = 1:lenV
+parfor v = 1:lenV
     for l1 = 1:lenL1
         for l2 = 1:lenL2
             for l3 = 1:lenL3
@@ -375,7 +375,6 @@ for v = 1:lenV
                 end
                 ppm.increment();
             end
-            l3
         end
     end
 end
@@ -391,7 +390,7 @@ rStHAn = reshape(rStHAn,[],1);
 rStHAn(isnan([rStHAn(:).ROC_AUC_Train]')) = [];
 rStHAnTable = struct2table(rStHAn);
 
-save([fsave_rStH 'results_rawMatrix'],'rStHAn');
+save([fsave_rStH 'results_rawMatrix'],'rStHAn','-v7.3');
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
@@ -409,7 +408,7 @@ save([fsave_rStH 'results_rankedTable'],'rStHAnTable');
 
 rStH_printEnd;
 
-clear L1 L2 L3 Rc rStHAnTable
+clear L1 L2 L3 Rc rStHAnTable rStHAn
 
 %%
 %%%%%%%%%%%%%%% Estatística R (tabela): %%%%%%%%%%%%%%
@@ -484,7 +483,7 @@ rStTbAn = reshape(rStTbAn,[],1);
 rStTbAn(isnan([rStTbAn(:).ROC_AUC_Train]')) = [];
 rStTbAnTable = struct2table(rStTbAn);
 
-save([fsave_rStTb 'results_rawMatrix'],'rStTbAn');
+save([fsave_rStTb 'results_rawMatrix'],'rStTbAn','-v7.3');
 
 switch selMethod % Rankeia os resultados pela métrica selecionada
     case 'ROC_AUC'
@@ -502,6 +501,6 @@ save([fsave_rStTb 'results_rankedTable'],'rStTbAnTable');
 
 rStTb_printEnd;
 
-clear L1 L23 ALPHA rStTbAnTable
+clear L1 L23 ALPHA rStTbAnTable rStTbAn
 
 fclose(fid);
