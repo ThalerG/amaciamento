@@ -1,9 +1,9 @@
 clear; close all;
+parpool(4);
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
-
-loadA = 0;
+loadA = 1;
 testeEnsaio = 1;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
@@ -93,7 +93,7 @@ standardize = true;
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+methodML = 'SVM'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML

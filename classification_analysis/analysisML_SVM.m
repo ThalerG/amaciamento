@@ -16,6 +16,9 @@ parfor k1 = 1:len1
     for k2 = 1:len2
         kFun = paramMLBusca{1}(k1); kFun = kFun{1};
         kScale = paramMLBusca{2}(k2);
+        if iscell(kScale)
+            kScale = kScale{1};
+        end
         paramMLTemp = {kFun,kScale};
         analysisMLAn(k1,k2).kernelFunction = kFun;
         analysisMLAn(k1,k2).kernelScale = kScale;

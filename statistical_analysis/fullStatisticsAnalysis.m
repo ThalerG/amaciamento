@@ -172,7 +172,7 @@ parfor n = 1:lenN
                      [tTestAn(n,m,d,v,a).ROC_AUC_Train, tTestAn(n,m,d,v,a).fselBeta_Train, tTestAn(n,m,d,v,a).MMC_Train] = performanceMetrics(double(Ytrain), double(predictTrain), scoreTrain, selBeta);
                      [tTestAn(n,m,d,v,a).ROC_AUC_Test, tTestAn(n,m,d,v,a).fselBeta_Test, tTestAn(n,m,d,v,a).MMC_Test] = performanceMetrics(double(Ytest), double(predictTest), scoreTest, selBeta);
                  end
-
+                 clear Ttrain Xtrain Xtest Ytes
              end
              ppm.increment();
         end
