@@ -260,8 +260,8 @@ parfor m = 1:lenM
 
               dTrain = abs(Xtrain(:,2)-Xtrain(:,1));
               dTest = abs(Xtest(:,2)-Xtest(:,1));
-              scoreTrain = rescale([-Inf;Inf;dTrain],'InputMin',min(dMax),'InputMax',max(dMax)); scoreTrain = scoreTrain(3:end);
-              scoreTest = rescale([-Inf;Inf;dTest],'InputMin',min(dMax),'InputMax',max(dMax)); scoreTest = scoreTest(3:end);
+              scoreTrain = 1-rescale([-Inf;Inf;dTrain],'InputMin',min(dMax),'InputMax',max(dMax)); scoreTrain = scoreTrain(3:end);
+              scoreTest = 1-rescale([-Inf;Inf;dTest],'InputMin',min(dMax),'InputMax',max(dMax)); scoreTest = scoreTest(3:end);
 
               for dm = 1:lenDmax
                   spcDifAn(m,d,v,dm).M = M(m);
@@ -359,8 +359,8 @@ for v = 1:lenV
             for l3 = 1:lenL3
                 [Rtrain,Ytrain,Rtest,Ytest] = rStats_preproc_data(EnData,tEst,L1(l1),L2(l2),L3(l3),conjVal,vars(v));
                 
-                scoreTrain = rescale([-Inf;Inf;Rtrain],'InputMin',min(Rc),'InputMax',max(Rc)); scoreTrain = scoreTrain(3:end);
-                scoreTest = rescale([-Inf;Inf;Rtest],'InputMin',min(Rc),'InputMax',max(Rc)); scoreTest = scoreTest(3:end);
+                scoreTrain = 1- rescale([-Inf;Inf;Rtrain],'InputMin',min(Rc),'InputMax',max(Rc)); scoreTrain = scoreTrain(3:end);
+                scoreTest = 1-rescale([-Inf;Inf;Rtest],'InputMin',min(Rc),'InputMax',max(Rc)); scoreTest = scoreTest(3:end);
                 
                 for r = 1:lenRc
                     rStHAn(v,l1,l2,l3,r).Rc = Rc(r);
@@ -454,8 +454,8 @@ parfor v = 1:lenV
         for l23 = 1:lenL23
             [Rtrain,Ytrain,Rtest,Ytest] = rStats_preproc_data(EnData,tEst,L1(l1),L23(l23),L23(l23),conjVal,vars(v));
 
-            scoreTrain = rescale([-Inf;Inf;Rtrain],'InputMin',min(T(:,5)),'InputMax',max(T(:,5))); scoreTrain = scoreTrain(3:end);
-            scoreTest = rescale([-Inf;Inf;Rtest],'InputMin',min(T(:,5)),'InputMax',max(T(:,5))); scoreTest = scoreTest(3:end);
+            scoreTrain = 1-rescale([-Inf;Inf;Rtrain],'InputMin',min(T(:,5)),'InputMax',max(T(:,5))); scoreTrain = scoreTrain(3:end);
+            scoreTest = 1-rescale([-Inf;Inf;Rtest],'InputMin',min(T(:,5)),'InputMax',max(T(:,5))); scoreTest = scoreTest(3:end);
 
             for a = 1:lenALPHA
                 Rc = T(T(:,1)==L1(l1) & T(:,2)==L23(l23) & T(:,3)==L23(l23) & T(:,4)==ALPHA(a),5);

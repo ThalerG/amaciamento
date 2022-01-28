@@ -1,4 +1,4 @@
-function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingData, kernelFunction, kernelScale, folds)
+function [trainedClassifier, prediction, score, time] = train_ML_SVM(trainingData, kernelFunction, kernelScale, folds, boxConstraint)
 %  TRAIN_ML_KNN Treina um classificador K-Nearest Neighbors
 %  Input:
 %      trainingData: tabela com preditores e resposta. A resposta deve ser
@@ -43,6 +43,9 @@ if nargin < 4
     folds = 5;
 end
 
+if nargin < 5
+    boxConstraint = 1;
+end
 
 switch kernelFunction
     case 'linear'
@@ -72,9 +75,8 @@ classificationSVM = fitcsvm(...
     'KernelFunction', kFun, ...
     'PolynomialOrder', fOrder, ...
     'KernelScale', kernelScale, ...
-    'BoxConstraint', 1, ...
+    'BoxConstraint', boxConstraint, ...
     'CacheSize', 4000, ...
-    'Standardize', true, ...
     'ClassNames', [0; 1]);
 c2 = clock;
 time = etime(c2,c1);
@@ -98,6 +100,8 @@ if folds>1
         score(cvp.test(k)) = scoreTemp(cvp.test(k));
         prediction(cvp.test(k)) = predictionTemp(cvp.test(k),:);
     end
+else
+    [prediction,score] = trainedClassifier.predict(predictors);
 end
 
 end

@@ -172,6 +172,8 @@ for kgr = 1:height(un) % Para cada combinação
         % Transfere o resultado da análise como uma linha da
         % tabela com todas as análises
         resultadosParcial(kRes,:) = r;
+        % Atualiza a waitbar
+        ppm.increment();
     end
     resultadosTotal = [resultadosTotal;resultadosParcial];
     waitbar(kgr/height(un),f);

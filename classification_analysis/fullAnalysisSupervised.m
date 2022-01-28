@@ -14,7 +14,7 @@ tempoMaxB = 40;
 if loadA
     load('EnDataA_Dissertacao.mat');
     cortaEnsaios;
-    EnData = EnDataA; 
+    EnData = EnDataA;
     clear EnDataA;
     
     % Tempos de amaciamento esperados:
@@ -93,7 +93,7 @@ standardize = true;
 % KNN -> K-Nearest Neighbors
 
 kFold = 5; % Número de kFold para classificação
-methodML = 'tree'; % Método para classificação
+methodML = 'SVM'; % Método para classificação
 
 % Parâmetros para análise de pré-processamento e feature selection
 switch methodML
@@ -104,16 +104,16 @@ switch methodML
         maxSplitsBusca = 5:5:80;
         paramMLBusca = {maxSplitsBusca};
     case 'SVM'
-        kernelFunction = 'linear';
-        kernelScale = 'auto';
-%         kernelFunction = 'gaussian';
-%         kernelScale = 1;
+%         kernelFunction = 'linear';
+%         kernelScale = 'auto';
+        kernelFunction = 'gaussian';
+        kernelScale = 1;
         paramML = {kernelFunction,kernelScale};
 %         
-        kernelFunctionBusca = {'linear','quadratic','cubic'};
-        kernelScaleBusca = {'auto'};
-%         kernelFunctionBusca = {'gaussian'};
-%         kernelScaleBusca = [0.5,1,2];
+%         kernelFunctionBusca = {'linear','quadratic','cubic'};
+%         kernelScaleBusca = {'auto'};
+        kernelFunctionBusca = {'gaussian'};
+        kernelScaleBusca = [0.5,1,2];
         paramMLBusca = {kernelFunctionBusca,kernelScaleBusca};
     case 'KNN'
         numNeighbors = 10;
@@ -236,7 +236,6 @@ cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(
 preproc_graph;
 
 preProcAn = reshape(preProcAn,[],1);
-preProcAn(isnan([preProcAn(:).ROC_AUC_Train]')) = [];
 preProcAnTable = struct2table(preProcAn);
 
 save([fsave_preProc 'results_rawMatrix'],'preProcAn');
@@ -300,7 +299,6 @@ cend = clock;
 cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
 
 featSelAn = reshape(featSelAn,[],1);
-featSelAn(isnan([featSelAn(:).ROC_AUC_Train]')) = [];
 featSelAnTable = struct2table(featSelAn);
 
 save([fsave_featSel 'results_rawMatrix'],'featSelAn');
@@ -354,7 +352,6 @@ cend = clock;
 cel = etime(cend,cstart); cdur(1) = floor(cel/(3600)); cdur(2) = floor(rem(cel,(3600))/60); cdur(3) = rem(cel,60);
 
 analysisMLAn = reshape(analysisMLAn,[],1);
-analysisMLAn(isnan([analysisMLAn(:).ROC_AUC_Train]')) = [];
 analysisMLAnTable = struct2table(analysisMLAn);
 
 save([fsave_analysisML 'results_rawMatrix'],'analysisMLAn');
