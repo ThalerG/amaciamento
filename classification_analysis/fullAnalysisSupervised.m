@@ -3,8 +3,8 @@ parpool(4);
 % rt = 'D:\Documentos\Amaciamento\'; % Root folder
 rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
-loadA = 1;
-testeEnsaio = 1;
+loadA = 0;
+testeEnsaio = 0;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
 tempoMin = 1;
