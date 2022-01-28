@@ -79,7 +79,7 @@ for k1 = 1:length(EnData)
             end
 
         end
-        if ~isempty(Rtemp)
+        if (exist('Rtemp'))&&(~isempty(Rtemp))
             Ytemp = strings(length(Rtemp),1);
             R = [R;Rtemp];
             Ytemp(t<tEst{k1}(k2)) = 'nao_amaciado';

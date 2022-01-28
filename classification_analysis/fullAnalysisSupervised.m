@@ -1,9 +1,9 @@
 clear; close all;
+parpool(4);
+% rt = 'D:\Documentos\Amaciamento\'; % Root folder
+rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
 
-rt = 'D:\Documentos\Amaciamento\'; % Root folder
-% rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
-
-loadA = 0;
+loadA = 1;
 testeEnsaio = 1;
 
 % Tempo mínimo e máximo para avaliação dos ensaios
