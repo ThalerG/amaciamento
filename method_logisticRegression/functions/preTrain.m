@@ -11,6 +11,7 @@ if nargin <7
 end
 classAmac = [];
 classCor = [];
+classTempo = [];
 
 for k1 = 1:length(EnData)
 
@@ -58,6 +59,7 @@ for k1 = 1:length(EnData)
             classTemp = strings(length(temp(:,1)),1);
             classTemp(tempo<tEst{k1}(k2)) = 'nao_amaciado';
             classTemp(tempo>=tEst{k1}(k2)) = 'amaciado';
+            classTempo = [classTempo;tempo];
             classCor = [classCor;temp];
             classAmac = [classAmac;classTemp];
             temp = [];
@@ -70,7 +72,7 @@ end
 classAmac = strcmp(classAmac,'amaciado');
 
 if nargout == 3
-    varargout{1} = tempo;
+    varargout{1} = classTempo;
 end
 
 end

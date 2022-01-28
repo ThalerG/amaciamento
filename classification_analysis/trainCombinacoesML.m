@@ -2,6 +2,7 @@ clear; close all;
 
 rt = 'D:\Documentos\Amaciamento\'; % Root folder
 % rt = 'C:\Users\FEESC\Desktop\Amaciamento\'; % Root folder
+rng(10)
 
 loadA = 0;
 testeEnsaio = 1;
@@ -20,6 +21,7 @@ if loadA
     % Tempos de amaciamento esperados:
     loadTempoAmacAPopular;
     % loadTempoAmacAConservador; txt = 'ModeloACon_';
+    CombinacoesSVMGaussA;
     
     if testeEnsaio
         conjVal = [4,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
@@ -38,6 +40,7 @@ else
     % Tempos de amaciamento esperados:
     loadTempoAmacBPopular;
     % loadTempoAmacBConservador; txt = 'ModeloBCon_';
+    CombinacoesSVMGaussB;
     
     if testeEnsaio
         conjVal = [7,1]; % Ensaios reservados para conjunto de validação [Amostra, ensaio]
@@ -70,14 +73,9 @@ selBeta = 1; % Valor de selBeta caso o método seja F-selBeta
 
 %%%%%%%%%%%%%%% Pré-processamento: %%%%%%%%%%%%%%
 
-N = 4; % Janela (número de amostras) da regressão
-M = 160; % Janela da média móvel
-D = 60; % Distância entre amostras da regressão
+
 
 wMax = 3.02; % Duração máxima da janela [h]
-
-% vars = {'cRMS', 'cKur', 'cVar', 'vInfRMS', 'vInfKur', 'vInfVar', 'vSupRMS', 'vSupKur', 'vSupVar', 'vaz'}; % Variáveis utilizadas
-vars = {'cRMS', 'cKur', 'cVar', 'vaz'}; % Variáveis utilizadas
 
 standardize = true;
 
@@ -98,12 +96,12 @@ switch methodML
         paramML = {maxSplits};
 
     case 'SVM'
-        kernelFunction = 'linear';
-        kernelScale = 'auto';
-%         kernelFunction = 'gaussian';
-%         kernelScale = 1;
-
-         paramML = {kernelFunction,kernelScale};
+%         kernelFunction = 'linear';
+%         kernelScale = 'auto';
+        kernelFunction = 'gaussian';
+        kernelScale = 1;
+        paramML = {kernelFunction,kernelScale};
+        paramReg = logspace(-7,10,100);
     case 'KNN'
         numNeighbors = 10;
         distance = 'Euclidean';
@@ -144,21 +142,44 @@ paramOvers = {'SMOTE+RU', 200, 5, false};
 
 %% Treino ML    
 
-ML.N = N; ML.M = M; ML.D = D; ML.vars = vars;
-ML.ROC_AUC_Train = NaN; ML.fselBeta_Train = NaN; ML.MMC_Train = NaN; ML.time_Train = NaN;
-ML.ROC_AUC_Test = NaN; ML.fselBeta_Test = NaN; ML.MMC_Test = NaN;
-ML.paramOvers = paramOvers; ML.methodML = methodML; ML.paramML = paramML;
+results.N = NaN; results.M = NaN; results.D = NaN; results.vars = {}; results.BoxConst = NaN;
+results.ROC_AUC_Train = NaN; results.fselBeta_Train = NaN; results.MMC_Train = NaN; results.time_Train = NaN;
+results.ROC_AUC_Test = NaN; results.fselBeta_Test = NaN; results.MMC_Test = NaN;
 
-if numel(conjVal) == 1
-    [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars,paramOvers,standardize);
-else
-    [Ttrain,Xtrain,Ytrain,Xtest,Ytest, tTrain, tTest] = preproc_data(EnData,tEst,conjVal,N,M,D,Inf,vars,paramOvers,standardize);
+Comb = Comb(1);
+results = repmat(results,length(Comb),length(paramReg));
+lenC = length(Comb);
+lenM = length(paramReg);
+numIt = lenC*lenM;
+ppm = ParforProgressbar(numIt, 'progressBarUpdatePeriod', 5);
+
+parfor kc = 1:lenC
+    for km = 1:lenM
+        results(kc,km).N = Comb(kc).N;
+        results(kc,km).M = Comb(kc).M;
+        results(kc,km).D = Comb(kc).D;
+        results(kc,km).BoxConst = paramReg(km);
+        results(kc,km).vars = Comb(kc).vars;
+        
+        if numel(conjVal) == 1
+            [Ttrain,Xtrain,Ytrain,Xtest,Ytest,indTest] = preproc_data(EnData,tEst,conjVal,Comb(kc).N,Comb(kc).M,Comb(kc).D,Inf,Comb(kc).vars,paramOvers,standardize);
+        else
+            [Ttrain,Xtrain,Ytrain,Xtest,Ytest] = preproc_data(EnData,tEst,conjVal,Comb(kc).N,Comb(kc).M,Comb(kc).D,Inf,Comb(kc).vars,paramOvers,standardize);
+        end
+        
+        paramMLtemp = [paramML,{paramReg(km)}];
+        [trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramMLtemp);
+        results(kc,km).time_Train = timeTrain;
+
+        [predictTest,scoreTest] = trainedClassifier.predict(Xtest);
+
+        [results(kc,km).ROC_AUC_Train, results(kc,km).fselBeta_Train, results(kc,km).MMC_Train] = performanceMetrics(double(Ytrain), predictTrain, scoreTrain, selBeta);
+        [results(kc,km).ROC_AUC_Test, results(kc,km).fselBeta_Test, results(kc,km).MMC_Test] = performanceMetrics(double(Ytest), predictTest, scoreTest, selBeta);
+        ppm.increment();
+    end
 end
 
-[trainedClassifier,predictTrain,scoreTrain,timeTrain] = train_ML(Ttrain, methodML, kFold, paramML);
-ML.time_Train = timeTrain;
+delete(ppm)
 
-[predictTest,scoreTest] = trainedClassifier.predict(Xtest);
-
-[ML.ROC_AUC_Train, ML.fselBeta_Train, ML.MMC_Train] = performanceMetrics(double(Ytrain), predictTrain, scoreTrain, selBeta);
-[ML.ROC_AUC_Test, ML.fselBeta_Test, ML.MMC_Test] = performanceMetrics(double(Ytest), predictTest, scoreTest, selBeta);
+resultsTable = reshape(results,[],1);
+resultsTable = struct2table(resultsTable);

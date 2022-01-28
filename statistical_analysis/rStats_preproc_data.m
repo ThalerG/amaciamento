@@ -1,4 +1,4 @@
-function [Rtrain,Ytrain,Rtest,Ytest] = rStats_preproc_data(EnData,tEst,L1,L2,L3,conjVal,varName)
+function [Rtrain,Ytrain,Rtest,Ytest, tTrain, tTest] = rStats_preproc_data(EnData,tEst,L1,L2,L3,conjVal,varName)
 
 if isempty(tEst)
     for k = 1:length(EnData)
@@ -13,19 +13,19 @@ for k1 = 1:size(conjVal,1) % Separa conjunto de treino e de teste
     EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
 end
 
-[Rtrain,Ytrain] = preTrainR(EnData,tEst,L1,L2,L3,varName);
-[Rtest,Ytest] = preTrainR(EnDataTest,tEstTest,L1,L2,L3,varName);
+[Rtrain,Ytrain,tTrain] = preTrainR(EnData,tEst,L1,L2,L3,varName);
+[Rtest,Ytest,tTest] = preTrainR(EnDataTest,tEstTest,L1,L2,L3,varName);
 
 
 
 end
 
 
-function [R,Y] = preTrainR(EnData,tEst,L1,L2,L3,varName)
+function [R,Y,tempo] = preTrainR(EnData,tEst,L1,L2,L3,varName)
 
 R = [];
 Y = [];
-
+tempo = [];
 for k1 = 1:length(EnData)
     for k2 = 1:length(EnData{k1})
         var = varName{1};
@@ -85,6 +85,7 @@ for k1 = 1:length(EnData)
             Ytemp(t<tEst{k1}(k2)) = 'nao_amaciado';
             Ytemp(t>=tEst{k1}(k2)) = 'amaciado';
             Y = [Y;Ytemp];
+            tempo = [tempo;t];
             Rtemp = [];
         end
     end

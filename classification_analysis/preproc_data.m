@@ -45,9 +45,13 @@ else
         EnData{conjVal(k1,1)}(conjVal(k1,2)) = [];
     end
 
-    [Xtrain,Ytrain] = preTrain(EnData,tEst,N,M,D,minT,varNames);
-    [Xtest,Ytest] = preTrain(EnDataTest,tEstTest,N,M,D,minT,varNames);
-    varargout = {};
+    [Xtrain,Ytrain,tTrain] = preTrain(EnData,tEst,N,M,D,minT,varNames);
+    [Xtest,Ytest,tTest] = preTrain(EnDataTest,tEstTest,N,M,D,minT,varNames);
+    if nargout == 7
+        varargout = {tTrain, tTest};
+    else
+        varargout = {};
+    end
 end
 
 
