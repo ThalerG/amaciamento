@@ -8,9 +8,9 @@ clear; close all;
 
 % Pasta com os dados de clusters. 
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
-fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
+fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\Extra\A_Cluster\';
 fold = dir(fold); fold = fold(3:end);
-foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
+foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\Extra\A_Score';
 foldScore = dir(foldScore); foldScore = foldScore(3:end);
 
 % Identifica as Unidades contidas na pasta
