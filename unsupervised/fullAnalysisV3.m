@@ -9,11 +9,11 @@ clear; close all;
 % Pasta com os dados de clusters. 
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 
-fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Cluster\';
-% fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
+% fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Cluster\';
+fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
 fold = dir(fold); fold = fold(3:end);
-% foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
-foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
+foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
+% foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
 
 foldScore = dir(foldScore); foldScore = foldScore(3:end);
 
@@ -185,6 +185,9 @@ for kgr = 1:height(un) % Para cada combinação
     
     waitbar(kgr/height(un),f);
 end
+
+% Resultados da
+clusters = vertcat(results{:});
 
 % Tabela de resultados aprovados em todos as condições
 resultadosAprovados = resultadosTotal(resultadosTotal.Pass == true,:);
