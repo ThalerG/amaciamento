@@ -2,29 +2,32 @@ clear; close all;
 
 %% Modelo A
 
-load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosA.mat');
-sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
+% load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosA.mat');
+% sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
 
-amostras = resultadosTotal.Amostra{1};
+load('C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\tabelaResultadosA_expanded.mat');
+sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeansExpanded\';
+
+unidades = resultadosTotal.Unidade{1};
 for k = 2:height(resultadosTotal)
-    amostras = unique([amostras, resultadosTotal.Amostra{k}]);
+    unidades = unique([unidades, resultadosTotal.Unidade{k}]);
 end
 
-% Ordena as amostras corretamente (Ex.: {"B1", "B2", "B10"..} ao invés de {"B1", "B10", "B2"..})
-R = cell2mat(regexp(amostras ,'(?<Name>\D+)(?<Nums>\d+)','names'));
+% Ordena as unidades corretamente (Ex.: {"B1", "B2", "B10"..} ao invés de {"B1", "B10", "B2"..})
+R = cell2mat(regexp(unidades ,'(?<Name>\D+)(?<Nums>\d+)','names'));
 tmp = sortrows([{R.Name}' num2cell(cellfun(@(x)str2double(x),{R.Nums}'))]);
-amostras = strcat(tmp(:,1) ,cellfun(@(x) num2str(x), tmp(:,2),'unif',0));
+unidades = strcat(tmp(:,1) ,cellfun(@(x) num2str(x), tmp(:,2),'unif',0));
 
 % Tabela de resultados aprovados em todos as condições
 resultadosAprovados = resultadosTotal((resultadosTotal.Pass == true),:);
 
 %Matriz vazia para os tempos de detecção
-tDetec = nan(3,height(resultadosAprovados),length(amostras));
+tDetec = nan(3,height(resultadosAprovados),length(unidades));
 
 % Monta a matriz com os tempos detectados
 for k1 = 1:height(resultadosAprovados)
-    for k2 = 1:length(amostras)
-        i = find(strcmp(resultadosAprovados.Amostra{k1},amostras{k2}));
+    for k2 = 1:length(unidades)
+        i = find(strcmp(resultadosAprovados.Unidade{k1},unidades{k2}));
         if ~isempty(i)
             tDetec(:,k1,k2) = resultadosAprovados.TimeDetect{k1}{i};
         end
@@ -55,11 +58,11 @@ ggGr = ggGr((ggGr.TempoAmac(:,2)>=10)&(ggGr.TempoAmac(:,4)>=10),:);
 tAmacGr = ggGr.TempoAmac;
 
 figure;
-ha = tightPlots(ceil(length(amostras)/2), 2, 16, [5 3], [0.6 1], [0.9 0.5], [0.8 0.6], 'centimeters');
+ha = tightPlots(ceil(length(unidades)/2), 2, 16, [5 3], [0.6 1], [0.9 0.5], [0.8 0.6], 'centimeters');
 tend = 20;
 
 ylmax = -inf;
-for k1 = 1:length(amostras)
+for k1 = 1:length(unidades)
     axes(ha(k1))
     histogram(tAmacGr(:,k1),4:tend); 
     if k1 < 3
@@ -67,11 +70,11 @@ for k1 = 1:length(amostras)
     else
         xlabel('Instante de transição [h]'); 
     end
-    ylabel('Frequência'); title(['Amostra ',amostras{k1}]);
+    ylabel('Frequência'); title(['Unidade ',unidades{k1}]);
     ylmax = max([ylmax,ylim()]);
 end
 
-for k1 = 1:length(amostras)
+for k1 = 1:length(unidades)
     axes(ha(k1))
     ylim([0,ylmax]);
 end
@@ -81,31 +84,36 @@ print(gcf,'-dpdf', [sv,'histA.pdf']);
 
 ggGrA = ggGr;
 
+clearvars -except ggGrA
+
 %% Modelo B
 
-load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosB.mat');
-sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
+% load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosB.mat');
+% sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
 
-amostras = resultadosTotal.Amostra{1};
+load('C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\tabelaResultadosB_expanded.mat');
+sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeansExpanded\';
+
+unidades = resultadosTotal.Unidade{1};
 for k = 2:height(resultadosTotal)
-    amostras = unique([amostras, resultadosTotal.Amostra{k}]);
+    unidades = unique([unidades, resultadosTotal.Unidade{k}]);
 end
 
-% Ordena as amostras corretamente (Ex.: {"B1", "B2", "B10"..} ao invés de {"B1", "B10", "B2"..})
-R = cell2mat(regexp(amostras ,'(?<Name>\D+)(?<Nums>\d+)','names'));
+% Ordena as unidades corretamente (Ex.: {"B1", "B2", "B10"..} ao invés de {"B1", "B10", "B2"..})
+R = cell2mat(regexp(unidades ,'(?<Name>\D+)(?<Nums>\d+)','names'));
 tmp = sortrows([{R.Name}' num2cell(cellfun(@(x)str2double(x),{R.Nums}'))]);
-amostras = strcat(tmp(:,1) ,cellfun(@(x) num2str(x), tmp(:,2),'unif',0));
+unidades = strcat(tmp(:,1) ,cellfun(@(x) num2str(x), tmp(:,2),'unif',0));
 
 % Tabela de resultados aprovados em todos as condições
 resultadosAprovados = resultadosTotal((resultadosTotal.Pass == true),:);
 
 %Matriz vazia para os tempos de detecção
-tDetec = nan(3,height(resultadosAprovados),length(amostras));
+tDetec = nan(3,height(resultadosAprovados),length(unidades));
 
 % Monta a matriz com os tempos detectados
 for k1 = 1:height(resultadosAprovados)
-    for k2 = 1:length(amostras)
-        i = find(strcmp(resultadosAprovados.Amostra{k1},amostras{k2}));
+    for k2 = 1:length(unidades)
+        i = find(strcmp(resultadosAprovados.Unidade{k1},unidades{k2}));
         if ~isempty(i)
             tDetec(:,k1,k2) = resultadosAprovados.TimeDetect{k1}{i};
         end
@@ -132,18 +140,18 @@ for k = 1:height(analise)
 end
 
 figure;
-ha = tightPlots(ceil(length(amostras)/2), 2, 16, [5 3], [0.9 1], [0.9 0.5], [0.8 0.6], 'centimeters');
+ha = tightPlots(ceil(length(unidades)/2), 2, 16, [5 3], [0.9 1], [0.9 0.5], [0.8 0.6], 'centimeters');
 tend = 40;
 
 ylmax = -inf;
-for k1 = 1:length(amostras)
+for k1 = 1:length(unidades)
     axes(ha(k1))
     histogram(tAmacGr(:,k1),4:tend); 
-    ylabel('Frequência'); title(['Amostra ',amostras{k1}]);
+    ylabel('Frequência'); title(['Unidade ',unidades{k1}]);
     ylmax = max([ylmax,ylim()]);
 end
 
-for k1 = 1:length(amostras)
+for k1 = 1:length(unidades)
     axes(ha(k1))
     ylim([0,ylmax]);
 end
