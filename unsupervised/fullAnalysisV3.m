@@ -9,11 +9,11 @@ clear; close all;
 % Pasta com os dados de clusters. 
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 
-% fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Cluster\';
-fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
+fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\B_Cluster\';
+% fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
 fold = dir(fold); fold = fold(3:end);
-foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
-% foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
+foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\B_Score\';
+% foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
 
 foldScore = dir(foldScore); foldScore = foldScore(3:end);
 
@@ -144,7 +144,8 @@ for kgr = 1:height(un) % Para cada combinação
 
             for kam = 1:length(rOr) % Para cada Unidade
                 % Calcula as proporções de clusters por janela
-                [~,~,prop] = orderClusters(rOr(kam),windows(kw));
+                W = r.Window;
+                [~,~,prop] = orderClusters(rOr(kam),W);
 
                 method = r{1,"Method"};
                 param = r{1,"Param"};
@@ -184,6 +185,7 @@ for kgr = 1:height(un) % Para cada combinação
     end
     
     waitbar(kgr/height(un),f);
+    kgr/height(un)
 end
 
 % Resultados da

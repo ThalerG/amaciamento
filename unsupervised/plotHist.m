@@ -5,8 +5,8 @@ clear; close all;
 % load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosA.mat');
 % sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
 
-load('C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\tabelaResultadosA_expanded.mat');
-sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeansExpanded\';
+load('C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeans_2021_03_19\resultadosTotalA.mat');
+sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeans_2021_03_19\';
 
 unidades = resultadosTotal.Unidade{1};
 for k = 2:height(resultadosTotal)
@@ -79,12 +79,12 @@ for k1 = 1:length(unidades)
     ylim([0,ylmax]);
 end
 
-savefig(strcat(sv,'histA.fig'));
-print(gcf,'-dpdf', [sv,'histA.pdf']);
+% savefig(strcat(sv,'histA.fig'));
+% print(gcf,'-dpdf', [sv,'histA.pdf']);
 
 ggGrA = ggGr;
 
-clearvars -except ggGrA
+% clearvars -except ggGrA
 
 %% Modelo B
 
