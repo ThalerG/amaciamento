@@ -28,7 +28,7 @@ for k = 1:length(unensaio)
     prop = [];
     k2 = 1;
     
-    while tmax<tempo(end)
+    while tmax<=tempo(end)
         cTemp = cluster((tempo<tmax)&(tempo>=(tmax-timeWindow)));
         
         for p = 1:length(uncluster)
@@ -41,7 +41,7 @@ for k = 1:length(unensaio)
         sort(temp == 0) = length(uncluster); % Valores 0 vão por último na ordem
         y(k2,:) = sort';
         x(k2) = tmax;
-        tmax = tmax+timeWindow; % Atualiza a janela
+        tmax = tempo(k2)+timeWindow; % Atualiza a janela
         k2 = k2+1;
     end
         

@@ -79,12 +79,12 @@ for k1 = 1:length(unidades)
     ylim([0,ylmax]);
 end
 
-savefig(strcat(sv,'histA.fig'));
-print(gcf,'-dpdf', [sv,'histA.pdf']);
+% savefig(strcat(sv,'histA.fig'));
+% print(gcf,'-dpdf', [sv,'histA.pdf']);
 
 ggGrA = ggGr;
 
-clearvars -except ggGrA
+% clearvars -except ggGrA
 
 %% Modelo B
 

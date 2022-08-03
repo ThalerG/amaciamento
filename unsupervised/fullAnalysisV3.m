@@ -149,7 +149,8 @@ for kgr = 1:height(un) % Para cada combinação
 
             for kam = 1:length(rOr) % Para cada Unidade
                 % Calcula as proporções de clusters por janela
-                [~,~,prop] = orderClusters(rOr(kam),windows(kw));
+                W = r.Window;
+                [~,~,prop] = orderClusters(rOr(kam),W);
 
                 method = r{1,"Method"};
                 param = r{1,"Param"};
@@ -189,6 +190,7 @@ for kgr = 1:height(un) % Para cada combinação
     end
     
     waitbar(kgr/height(un),f);
+    kgr/height(un)
 end
 
 % Resultados da
