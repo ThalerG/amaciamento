@@ -10,12 +10,15 @@ clear; close all;
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\Clusterizações\Dissertacao - Modelo B\';
 
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Cluster\';
-fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
+% fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
+fold = 'D:\Documentos\Amaciamento\Ferramentas\ProjetoPython\RunningIn_UnsupervisedAnalysis\Results\RBF_kernel';
 fold = dir(fold); fold = fold(3:end);
-foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
-% foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
 
-foldScore = dir(foldScore); foldScore = foldScore(3:end);
+% foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
+% foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
+% foldScore = dir(foldScore); foldScore = foldScore(3:end);
+
+load('D:\Documentos\Amaciamento\Ferramentas\ProjetoMatlab\EnDataA_Dissertacao.mat');
 
 % Identifica as Unidades contidas na pasta
 un = regexp({fold.name},'.\d*_','match'); un = unique([un{:}]);
@@ -39,7 +42,8 @@ for k1 = 1:length(un)
             
             %Importação:
             F_clusters = strcat(fold(1).folder,'\',names{k2}); % Endereço do arquivo
-            F_score = strcat(foldScore(1).folder,'\score_',names{k2}); % Endereço do arquivo de scores
+            % F_score = strcat(foldScore(1).folder,'\score_',names{k2}); % Endereço do arquivo de scores
+            F_score = [];
             
             r = importClustersV2(F_clusters,F_score,un{k1},N); % Organiza e importa os clusters
             results{k1} = [results{k1};r]; % Monta um array de cells para cada Unidade
@@ -134,6 +138,7 @@ for kgr = 1:height(un) % Para cada combinação
                 end
             end
         end
+        
 
         parfor kRes = 1:height(resultadosParcial) % Para cada janelamento
             TimeDetect = repmat({[]},1,length(rOr));

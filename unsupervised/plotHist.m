@@ -2,11 +2,11 @@ clear; close all;
 
 %% Modelo A
 
-% load('D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\NaoSupervisionado\tabelaResultadosA.mat');
-% sv = 'D:\Documentos\Amaciamento\Apresentações\00_Dissertacao\';
+load('D:\Documentos\Amaciamento\DadosMat\resultadosAprovados_A');
+sv = 'D:\Documentos\Amaciamento\Apresentações\2021_12_16 - Artigo IEEE\';
 
-load('C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\tabelaResultadosA_expanded.mat');
-sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeansExpanded\';
+% load('C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\tabelaResultadosA_expanded.mat');
+% sv = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KMeansExpanded\';
 
 unidades = resultadosTotal.Unidade{1};
 for k = 2:height(resultadosTotal)

@@ -83,6 +83,9 @@ end
 results.Properties.VariableNames = {'Unidade','Grandeza','Tempo','Ensaio','N','M','D','Cluster'};
 
 %%%%%%%%%%%%%%%%%%%%% Performance das clusterizações %%%%%%%%%%%%%%%%%%%%%
+if isempty(filenameScore)
+    return
+end
 
 % Extrai em forma de texto as informações do arquivo de score
 text = fileread(filenameScore);
