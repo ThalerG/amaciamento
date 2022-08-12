@@ -5,6 +5,12 @@ function [res] = detect_Dom(proportion,time,ensaio,cluster)
 unEnsaios = unique(ensaio); % Ensaios contidos nos dados
 res.Pass = false; res.TimeDetect = []; res.Obs = ''; % Formato da análise
 
+if cluster>size(proportion,2)
+    res.Obs = "Cluster inexistente";
+    res.TimeDetect = NaN;
+    return
+end
+
 for k1 = 1:length(unEnsaios) % Para cada ensaio
     % Seleciona os dados do ensaio
     [~,orderTemp] = max(proportion(ensaio == unEnsaios(k1),:),[],2);
