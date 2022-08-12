@@ -11,15 +11,17 @@ clear; close all;
 
 % fold = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Cluster\';
 % fold = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Cluster\';
-fold = 'D:\Documentos\Amaciamento\Ferramentas\ProjetoPython\RunningIn_UnsupervisedAnalysis\Results\RBF_kernel';
+fold = 'C:\Users\FEESC\Desktop\Amaciamento\RunningIn_UnsupervisedAnalysis\Results\RBF_kernel';
 fold = dir(fold); fold = fold(3:end);
+
+% Pasta p/ salvar os arquivos
+fsave = 'C:\Users\FEESC\Desktop\Amaciamento\Ferramentas\Arquivos Gerados\KernelKmeans_RBF_2022_08_04\';
 
 % foldScore = 'D:\Documentos\Amaciamento\Clusterizações\Codigo_Nicolas\Clusters\A_Score';
 % foldScore = 'C:\Users\FEESC\Desktop\Amaciamento\DeteccaoNaoSupervisionado\Extra\B_Score\';
 % foldScore = dir(foldScore); foldScore = foldScore(3:end);
 
-load('D:\Documentos\Amaciamento\Ferramentas\ProjetoMatlab\EnDataA_Dissertacao.mat');
-
+load('C:\Users\FEESC\Desktop\Amaciamento\ProjetoGit\EnDataA_Dissertacao.mat');
 % Identifica as Unidades contidas na pasta
 un = regexp({fold.name},'.\d*_','match'); un = unique([un{:}]);
 
@@ -193,11 +195,17 @@ for kgr = 1:height(un) % Para cada combinação
     kgr/height(un)
 end
 
+save([fsave,'resultadosTotal.mat'],'resultadosTotal','-v7.3');
+
 % Resultados da
 clusters = vertcat(results{:});
 
+save([fsave,'clusters.mat'],'clusters','-v7.3');
+
 % Tabela de resultados aprovados em todos as condições
 resultadosAprovados = resultadosTotal(resultadosTotal.Pass == true,:);
+
+save([fsave,'resultadosAprovados.mat'],'resultadosAprovados','-v7.3');
 
 Unidades = resultadosAprovados.Unidade{1};
 for k = 2:height(resultadosAprovados)
